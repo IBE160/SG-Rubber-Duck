@@ -2,14 +2,13 @@
 
 ## 1. Gruppeinformasjon
 
-**Gruppenavn:** [Navn på gruppen]
-
+**Gruppenavn:** Rubber Duck Debuggers
 **Gruppemedlemmer:**
-- [Navn 1] - [Student-ID/E-post]
+- [Navn 1] - Benjamin Eiksund - beeik5043@himolde.no
 - [Navn 2] - [Student-ID/E-post]
 - [Navn 3] - [Student-ID/E-post]
 
-**Dato:** [DD.MM.ÅÅÅÅ]
+**Dato:** [05.12.2025]
 
 ---
 
