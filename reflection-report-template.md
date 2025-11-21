@@ -214,7 +214,13 @@ Dette understreker viktigheten av å validere arbeidet som KI gjør for oss, og 
 ### 7.4 Personlig refleksjon (individuelt)
 
 **Benjamin Thorstensen Eiksund:**
-[Personlig refleksjon over egen læring og utvikling]
+Jeg gikk inn i faget med en relativt god teknologiforståelse og innsikt i hvordan PC-er henger sammen, men uten erfaring med koding eller oppsett av applikasjoner. Det ble raskt tydelig at programmering med selv KI er mer komplekst enn jeg hadde sett for meg, men også svært lærerikt. Jeg har fått et nytt språk for utvikling og forstår bedre hvordan man bryter ned problemer, tester systematisk og bygger opp en løsning steg for steg.
+
+KI har vært avgjørende for å komme i gang. Jeg har prøvd å starte læring av enkel koding på Python, men gitt opp hver gang, så KI-hjelp har vært avgjørende. Samtidig har jeg erfart at gode resultater ikke kommer av seg selv. Kvalitet krever tydelige mål, forarbeid og tålmodig feilsøking. KI gir fart, forslag og forklaringer, men løsningene må forstås, verifiseres og tilpasses. Denne balansen mellom støtte og eget ansvar har vært en viktig del av læringen.
+
+Tidsrammen var noe krevende fordi vi kom litt sent i gang, og det var mye å sette seg inn i fra scratch. Gruppens dynamikk var en stor styrke. På tross av at vi er nettstudenter spredt over landet, viste alle motivasjon og vilje til å lære, noe som ikke er et selvfølge. Det skapte trygghet for å stille spørsmål og prøve nye tilnærminger.
+
+Oppsummert har IBE160 gjort programmering mer tilgjengelig for meg. Jeg har gått fra helt blank kunnskap til å forstå mye mer av prosessene, begrepene og hvor KI passer inn. Erfaringen har vist at kvalitet tar tid, også med KI, men at kombinasjonen av nysgjerrighet, struktur og samarbeid kan gi reell mestring.
 
 **Ole Christian Risa Bakke:**
 [Personlig refleksjon over egen læring og utvikling]
