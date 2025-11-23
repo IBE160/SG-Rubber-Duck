@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimuBuild - Key Screens Showcase</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+        .screen-content { display: none; }
+        .screen-content.active { display: block; }
+        .tab-button.active { 
+            --tw-bg-opacity: 1;
+            background-color: hsla(222, 83%, 56%, 0.1);
+            --tw-text-opacity: 1;
+            color: #135bec;
+            font-weight: 600;
+        }
+        /* Wizard Specifics */
+        .wizard-step-content { display: none; }
+        .wizard-step-content.active { display: block; }
+        .wizard-step-indicator.active {
+             background-color: #135bec; /* primary */
+             color: white;
+             font-weight: 700;
+        }
+        .wizard-step-indicator.complete {
+            background-color: #10B981; /* success */
+            color: white;
+        }
+        .wizard-step-label.active {
+            font-weight: 600;
+            color: #135bec; /* primary */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-light": "#ffffff", 
+                        "surface-dark": "#192233",
+                        "success": "#10B981",
+                        "warning": "#F59E0B",
+                        "danger": "#EF4444",
+                        "info": "#3B82F6",
+                        "text-primary-light": "#111827",
+                        "text-primary-dark": "#ffffff",
+                        "text-secondary-light": "#6b7280",
+                        "text-secondary-dark": "#92a4c9",
+                        "border-light": "#e0e6ed",
+                        "border-dark": "#324467",
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark transition-colors duration-300">
+
+<div class="flex h-screen w-full">
+    <!-- Main Sidebar Navigation -->
+    <aside class="flex w-64 flex-col border-r border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark p-4 shrink-0">
+        <div class="flex items-center gap-3 px-2 mb-8">
+            <div class="bg-primary flex h-10 w-10 items-center justify-center rounded-lg text-white"><span class="material-symbols-outlined text-2xl">construction</span></div>
+            <h1 class="text-xl font-bold">SimuBuild</h1>
+        </div>
+        <nav class="flex flex-1 flex-col gap-2">
+            <button class="tab-button flex items-center justify-start w-full px-2 py-3 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5 dark:hover:bg-primary/10" data-target="screen-dashboard">
+                <span class="material-symbols-outlined text-base">dashboard</span><span class="text-sm font-medium">Projects Dashboard</span>
+            </button>
+            <button class="tab-button flex items-center justify-start w-full px-2 py-3 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5 dark:hover:bg-primary/10" data-target="screen-setup">
+                <span class="material-symbols-outlined text-base">add_circle</span><span class="text-sm font-medium">New Project</span>
+            </button>
+             <button class="tab-button flex items-center justify-start w-full px-2 py-3 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5 dark:hover:bg-primary/10" data-target="screen-simulation">
+                <span class="material-symbols-outlined text-base">play_circle</span><span class="text-sm font-medium">Simulation View</span>
+            </button>
+            <button class="tab-button flex items-center justify-start w-full px-2 py-3 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5 dark:hover:bg-primary/10" data-target="screen-archive">
+                <span class="material-symbols-outlined text-base">archive</span><span class="text-sm font-medium">Project Archive</span>
+            </button>
+        </nav>
+        <div class="mt-auto flex flex-col gap-2">
+            <button class="tab-button flex items-center justify-start w-full px-2 py-3 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5 dark:hover:bg-primary/10" data-target="screen-settings">
+                <span class="material-symbols-outlined text-base">settings</span><span class="text-sm font-medium">Settings</span>
+            </button>
+            <div class="border-t border-border-light dark:border-border-dark pt-4 mt-2">
+                 <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">B</div>
+                    <div class="flex flex-col"><span class="text-sm font-medium">BIP</span><span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Instructor</span></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-6 py-4 h-[73px]">
+            <div id="header-content" class="flex items-center gap-4">
+                <!-- Header content changes based on active screen -->
+            </div>
+            <div class="flex items-center gap-4">
+                 <button id="themeToggle" class="flex items-center justify-center h-10 w-10 rounded-lg border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5 dark:hover:bg-primary/10">
+                    <span class="material-symbols-outlined !text-xl">light_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 bg-background-light dark:bg-background-dark">
+            <!-- Screen 1: Projects Overview Dashboard -->
+            <div id="screen-dashboard" class="screen-content">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold">Active Projects (3)</h3>
+                    <div class="flex items-center gap-2">
+                        <button class="px-2 w-24 py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-medium">All</button>
+                        <button class="px-2 w-24 py-2.5 rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark bg-surface-light dark:bg-surface-dark hover:bg-primary/5 text-sm font-medium">On Track</button>
+                        <button class="px-2 w-24 py-2.5 rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark bg-surface-light dark:bg-surface-dark hover:bg-primary/5 text-sm font-medium">At Risk</button>
+                        <button class="px-2 w-24 py-2.5 rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark bg-surface-light dark:bg-surface-dark hover:bg-primary/5 text-sm font-medium">Delayed</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-center bg-no-repeat aspect-video bg-cover" style='background-image: url("https://images.unsplash.com/photo-1541888946-d8051676f23b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzIyNzJ8MHwxfHNlYXJjaHw0OXx8Y29uc3RydWN0aW9ufGVufDB8fHx8MTcwMzU4NDY4Mnww&ixlib=rb-4.0.3&q=80&w=1080");'></div>
+                        <div class="p-4 flex flex-col gap-3 flex-grow">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col"><p class="text-lg font-semibold">Downtown High-Rise</p><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Commercial</p></div>
+                                <span class="inline-flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-xs font-medium text-success"><span class="material-symbols-outlined !text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>On Track</span>
+                            </div>
+                            <div class="border-t border-border-light dark:border-border-dark pt-3 grid grid-cols-2 gap-3 text-sm">
+                                <div class="flex items-start gap-1"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">monetization_on</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Cost:</span><span class="font-semibold block">$3.5M / $5.0M</span></div></div>
+                                <div class="flex items-start gap-1"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">schedule</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Time:</span><span class="font-semibold block text-success">+ 5 Days</span></div></div>
+                            </div>
+                             <div>
+                                <div class="flex justify-between mb-1"><span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Progress</span><span class="text-sm font-medium">75%</span></div>
+                                <div class="w-full bg-background-light dark:bg-background-dark rounded-full h-2 border border-border-light dark:border-border-dark"><div class="bg-success h-full rounded-full" style="width: 75%"></div></div>
+                            </div>
+                            <div class="mt-auto pt-3"><button class="w-full text-center rounded-lg h-9 text-sm font-semibold bg-primary text-white hover:bg-primary/90">View Project</button></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-center bg-no-repeat aspect-video bg-cover" style='background-image: url("https://images.unsplash.com/photo-1542362489-0b190df0e1f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzIyNzJ8MHwxfHNlYXJjaHw4Nnx8Y29uc3RydWN0aW9ufGVufDB8fHx8MTcwMzU4NDY4Mnww&ixlib=rb-4.0.3&q=80&w=1080");'></div>
+                        <div class="p-4 flex flex-col gap-3 flex-grow">
+                             <div class="flex justify-between items-start">
+                                <div class="flex flex-col"><p class="text-lg font-semibold">Suburban Retail Complex</p><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Commercial</p></div>
+                                <span class="inline-flex items-center gap-2 rounded-full bg-warning/10 px-3 py-1 text-xs font-medium text-warning"><span class="material-symbols-outlined !text-sm" style="font-variation-settings: 'FILL' 1;">warning</span>At Risk</span>
+                            </div>
+                            <div class="border-t border-border-light dark:border-border-dark pt-3 grid grid-cols-2 gap-3 text-sm">
+                                <div class="flex items-start gap-1"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">monetization_on</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Cost:</span><span class="font-semibold block">$2.1M / $4.0M</span></div></div>
+                                <div class="flex items-start gap-1"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">schedule</span><div><span class="font-semibold block text-warning">~ 0 Days</span></div></div>
+                            </div>
+                             <div>
+                                <div class="flex justify-between mb-1"><span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Progress</span><span class="text-sm font-medium">45%</span></div>
+                                <div class="w-full bg-background-light dark:bg-background-dark rounded-full h-2 border border-border-light dark:border-border-dark"><div class="bg-warning h-full rounded-full" style="width: 45%"></div></div>
+                            </div>
+                            <div class="mt-auto pt-3"><button class="w-full text-center rounded-lg h-9 text-sm font-semibold bg-primary text-white hover:bg-primary/90">View Project</button></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-center bg-no-repeat aspect-video bg-cover" style='background-image: url("https://images.unsplash.com/photo-1589998059171-ee29c2009e0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzIyNzJ8MHwxfHNlYXJjaHwxNXx8cmVzaWRlbnRpYWwlMjBjb25zdHJ1Y3Rpb258ZW58MHx8fHwxNzA2MjQxNzEzfDA&ixlib=rb-4.0.3&q=80&w=1080");'></div>
+                        <div class="p-4 flex flex-col gap-3 flex-grow">
+                             <div class="flex justify-between items-start">
+                                <div class="flex flex-col"><p class="text-lg font-semibold">Residential Community Center</p><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Public Works</p></div>
+                                <span class="inline-flex items-center gap-2 rounded-full bg-danger/10 px-3 py-1 text-xs font-medium text-danger"><span class="material-symbols-outlined !text-sm" style="font-variation-settings: 'FILL' 1;">error</span>Delayed</span>
+                            </div>
+                            <div class="border-t border-border-light dark:border-border-dark pt-3 grid grid-cols-2 gap-3 text-sm">
+                                <div class="flex items-start gap-1"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">monetization_on</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Cost:</span><span class="font-semibold block">$9.5M / $9.0M</span></div></div>
+                                <div class="flex items-start gap-1"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">schedule</span><div><span class="font-semibold block text-danger">- 12 Days</span></div></div>
+                            </div>
+                             <div>
+                                <div class="flex justify-between mb-1"><span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Progress</span><span class="text-sm font-medium">82%</span></div>
+                                <div class="w-full bg-background-light dark:bg-background-dark rounded-full h-2 border border-border-light dark:border-border-dark"><div class="bg-danger h-full rounded-full" style="width: 82%"></div></div>
+                            </div>
+                            <div class="mt-auto pt-3"><button class="w-full text-center rounded-lg h-9 text-sm font-semibold bg-primary text-white hover:bg-primary/90">View Project</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: Project Setup -->
+            <div id="screen-setup" class="screen-content">
+                <div class="mx-auto max-w-4xl flex flex-col gap-8">
+                    <nav class="w-full">
+                        <ol class="flex justify-between items-center bg-surface-light dark:bg-surface-dark rounded-xl p-4 border border-border-light dark:border-border-dark">
+                            <li class="flex flex-col items-center flex-1">
+                                <button class="wizard-step-indicator active flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold">1</button>
+                                <span class="wizard-step-label active text-sm mt-2">Overview</span>
+                            </li>
+                            <li class="flex-1 h-px bg-border-light dark:bg-border-dark mx-2"></li>
+                            <li class="flex flex-col items-center flex-1">
+                                <button class="wizard-step-indicator flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-light dark:border-border-dark text-sm font-bold">2</button>
+                                <span class="wizard-step-label text-sm mt-2">WBS & Tasks</span>
+                            </li>
+                            <li class="flex-1 h-px bg-border-light dark:bg-border-dark mx-2"></li>
+                            <li class="flex flex-col items-center flex-1">
+                                <button class="wizard-step-indicator flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-light dark:border-border-dark text-sm font-bold">3</button>
+                                <span class="wizard-step-label text-sm mt-2">Resources & Budget</span>
+                            </li>
+                            <li class="flex-1 h-px bg-border-light dark:bg-border-dark mx-2"></li>
+                            <li class="flex flex-col items-center flex-1">
+                                <button class="wizard-step-indicator flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-light dark:border-border-dark text-sm font-bold">4</button>
+                                <span class="wizard-step-label text-sm mt-2">Risk Factors</span>
+                            </li>
+                            <li class="flex-1 h-px bg-border-light dark:bg-border-dark mx-2"></li>
+                            <li class="flex flex-col items-center flex-1">
+                                <button class="wizard-step-indicator flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-light dark:border-border-dark text-sm font-bold">5</button>
+                                <span class="wizard-step-label text-sm mt-2">Review & Create</span>
+                            </li>
+                        </ol>
+                    </nav>
+                    
+                    <!-- Step Content -->
+                    <div class="flex-1">
+                        <div id="wizard-step-1" class="wizard-step-content active bg-surface-light dark:bg-surface-dark rounded-xl p-8 border border-border-light dark:border-border-dark">
+                            <h3 class="text-2xl font-bold mb-6">Step 1: Project Overview</h3>
+                            <div class="flex flex-col gap-6">
+                                <label class="block"><span class="text-sm font-medium mb-1 block">Project Name *</span><input type="text" placeholder="e.g., Downtown Office Block" class="form-input w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary"></label>
+                                <label class="block"><span class="text-sm font-medium mb-1 block">Project Description</span><textarea placeholder="Enter a brief description of the project" class="form-textarea w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark min-h-[120px] focus:ring-2 focus:ring-primary"></textarea></label>
+                            </div>
+                        </div>
+
+                        <div id="wizard-step-2" class="wizard-step-content bg-surface-light dark:bg-surface-dark rounded-xl p-8 border border-border-light dark:border-border-dark">
+                            <h3 class="text-2xl font-bold mb-6">Step 2: WBS & Tasks</h3>
+                            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">Define your project tasks, their durations, and dependencies.</p>
+                            <button class="px-4 py-2 rounded-lg bg-primary/10 text-primary font-medium mb-4"><span class="material-symbols-outlined text-base">add</span> Add Task</button>
+                            <div class="overflow-x-auto rounded-lg border border-border-light dark:border-border-dark">
+                                <table class="w-full text-left text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                                    <thead class="bg-background-light dark:bg-background-dark text-xs uppercase">
+                                        <tr><th class="px-4 py-2 font-medium">Task Name</th><th class="px-4 py-2 font-medium">Duration (Days)</th><th class="px-4 py-2 font-medium">Predecessors</th><th class="px-4 py-2 font-medium"></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-border-light dark:border-border-dark"><td class="px-4 py-3 font-medium">1. Foundation Work</td><td class="px-4 py-3">20</td><td class="px-4 py-3">-</td><td class="px-4 py-3 text-right"><button class="text-primary hover:underline">Edit</button></td></tr>
+                                        <tr><td class="px-4 py-3 font-medium pl-8">1.1 Site Excavation</td><td class="px-4 py-3">5</td><td class="px-4 py-3">-</td><td class="px-4 py-3 text-right"><button class="text-primary hover:underline">Edit</button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="wizard-step-3" class="wizard-step-content bg-surface-light dark:bg-surface-dark rounded-xl p-8 border border-border-light dark:border-border-dark">
+                            <h3 class="text-2xl font-bold mb-6">Step 3: Resources & Budget</h3>
+                            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">Define your project's overall budget and the resources required.</p>
+                            <label class="block mb-6"><span class="text-sm font-medium mb-1 block">Total Budget *</span><input type="number" placeholder="$1,000,000" class="form-input w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary"></label>
+                            <button class="px-4 py-2 rounded-lg bg-primary/10 text-primary font-medium mb-4"><span class="material-symbols-outlined text-base">add</span> Add Resource</button>
+                             <div class="overflow-x-auto rounded-lg border border-border-light dark:border-border-dark">
+                                <table class="w-full text-left text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                                    <thead class="bg-background-light dark:bg-background-dark text-xs uppercase">
+                                        <tr><th class="px-4 py-2 font-medium">Resource Name</th><th class="px-4 py-2 font-medium">Quantity</th><th class="px-4 py-2 font-medium">Cost (per unit/hr)</th><th class="px-4 py-2 font-medium"></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-border-light dark:border-border-dark"><td class="px-4 py-3 font-medium">Senior Engineer</td><td class="px-4 py-3">2</td><td class="px-4 py-3">$75</td><td class="px-4 py-3 text-right"><button class="text-primary hover:underline">Edit</button></td></tr>
+                                        <tr><td class="px-4 py-3 font-medium">Crane</td><td class="px-4 py-3">1</td><td class="px-4 py-3">$200</td><td class="px-4 py-3 text-right"><button class="text-primary hover:underline">Edit</button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="wizard-step-4" class="wizard-step-content bg-surface-light dark:bg-surface-dark rounded-xl p-8 border border-border-light dark:border-border-dark">
+                            <h3 class="text-2xl font-bold mb-6">Step 4: Risk Factors</h3>
+                            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">Identify potential risks and their probability and impact on the project.</p>
+                            <button class="px-4 py-2 rounded-lg bg-primary/10 text-primary font-medium mb-4"><span class="material-symbols-outlined text-base">add</span> Add Risk</button>
+                            <div class="overflow-x-auto rounded-lg border border-border-light dark:border-border-dark">
+                                <table class="w-full text-left text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                                    <thead class="bg-background-light dark:bg-background-dark text-xs uppercase">
+                                        <tr><th class="px-4 py-2 font-medium">Risk Description</th><th class="px-4 py-2 font-medium">Probability</th><th class="px-4 py-2 font-medium">Impact</th><th class="px-4 py-2 font-medium"></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-border-light dark:border-border-dark"><td class="px-4 py-3 font-medium">Material Delivery Delay</td><td class="px-4 py-3"><span class="inline-flex items-center rounded-full bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning">Medium</span></td><td class="px-4 py-3"><span class="inline-flex items-center rounded-full bg-danger/10 px-2 py-0.5 text-xs font-medium text-danger">High</span></td><td class="px-4 py-3 text-right"><button class="text-primary hover:underline">Edit</button></td></tr>
+                                        <tr><td class="px-4 py-3 font-medium">Adverse Weather</td><td class="px-4 py-3"><span class="inline-flex items-center rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">Low</span></td><td class="px-4 py-3"><span class="inline-flex items-center rounded-full bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning">Medium</span></td><td class="px-4 py-3 text-right"><button class="text-primary hover:underline">Edit</button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="wizard-step-5" class="wizard-step-content bg-surface-light dark:bg-surface-dark rounded-xl p-8 border border-border-light dark:border-border-dark">
+                            <h3 class="text-2xl font-bold mb-6">Step 5: Review & Create</h3>
+                            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">Review all your project details before creation.</p>
+                            <div class="flex flex-col gap-4">
+                                <div class="bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark">
+                                    <h4 class="font-semibold mb-2">Project Overview</h4>
+                                    <p class="text-sm"><span class="font-medium">Name:</span> Downtown Office Block</p>
+                                    <p class="text-sm"><span class="font-medium">Description:</span> Build a new office block.</p>
+                                </div>
+                                <div class="bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark">
+                                    <h4 class="font-semibold mb-2">WBS Summary</h4>
+                                    <p class="text-sm">4 tasks, 2 dependencies defined.</p>
+                                </div>
+                                <div class="bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark">
+                                    <h4 class="font-semibold mb-2">Budget & Resources</h4>
+                                    <p class="text-sm"><span class="font-medium">Budget:</span> $1,200,000</p>
+                                    <p class="text-sm"><span class="font-medium">Resources:</span> 2 types defined (Engineers, Cranes)</p>
+                                </div>
+                                <div class="bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark">
+                                    <h4 class="font-semibold mb-2">Risk Factors</h4>
+                                    <p class="text-sm">2 risks identified (Delay, Weather).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between gap-3 mt-8 pt-6 border-t border-border-light dark:border-border-dark">
+                        <button id="wizard-back" class="px-6 py-2 rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark font-medium hover:bg-primary/5" disabled>Go Back</button>
+                        <button id="wizard-next" class="px-6 py-2 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90">Next Step</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 3: Simulation & Analysis Dashboard -->
+            <div id="screen-simulation" class="screen-content"><div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="lg:col-span-2 flex flex-col gap-6"><div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-border-light dark:border-border-dark"><h3 class="font-bold mb-2">Gantt Chart</h3><div class="h-96 bg-background-light dark:bg-background-dark rounded-lg flex items-center justify-center"><p class="text-text-secondary-light dark:text-text-secondary-dark">[Gantt Chart Visualization]</p></div></div><div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-border-light dark:border-border-dark"><h3 class="font-bold mb-2">AON Network Diagram</h3><div class="h-72 bg-background-light dark:bg-background-dark rounded-lg flex items-center justify-center"><p class="text-text-secondary-light dark:text-text-secondary-dark">[AON Diagram Visualization]</p></div></div></div><div class="lg:col-span-1 flex flex-col gap-6"><div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-border-light dark:border-border-dark"><h3 class="font-bold mb-4">Simulation Controls</h3><button class="w-full py-3 rounded-lg bg-primary text-white font-bold flex items-center justify-center gap-2 text-lg mb-3 hover:bg-primary/90 transition-colors"><span class="material-symbols-outlined">play_arrow</span>Run Simulation</button><div class="grid grid-cols-2 gap-3"><button class="py-2 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-sm font-medium hover:bg-primary/5">Reset</button><button class="py-2 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-sm font-medium hover:bg-primary/5">Save</button></div></div><div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-border-light dark:border-border-dark"><h3 class="font-bold mb-4">AI Analysis & KPIs</h3><div class="p-4 rounded-lg bg-primary/10 text-primary mb-4 flex gap-3"><span class="material-symbols-outlined text-primary mt-1">auto_awesome</span><div><h4 class="font-bold">AI Insight</h4><p class="text-sm text-primary/90">High risk of delay in 'HVAC Installation' due to dependency on delayed 'Electricals'.</p></div></div><div class="grid grid-cols-2 gap-4"><div class="p-4 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark"><p class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">Schedule</p><p class="text-2xl font-bold text-success">+5.2%</p></div><div class="p-4 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark"><p class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">Cost</p><p class="text-2xl font-bold text-danger">-2.8%</p></div></div></div></div></div></div>
+
+            <!-- Screen 4: Project Archive -->
+            <div id="screen-archive" class="screen-content">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="flex-grow"><div class="relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary-light dark:text-text-secondary-dark">search</span><input class="form-input w-full h-12 pl-10 pr-4 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Search by project name, ID..." type="text"></div></div>
+                        <div class="flex-shrink-0"><div class="flex h-12 w-full md:w-auto items-center justify-center rounded-lg bg-background-light dark:bg-background-dark p-1 border border-border-light dark:border-border-dark"><label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-4 has-[:checked]:bg-surface-light dark:has-[:checked]:bg-surface-dark has-[:checked]:shadow-sm text-sm font-medium gap-2"><span class="material-symbols-outlined text-xl">grid_view</span><span class="truncate">Grid View</span><input checked class="sr-only" name="view-toggle" type="radio" value="Grid View"></label><label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-4 has-[:checked]:bg-surface-light dark:has-[:checked]:bg-surface-dark has-[:checked]:shadow-sm text-sm font-medium gap-2"><span class="material-symbols-outlined text-xl">list</span><span class="truncate">List View</span><input class="sr-only" name="view-toggle" type="radio" value="List View"></label></div></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="bg-center bg-no-repeat aspect-video bg-cover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1pm6US965ViZYF06OWZiI4tzjC5Cr3WzQU3Hn95v9JxL-GDk1BRp0GAisV2OCXIB0QhauQglW6CyyOuww19ifh0d_jJCgsOF0F8j6rphfH9fPt0YvqApKYa5SmjZIo1jv45VkqQi113sqd2gCZKyZa7Jf9sMwn5b4i_EQdbAW6o8Kak1I-zXpas8ctUObMJKikwABYyRKAhk8VKfEPaMi14Sgb9G9MGvwAu8KhvI0_kTs6do795qXomzZnKCVmbLTaxlqiV_XiAc");'></div>
+                            <div class="p-5 flex flex-col gap-4 flex-grow">
+                                <div class="flex flex-col"><p class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">Downtown Gateway Tower</p><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">ID: SIM-738-DT</p></div>
+                                <div class="flex justify-between items-center text-sm"><span class="inline-flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 font-medium text-success"><span class="material-symbols-outlined !text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>On Time & Under Budget</span></div>
+                                <div class="border-t border-border-light dark:border-border-dark pt-4 grid grid-cols-2 gap-4 text-sm">
+                                    <div class="flex items-start gap-2"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">monetization_on</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Final Cost:</span><span class="font-semibold block">$4.8M</span></div></div>
+                                    <div class="flex items-start gap-2"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">schedule</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Time:</span><span class="font-semibold block">175 Days</span></div></div>
+                                </div>
+                                <div class="mt-auto pt-4"><button class="w-full text-center rounded-lg h-10 text-sm font-semibold bg-primary text-white hover:bg-primary/90">View Details</button></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="bg-center bg-no-repeat aspect-video bg-cover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvzKchcf1FNlOLsUS__fIkpxdscRpks4cXhimKSQUkH793oEus_yV_-FAUbejUwdWF06sV1Izwrl8ctkqsjtKQAABMehGjopbxBjNhTlV88JATbNpRYszE4P1jvVdgdbhaf-IiSBuVfadOEFesh-ZeI3MRVbAo28Q-4rx4cobYkxkcTxVCu3JE_eHMnFWwMH0WgguI4jsOFc-Nu4TBu-zIl5ZwhyWJd1tFMkGKdhpFogDvQtArsImDkvndir5nVtLlJwMmYI3C0");'></div>
+                            <div class="p-5 flex flex-col gap-4 flex-grow">
+                                <div class="flex flex-col"><p class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">Waterfront Residences</p><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">ID: SIM-215-WR</p></div>
+                                <div class="flex justify-between items-center text-sm"><span class="inline-flex items-center gap-2 rounded-full bg-warning/10 px-3 py-1 font-medium text-warning"><span class="material-symbols-outlined !text-sm" style="font-variation-settings: 'FILL' 1;">warning</span>Slightly Over Budget</span></div>
+                                <div class="border-t border-border-light dark:border-border-dark pt-4 grid grid-cols-2 gap-4 text-sm">
+                                    <div class="flex items-start gap-2"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">monetization_on</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Final Cost:</span><span class="font-semibold block">$12.3M</span></div></div>
+                                    <div class="flex items-start gap-2"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">schedule</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Time:</span><span class="font-semibold block">350 Days</span></div></div>
+                                </div>
+                                <div class="mt-auto pt-4"><button class="w-full text-center rounded-lg h-10 text-sm font-semibold bg-primary text-white hover:bg-primary/90">View Details</button></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="bg-center bg-no-repeat aspect-video bg-cover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAvbBaxkYYwG2aQjeexF1TC5NhwbubmpOBgga24zTWlhwnKnjAmePXBI1CRUmLIpnDNst2NDVuLKi5Wf4ns1y5RrXt612pVCagU5cG4KobOPTNhGBMOBdbpSoMMxjIYObn1lp00jZyRAIC3MGNi68sygSvPfY2uPji9LefsiHIEgi8-0RQ9DFnH8TRnH3Fq9Li0vMmcPFBdQ7zGKs8FAn48yhSmZuVH_VOPSNtMx0-9hfSJXhOD-CRTtYqEVOmRIOOCRG1JdLLLYM");'></div>
+                            <div class="p-5 flex flex-col gap-4 flex-grow">
+                                <div class="flex flex-col"><p class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">Northbridge Logistics Hub</p><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">ID: SIM-902-NLH</p></div>
+                                <div class="flex justify-between items-center text-sm"><span class="inline-flex items-center gap-2 rounded-full bg-danger/10 px-3 py-1 font-medium text-danger"><span class="material-symbols-outlined !text-sm" style="font-variation-settings: 'FILL' 1;">error</span>Delayed Completion</span></div>
+                                <div class="border-t border-border-light dark:border-border-dark pt-4 grid grid-cols-2 gap-4 text-sm">
+                                    <div class="flex items-start gap-2"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">monetization_on</span><div><span class="text-text-secondary-light dark:text-text-secondary-dark">Final Cost:</span><span class="font-semibold block">$8.1M</span></div></div>
+                                    <div class="flex items-start gap-2"><span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark text-xl">schedule</span><div><span class="font-semibold block">210 Days</span></div></div>
+                                </div>
+                                <div class="mt-auto pt-4"><button class="w-full text-center rounded-lg h-10 text-sm font-semibold bg-primary text-white hover:bg-primary/90">View Details</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-8 border-t border-border-light dark:border-border-dark pt-6">
+                        <button class="flex items-center gap-2 px-4 h-10 text-sm font-medium text-text-primary-light dark:text-text-primary-dark bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg hover:bg-primary/5">
+                            <span class="material-symbols-outlined">arrow_back</span>Previous
+                        </button>
+                        <div class="hidden md:flex items-center gap-1">
+                            <a class="px-4 h-10 w-10 flex items-center justify-center text-sm font-medium text-text-primary-light dark:text-text-primary-dark rounded-lg hover:bg-primary/5" href="#">1</a>
+                            <a class="px-4 h-10 w-10 flex items-center justify-center text-sm font-medium bg-primary text-white rounded-lg" href="#">2</a>
+                            <a class="px-4 h-10 w-10 flex items-center justify-center text-sm font-medium text-text-primary-light dark:text-text-primary-dark rounded-lg hover:bg-primary/5" href="#">3</a>
+                            <span class="text-text-secondary-light dark:text-text-secondary-dark px-2">...</span>
+                            <a class="px-4 h-10 w-10 flex items-center justify-center text-sm font-medium text-text-primary-light dark:text-text-primary-dark rounded-lg hover:bg-primary/5" href="#">8</a>
+                        </div>
+                        <button class="flex items-center gap-2 px-4 h-10 text-sm font-medium text-text-primary-light dark:text-text-primary-dark bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg hover:bg-primary/5">
+                            Next<span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 5: Settings Page -->
+            <div id="screen-settings" class="screen-content"><div class="mx-auto max-w-3xl flex flex-col gap-8"><div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 border border-border-light dark:border-border-dark"><h3 class="text-2xl font-bold mb-6">User Profile</h3><div class="flex flex-col gap-6"><label class="block"><span class="text-sm font-medium mb-1 block">Full Name</span><input type="text" value="BIP" class="form-input w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary"></label><label class="block"><span class="text-sm font-medium mb-1 block">Role</span><input type="text" value="Instructor" class="form-input w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary"></label></div></div><div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 border border-border-light dark:border-border-dark"><h3 class="text-2xl font-bold mb-6">Notifications</h3><div class="flex flex-col gap-4"><label class="flex items-center justify-between"><span class="font-medium">Simulation Complete</span><input type="checkbox" class="form-checkbox rounded text-primary focus:ring-primary"></label><label class="flex items-center justify-between"><span class="font-medium">AI Insight Ready</span><input type="checkbox" class="form-checkbox rounded text-primary focus:ring-primary" checked></label></div></div></div></div>
+
+            <!-- Screen 6: Empty State -->
+            <div id="screen-empty" class="screen-content"><div class="text-center h-[500px] flex flex-col items-center justify-center"><span class="material-symbols-outlined text-8xl text-text-secondary-light dark:text-text-secondary-dark opacity-30">inbox</span><h2 class="mt-4 text-2xl font-semibold">No Projects Yet</h2><p class="mt-2 text-text-secondary-light dark:text-text-secondary-dark">Get started by creating your first project simulation.</p><button class="mt-6 px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"><span class="material-symbols-outlined !text-base">add</span>Create New Project</button></div></div>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    let currentWizardStep = 1;
+    const totalWizardSteps = 5;
+
+    const tabs = document.querySelectorAll('.tab-button');
+    const screens = document.querySelectorAll('.screen-content');
+    const headerContent = document.getElementById('header-content');
+    const wizardStepContents = document.querySelectorAll('.wizard-step-content');
+    const wizardStepIndicators = document.querySelectorAll('.wizard-step-indicator');
+    const wizardStepLabels = document.querySelectorAll('.wizard-step-label');
+    const wizardBackBtn = document.getElementById('wizard-back');
+    const wizardNextBtn = document.getElementById('wizard-next');
+
+    const screenHeaders = {
+        'screen-dashboard': `<h2 class="text-xl font-bold">Projects Dashboard</h2>`,
+        'screen-setup': `<h2 class="text-xl font-bold">Create New Project</h2>`,
+        'screen-simulation': `<h2 class="text-xl font-bold">Downtown Tower - Simulation</h2>`,
+        'screen-archive': `<h2 class="text-xl font-bold">Project Archive</h2>`,
+        'screen-settings': `<h2 class="text-xl font-bold">Settings</h2>`,
+        'screen-empty': `<h2 class="text-xl font-bold">No Projects Yet</h2>`
+    };
+
+    function switchScreen(targetId) {
+        headerContent.innerHTML = screenHeaders[targetId] || '';
+        tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.target === targetId));
+        screens.forEach(screen => screen.classList.toggle('active', screen.id === targetId));
+
+        // Reset wizard state if not on setup screen
+        if (targetId !== 'screen-setup') {
+            currentWizardStep = 1;
+            updateWizardNavigation();
+        } else {
+            // Ensure wizard navigation is updated if switching directly to setup screen
+            updateWizardNavigation();
+        }
+    }
+
+    function updateWizardNavigation() {
+        wizardStepContents.forEach((step, index) => {
+            step.classList.toggle('active', (index + 1) === currentWizardStep);
+        });
+
+        wizardStepIndicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', (index + 1) === currentWizardStep);
+            indicator.classList.toggle('complete', (index + 1) < currentWizardStep);
+        });
+
+        wizardStepLabels.forEach((label, index) => {
+            label.classList.toggle('active', (index + 1) === currentWizardStep);
+        });
+
+        // Button states and text
+        wizardBackBtn.disabled = currentWizardStep === 1;
+        if (currentWizardStep === totalWizardSteps) {
+            wizardNextBtn.textContent = 'Create Project';
+        } else {
+            wizardNextBtn.textContent = 'Next Step';
+        }
+    }
+
+    wizardBackBtn.addEventListener('click', () => {
+        if (currentWizardStep > 1) {
+            currentWizardStep--;
+            updateWizardNavigation();
+        }
+    });
+
+    wizardNextBtn.addEventListener('click', () => {
+        if (currentWizardStep < totalWizardSteps) {
+            currentWizardStep++;
+            updateWizardNavigation();
+        } else if (currentWizardStep === totalWizardSteps) {
+            // Logic for Create Project - for mockup, just switch to dashboard
+            switchScreen('screen-dashboard');
+            // Reset wizard after completion
+            currentWizardStep = 1; 
+            updateWizardNavigation();
+        }
+    });
+
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchScreen(tab.dataset.target));
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+    function applyTheme(isDarkMode) {
+        const themeIcon = themeToggle.querySelector('.material-symbols-outlined');
+        document.documentElement.classList.toggle('dark', isDarkMode);
+        themeIcon.textContent = isDarkMode ? 'dark_mode' : 'light_mode';
+    }
+    
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let initialDarkMode = savedTheme ? savedTheme === 'dark' : prefersDark;
+    applyTheme(initialDarkMode);
+
+    themeToggle.addEventListener('click', () => {
+        const isDarkMode = !document.documentElement.classList.contains('dark');
+        applyTheme(isDarkMode);
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    });
+
+    switchScreen('screen-dashboard'); // Initialize first view
+    updateWizardNavigation(); // Ensure wizard state is correct when setup screen is first viewed (e.g., if reloaded on setup screen)
+</script>
+
+</body>
+</html>

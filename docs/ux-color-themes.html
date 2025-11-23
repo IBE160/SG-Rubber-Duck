@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimuBuild - Color Theme Explorer</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-light": "#ffffff", /* Used for cards, elements on background-light */
+                        "surface-dark": "#192233", /* Used for cards, elements on background-dark */
+                        "success": "#10B981",
+                        "warning": "#F59E0B",
+                        "danger": "#EF4444",
+                        "info": "#3B82F6", /* Added an info color */
+                        "text-primary-light": "#111827", /* Text on light backgrounds */
+                        "text-secondary-light": "#6b7280", /* Secondary text on light backgrounds */
+                        "text-primary-dark": "#ffffff", /* Text on dark backgrounds */
+                        "text-secondary-dark": "#92a4c9", /* Secondary text on dark backgrounds */
+                        "border-light": "#e0e6ed",
+                        "border-dark": "#324467",
+                        "muted-light": "#6c757d", /* Muted text on light backgrounds */
+                        "muted-dark": "#6b7280", /* Muted text on dark backgrounds */
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light text-text-primary-light transition-colors duration-300">
+    <div class="container mx-auto p-8 max-w-6xl">
+        <h1 class="text-4xl font-bold mb-8">SimuBuild - Color Theme Explorer</h1>
+
+        <div class="flex justify-end mb-8">
+            <button id="themeToggle" class="px-4 py-2 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">light_mode</span>
+                <span class="theme-label">Toggle Dark Mode</span>
+            </button>
+        </div>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold mb-6">Semantic Color Palette</h2>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark mb-6">These are the core colors extracted from your existing mockups, adapted for both light and dark modes where appropriate. They define the primary brand identity and functional states of the application.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Primary -->
+                <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-primary rounded-md mb-3"></div>
+                    <p class="font-medium text-lg">Primary</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#135bec</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Main brand color, interactive elements.</p>
+                </div>
+                <!-- Background Light -->
+                <div class="bg-background-light dark:bg-background-dark p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-background-light dark:bg-background-dark rounded-md mb-3 border border-border-light dark:border-border-dark"></div>
+                    <p class="font-medium text-lg">Background (Light)</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#f6f6f8</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Default page background in light mode.</p>
+                </div>
+                <!-- Background Dark -->
+                <div class="bg-background-dark dark:bg-background-light p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-background-dark rounded-md mb-3 border border-border-light dark:border-border-dark"></div>
+                    <p class="font-medium text-lg">Background (Dark)</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#101622</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Default page background in dark mode.</p>
+                </div>
+                 <!-- Surface Light -->
+                 <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-surface-light rounded-md mb-3 border border-border-light dark:border-border-dark"></div>
+                    <p class="font-medium text-lg">Surface (Light)</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#ffffff</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Elements like cards, modals in light mode.</p>
+                </div>
+                <!-- Surface Dark -->
+                <div class="bg-surface-dark dark:bg-surface-light p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-surface-dark rounded-md mb-3 border border-border-light dark:border-border-dark"></div>
+                    <p class="font-medium text-lg">Surface (Dark)</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#192233</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Elements like cards, modals in dark mode.</p>
+                </div>
+                <!-- Success -->
+                <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-success rounded-md mb-3"></div>
+                    <p class="font-medium text-lg">Success</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#10B981</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Positive actions, completion, on track status.</p>
+                </div>
+                <!-- Warning -->
+                <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-warning rounded-md mb-3"></div>
+                    <p class="font-medium text-lg">Warning</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#F59E0B</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Caution, at risk status.</p>
+                </div>
+                <!-- Danger -->
+                <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-danger rounded-md mb-3"></div>
+                    <p class="font-medium text-lg">Danger</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#EF4444</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Critical errors, delayed status, destructive actions.</p>
+                </div>
+                 <!-- Info -->
+                 <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg shadow border border-border-light dark:border-border-dark">
+                    <div class="h-24 bg-info rounded-md mb-3"></div>
+                    <p class="font-medium text-lg">Info</p>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark">#3B82F6</p>
+                    <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Informational messages, general notices.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold mb-6">Typography & Text Colors</h2>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark mb-6">The primary font is Lexend, offering excellent readability for both headings and body text. Observe how text colors adapt for readability in light and dark contexts.</p>
+            <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow border border-border-light dark:border-border-dark">
+                <h3 class="text-3xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">This is a Primary Heading (Lexend Bold)</h3>
+                <p class="text-text-primary-light dark:text-text-primary-dark text-lg mb-2">This is primary body text. It is used for main content, important descriptions, and readability.</p>
+                <p class="text-text-secondary-light dark:text-text-secondary-dark mb-2">This is secondary body text. It is often used for less critical information, timestamps, or helper text.</p>
+                <p class="text-muted-light dark:text-muted-dark text-sm">This is muted text, typically for copyright notices, fine print, or very subtle details.</p>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold mb-6">Component Examples</h2>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark mb-6">These examples demonstrate how the chosen colors and typography apply to common UI elements, ensuring consistency and a cohesive visual identity.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Buttons -->
+                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow border border-border-light dark:border-border-dark flex flex-col gap-4">
+                    <h3 class="text-xl font-semibold mb-2 text-text-primary-light dark:text-text-primary-dark">Buttons</h3>
+                    <button class="px-5 py-2.5 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">Primary Button</button>
+                    <button class="px-5 py-2.5 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark font-medium hover:bg-background-light dark:hover:bg-background-dark transition-colors">Secondary Button</button>
+                    <button class="px-5 py-2.5 rounded-lg bg-success text-white font-medium hover:bg-success/90 transition-colors">Success Button</button>
+                    <button class="px-5 py-2.5 rounded-lg bg-danger text-white font-medium hover:bg-danger/90 transition-colors">Danger Button</button>
+                    <button class="px-5 py-2.5 rounded-lg bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors">Outline Button</button>
+                    <button class="px-5 py-2.5 rounded-lg bg-gray-200 text-gray-500 font-medium cursor-not-allowed" disabled>Disabled Button</button>
+                </div>
+
+                <!-- Form Input -->
+                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow border border-border-light dark:border-border-dark flex flex-col gap-4">
+                    <h3 class="text-xl font-semibold mb-2 text-text-primary-light dark:text-text-primary-dark">Form Input</h3>
+                    <label class="block">
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm font-medium">Project Name</span>
+                        <input type="text" placeholder="e.g., Downtown Office Block" class="mt-1 block w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-2 text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                    </label>
+                    <label class="block">
+                        <span class="text-text-primary-light dark:text-text-primary-dark text-sm font-medium">Email Address</span>
+                        <input type="email" placeholder="you@example.com" class="mt-1 block w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-2 text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                    </label>
+                    <label class="block">
+                        <span class="text-danger text-sm font-medium">Project ID (Error)</span>
+                        <input type="text" value="PRJ-123" class="mt-1 block w-full rounded-lg border border-danger bg-danger/10 px-3 py-2 text-danger focus:outline-none focus:ring-2 focus:ring-danger focus:border-danger">
+                        <p class="text-danger text-xs mt-1">Project ID already exists. Please choose a different one.</p>
+                    </label>
+                </div>
+
+                <!-- Card Example -->
+                <div class="col-span-1 md:col-span-2 bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow border border-border-light dark:border-border-dark flex flex-col">
+                    <h3 class="text-xl font-semibold mb-4 text-text-primary-light dark:text-text-primary-dark">Card Example</h3>
+                    <div class="flex items-start gap-4">
+                        <span class="material-symbols-outlined text-4xl text-primary mt-1">construction</span>
+                        <div>
+                            <h4 class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-1">Downtown High-Rise Tower</h4>
+                            <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm mb-3">Commercial project, currently 75% complete and on track.</p>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success">On Track</span>
+                                <span class="text-text-secondary-light dark:text-text-secondary-dark text-xs">Next Deadline: 14 Days</span>
+                            </div>
+                            <button class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('.material-symbols-outlined');
+        const themeLabel = themeToggle.querySelector('.theme-label');
+
+        function applyTheme(isDarkMode) {
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+                document.body.classList.remove('bg-background-light', 'text-text-primary-light');
+                document.body.classList.add('bg-background-dark', 'text-text-primary-dark');
+                themeIcon.textContent = 'dark_mode';
+                themeLabel.textContent = 'Toggle Light Mode';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.body.classList.remove('bg-background-dark', 'text-text-primary-dark');
+                document.body.classList.add('bg-background-light', 'text-text-primary-light');
+                themeIcon.textContent = 'light_mode';
+                themeLabel.textContent = 'Toggle Dark Mode';
+            }
+        }
+
+        // Check for saved theme preference or system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        let initialDarkMode = false;
+        if (savedTheme === 'dark') {
+            initialDarkMode = true;
+        } else if (savedTheme === 'light') {
+            initialDarkMode = false;
+        } else if (prefersDark) {
+            initialDarkMode = true; // Use system preference as default if no saved theme
+        }
+        applyTheme(initialDarkMode);
+
+        themeToggle.addEventListener('click', () => {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            applyTheme(!isDarkMode);
+            localStorage.setItem('theme', !isDarkMode ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

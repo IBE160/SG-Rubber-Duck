@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Hub - Downtown Tower Construction</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f4f7fa",
+                        "background-dark": "#101622",
+                        "neutral-light": "#ffffff",
+                        "neutral-dark": "#192233",
+                        "border-light": "#e0e6ed",
+                        "border-dark": "#324467",
+                        "text-light-primary": "#111827",
+                        "text-dark-primary": "#ffffff",
+                        "text-light-secondary": "#6b7280",
+                        "text-dark-secondary": "#92a4c9",
+                        "success": "#28a745",
+                        "warning": "#ffc107",
+                        "danger": "#dc3545"
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light font-display text-text-light-primary">
+<div class="flex h-screen w-full">
+<aside class="flex flex-col w-72 bg-neutral-light border-r border-border-light shrink-0">
+<div class="flex items-center gap-3 p-4 border-b border-border-light h-20">
+<div class="bg-primary/20 text-primary flex items-center justify-center rounded-lg size-10">
+<span class="material-symbols-outlined">domain</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-text-light-primary text-base font-bold leading-normal">ConstructSim</h1>
+<p class="text-text-light-secondary text-sm font-normal leading-normal">Project Hub</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col justify-between p-4 overflow-y-auto">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary text-xl">folder</span>
+<p class="text-primary text-sm font-bold leading-normal">Active Projects</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-xl">add_circle</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal">New Project Creation</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-xl">archive</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal">Project Archive</p>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-xl">account_circle</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal">User Profile &amp; Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-xl">help</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal">Help &amp; Support</p>
+</a>
+</div>
+</nav>
+</aside>
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<header class="flex items-center justify-between gap-4 p-6 border-b border-border-light h-20 shrink-0 bg-neutral-light">
+<div class="flex min-w-72 flex-col gap-1">
+<p class="text-text-light-primary text-2xl font-bold leading-tight tracking-[-0.033em]">Downtown Tower Construction</p>
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-success"></div>
+<p class="text-text-light-secondary text-sm font-normal leading-normal">Simulation Date: 25/10/2024 - Status: On Track</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md h-10 px-4 bg-neutral-light border border-border-light text-text-light-primary text-sm font-medium leading-normal hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-base">save</span>
+<span class="truncate">Save</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md h-10 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-base">download</span>
+<span class="truncate">Export</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCmH10ubnMuuam_p1twkk64ZPP-AbS8t5CX72ux-hpIGM2edDpE6v7rqVURJDLRMOWibTvnuL-ybufehoZSpgSz90OPUsDoL-OIr9cOnQByUUUpVugR71JiAYeEXZRV7FmpMcMmS0gC5n-vjCInGEI4Zg0MEY0eH7q_knd21DKWJwYqDjGMuVN-FYiVGLb847zDhbT51M04QR_2ITB5bcGg4yr1wjIk1fvs84mOu6u9twOYcXUDJVwG8GOX88ZUOeZpMwKXQw8wRHU");'></div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden">
+<div class="flex-1 p-6 overflow-y-auto">
+<div class="grid grid-cols-1 @container/main lg:grid-cols-5 gap-6">
+<div class="lg:col-span-3 flex flex-col gap-6">
+<div class="bg-neutral-light p-6 rounded-xl border border-border-light flex flex-col">
+<div class="mb-4">
+<h3 class="text-text-light-primary text-lg font-bold leading-tight tracking-[-0.015em]">Project Visualizations</h3>
+<div class="border-b border-border-light mt-3">
+<div class="flex items-center gap-4">
+<button class="text-primary font-semibold border-b-2 border-primary py-2 text-sm">Gantt Chart</button>
+<button class="text-text-light-secondary hover:text-text-light-primary py-2 text-sm transition-colors">AON Network Diagram</button>
+<button class="text-text-light-secondary hover:text-text-light-primary py-2 text-sm transition-colors">Work Breakdown Structure (WBS)</button>
+</div>
+</div>
+</div>
+<div class="flex-1 min-h-[400px] flex items-center justify-center bg-background-light rounded-lg">
+<img class="w-full h-full object-contain p-2" data-alt="A placeholder Gantt chart showing project timelines and tasks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUeiyhfg5kDy509JGkeFFNUqBX4NnQNNvkpeSlyznLq0IaUF5hVxjdfmNq7IVoGd4WphoCyZKEQ8DalHKH2N6HjcNomWMGNDEuVojUm38ERx60R6y6XTLZHMifOT8Le8PguUdBWyzlPQNtp9Zs2OohDhYrNZpAXsLPihZdx2cCAZO0JbQw-adIBz0iNqqMBD1eK5jWH7F-0cAwhQq1j1SQKUPIYYSkRQTeJZc19e6Ri0iG63CGnRzp2MZdk2CXvFCO-3mHd0sFE1o"/>
+</div>
+</div>
+<div class="bg-neutral-light p-6 rounded-xl border border-border-light flex flex-col">
+<div class="flex items-start justify-between mb-4">
+<div>
+<h3 class="text-text-light-primary text-lg font-bold leading-tight tracking-[-0.015em]">AON Network Diagram</h3>
+<p class="text-sm text-text-light-secondary">Visual representation of task dependencies.</p>
+</div>
+<div class="flex items-center gap-2 text-sm font-medium">
+<div class="flex items-center gap-2 text-danger">
+<div class="size-3 rounded-full bg-danger"></div>
+<span>Critical Path</span>
+</div>
+</div>
+</div>
+<div class="flex-1 min-h-[300px] flex items-center justify-center bg-background-light rounded-lg">
+<img class="w-full h-full object-contain p-4" data-alt="A placeholder Activity-on-Node network diagram showing task dependencies, with the critical path highlighted in red" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW9o2dEMoN1JTK7jfepdhmM88qNlXFOEOHf_t72ISNTNwPJenZIc6mbvkCRY2fgPDH4nVY83sCjLg8VFNjLiAChs6wEMH9P5PG1PJ8yCy_2jQvbVTWnO_Y9NhB_5ClGOJd6WEm344l2KiSRKwOD-R8bbjgPuOx6wnfKi-KCD0C0gk3TvA5X0Vyrk8vFIQNsxpC3BqNcoFqgTnqQBg4YtyJycv44r-IVaGqShzK-03yqAdnCDjsf3sAFVL0k0hOPnIGcyhM5uZZ2JE"/>
+</div>
+</div>
+</div>
+<div class="lg:col-span-2 flex flex-col gap-6 sticky top-0 h-min">
+<div class="bg-neutral-light p-6 rounded-xl border border-border-light">
+<h3 class="text-text-light-primary text-lg font-bold leading-tight tracking-[-0.015em] mb-4">Simulation Controls</h3>
+<div class="flex flex-col gap-4">
+<button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md h-12 px-4 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined">play_arrow</span>
+<span class="truncate">Run Simulation</span>
+</button>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md h-10 px-4 bg-background-light border border-border-light text-text-light-primary text-sm font-medium leading-normal hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-base">fast_forward</span>
+<span class="truncate">Step Forward</span>
+</button>
+<button class="flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md h-10 px-4 bg-background-light border border-border-light text-text-light-primary text-sm font-medium leading-normal hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-base">replay</span>
+<span class="truncate">Reset</span>
+</button>
+</div>
+<div>
+<label class="block mb-2 text-sm font-medium text-text-light-secondary" for="speed-slider">Simulation Speed</label>
+<input class="w-full h-2 bg-border-light rounded-lg appearance-none cursor-pointer accent-primary" id="speed-slider" type="range" value="50"/>
+</div>
+</div>
+</div>
+<div class="bg-neutral-light p-6 rounded-xl border border-border-light">
+<h3 class="text-text-light-primary text-lg font-bold leading-tight tracking-[-0.015em] mb-4">AI Analysis &amp; KPIs</h3>
+<div class="flex flex-col gap-4">
+<div class="p-4 rounded-lg bg-primary/10 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-1">auto_awesome</span>
+<div>
+<h4 class="font-bold text-primary">AI Insight</h4>
+<p class="text-sm text-primary/90">High risk of delay in 'HVAC Installation' due to dependency on delayed 'Electricals'. Suggest reallocating resources.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 @sm/main:grid-cols-2 gap-4">
+<div class="p-4 rounded-lg bg-background-light border border-border-light">
+<p class="text-sm font-medium text-text-light-secondary mb-1">Schedule Variance</p>
+<p class="text-2xl font-bold text-success">+5.2%</p>
+</div>
+<div class="p-4 rounded-lg bg-background-light border border-border-light">
+<p class="text-sm font-medium text-text-light-secondary mb-1">Cost Variance</p>
+<p class="text-2xl font-bold text-danger">-2.8%</p>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-background-light border border-border-light">
+<p class="text-sm font-medium text-text-light-secondary mb-2">Risk Exposure Index</p>
+<div class="w-full bg-border-light rounded-full h-2.5">
+<div class="bg-warning h-2.5 rounded-full" style="width: 55%"></div>
+</div>
+<div class="flex justify-between text-xs text-text-light-secondary mt-1">
+<span>Low</span>
+<span>Medium</span>
+<span>High</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

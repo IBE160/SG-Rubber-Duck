@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimuBuild - Design Direction Showcase</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+        /* Simple transition for showing/hiding mockups */
+        .mockup { display: none; }
+        .mockup.active { display: block; }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-light": "#ffffff", 
+                        "surface-dark": "#192233",
+                        "success": "#10B981",
+                        "warning": "#F59E0B",
+                        "danger": "#EF4444",
+                        "info": "#3B82F6",
+                        "text-primary-light": "#111827",
+                        "text-primary-dark": "#ffffff",
+                        "text-secondary-light": "#6b7280",
+                        "text-secondary-dark": "#92a4c9",
+                        "border-light": "#e0e6ed",
+                        "border-dark": "#324467",
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark transition-colors duration-300">
+
+    <header class="bg-surface-light dark:bg-surface-dark shadow-md sticky top-0 z-10">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold">Design Direction Showcase</h1>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Select a direction to view the mockups.</p>
+            </div>
+            <div class="flex items-center gap-4">
+                 <button id="themeToggle" class="px-3 py-2 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">light_mode</span>
+                </button>
+                <select id="direction-switcher" class="form-select rounded-lg border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark">
+                    <option value="direction-1">1. Classic Professional</option>
+                    <option value="direction-2">2. Modern Minimalist</option>
+                    <option value="direction-3">3. Data-Dense</option>
+                    <option value="direction-4">4. Step-by-Step Wizard</option>
+                    <option value="direction-5">5. Card-Based Layout</option>
+                    <option value="direction-6">6. Focus Mode</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-8">
+        <!-- Direction 1: Classic Professional -->
+        <div id="direction-1" class="mockup active">
+            <h2 class="text-3xl font-bold mb-4">Direction 1: Classic Professional</h2>
+            <p class="mb-8 text-text-secondary-light dark:text-text-secondary-dark">A familiar and robust layout with a persistent sidebar, offering clear navigation and a content area that balances information density with readability. This is inspired by your initial 'Stitch' files.</p>
+            <div class="grid grid-cols-1 gap-8">
+                <!-- Screen 1: Simulation Dashboard -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden">
+                    <div class="p-4 border-b border-border-light dark:border-border-dark"><h3 class="font-semibold">Screen: Simulation Dashboard</h3></div>
+                    <div class="p-6">
+                        <!-- Content of Dashboard Screen from Stitch -->
+                        <div class="flex h-[800px] w-full">
+                            <aside class="flex flex-col w-72 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark shrink-0">
+                                <nav class="flex-1 flex flex-col justify-between p-4">
+                                    <div class="flex flex-col gap-1">
+                                        <a class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary/10 text-primary font-bold"><span class="material-symbols-outlined text-xl">folder</span><p>Active Projects</p></a>
+                                        <a class="flex items-center gap-3 px-3 py-2 rounded-md text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5"><span class="material-symbols-outlined text-xl">add_circle</span><p>New Project</p></a>
+                                    </div>
+                                </nav>
+                            </aside>
+                            <main class="flex-1 flex flex-col h-full overflow-hidden">
+                                <header class="flex items-center justify-between gap-4 p-6 border-b border-border-light dark:border-border-dark shrink-0">
+                                    <div><p class="text-2xl font-bold">Downtown Tower</p></div>
+                                    <div class="flex items-center gap-4"><button class="px-4 py-2 rounded-md bg-primary text-white">Export</button></div>
+                                </header>
+                                <div class="flex-1 flex overflow-hidden">
+                                    <div class="flex-1 p-6 overflow-y-auto">
+                                        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                                            <div class="lg:col-span-3 flex flex-col gap-6">
+                                                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-border-light dark:border-border-dark"><h3 class="font-bold mb-2">Gantt Chart</h3><div class="h-96 bg-background-light dark:bg-background-dark rounded-lg flex items-center justify-center"><p class="text-text-secondary-light dark:text-text-secondary-dark">[Gantt Chart Visualization]</p></div></div>
+                                            </div>
+                                            <div class="lg:col-span-2 flex flex-col gap-6">
+                                                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-border-light dark:border-border-dark">
+                                                    <h3 class="font-bold mb-4">Simulation Controls</h3>
+                                                    <button class="w-full py-3 rounded-lg bg-primary text-white font-bold flex items-center justify-center gap-2"><span class="material-symbols-outlined">play_arrow</span>Run Simulation</button>
+                                                </div>
+                                                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-border-light dark:border-border-dark">
+                                                    <h3 class="font-bold mb-4">AI Analysis & KPIs</h3>
+                                                    <div class="p-4 rounded-lg bg-primary/10 text-primary"><p class="font-bold">AI Insight:</p><p class="text-sm">High risk of delay in 'HVAC'.</p></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Direction 2: Modern Minimalist -->
+        <div id="direction-2" class="mockup">
+            <h2 class="text-3xl font-bold mb-4">Direction 2: Modern Minimalist</h2>
+            <p class="mb-8 text-text-secondary-light dark:text-text-secondary-dark">A clean, spacious layout with top-level navigation. Reduces visual clutter and uses more "white space" to guide focus, creating a calm and focused environment.</p>
+            <div class="grid grid-cols-1 gap-8">
+                <!-- Screen 1: Project Setup -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden">
+                     <div class="p-4 border-b border-border-light dark:border-border-dark"><h3 class="font-semibold">Screen: Project Setup</h3></div>
+                    <div class="p-6">
+                        <div class="flex flex-col h-[700px] w-full">
+                            <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                                <h1 class="text-xl font-bold">SimuBuild</h1>
+                                <nav class="flex items-center gap-6 text-sm font-medium">
+                                    <a href="#" class="text-primary font-semibold">Projects</a>
+                                    <a href="#" class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary">Archive</a>
+                                </nav>
+                            </header>
+                            <main class="flex-1 p-8 bg-background-light dark:bg-background-dark flex flex-col items-center">
+                                <div class="w-full max-w-2xl">
+                                    <h2 class="text-3xl font-bold text-center mb-2">Create New Project</h2>
+                                    <p class="text-center text-text-secondary-light dark:text-text-secondary-dark mb-8">Fill in the details below to get started.</p>
+                                    <div class="flex flex-col gap-6">
+                                        <input type="text" placeholder="Project Name" class="form-input w-full rounded-lg text-lg p-4 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark focus:ring-2 focus:ring-primary">
+                                        <textarea placeholder="Project Description" class="form-textarea w-full rounded-lg text-lg p-4 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark focus:ring-2 focus:ring-primary min-h-[120px]"></textarea>
+                                        <button class="w-full py-4 rounded-lg bg-primary text-white text-lg font-bold">Continue to Tasks</button>
+                                    </div>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Direction 3: Data-Dense -->
+        <div id="direction-3" class="mockup">
+             <h2 class="text-3xl font-bold mb-4">Direction 3: Data-Dense</h2>
+            <p class="mb-8 text-text-secondary-light dark:text-text-secondary-dark">Optimized for power users. This layout uses a multi-panel approach to show as much relevant information as possible on one screen, minimizing the need to navigate away.</p>
+            <div class="grid grid-cols-1 gap-8">
+                <!-- Screen 1: Simulation Dashboard -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden">
+                     <div class="p-4 border-b border-border-light dark:border-border-dark"><h3 class="font-semibold">Screen: Simulation Dashboard</h3></div>
+                    <div class="p-6">
+                        <div class="flex h-[800px] w-full">
+                            <aside class="flex flex-col w-64 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark p-4">
+                                <h2 class="font-bold mb-4">Projects</h2>
+                                <a href="#" class="p-2 rounded-md bg-primary/10 text-primary font-semibold">Downtown Tower</a>
+                                <a href="#" class="p-2 rounded-md text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5">Retail Complex</a>
+                            </aside>
+                            <main class="flex-1 flex flex-col">
+                                <div class="grid grid-cols-3 grid-rows-3 gap-4 p-4 h-full">
+                                    <div class="col-span-2 row-span-2 bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark"><h4 class="font-semibold mb-2">Gantt Chart</h4><p class="text-center text-text-secondary-light dark:text-text-secondary-dark">[Gantt]</p></div>
+                                    <div class="bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark"><h4 class="font-semibold mb-2">KPI: Schedule</h4><p class="text-center text-3xl font-bold text-success">+5.2%</p></div>
+                                    <div class="bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark"><h4 class="font-semibold mb-2">KPI: Cost</h4><p class="text-center text-3xl font-bold text-danger">-2.8%</p></div>
+                                    <div class="col-span-3 bg-background-light dark:bg-background-dark rounded-lg p-4 border border-border-light dark:border-border-dark"><h4 class="font-semibold mb-2">AI Insights & Logs</h4><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">[Event Logs...]</p></div>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 4: Step-by-Step Wizard -->
+        <div id="direction-4" class="mockup">
+            <h2 class="text-3xl font-bold mb-4">Direction 4: Step-by-Step Wizard</h2>
+            <p class="mb-8 text-text-secondary-light dark:text-text-secondary-dark">Ideal for new users. This approach guides the user through the project setup process one step at a time, reducing cognitive load and preventing errors.</p>
+             <div class="grid grid-cols-1 gap-8">
+                <!-- Screen 1: Project Setup -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden">
+                     <div class="p-4 border-b border-border-light dark:border-border-dark"><h3 class="font-semibold">Screen: Project Setup</h3></div>
+                    <div class="p-6 flex justify-center items-center h-[700px]">
+                        <div class="w-full max-w-4xl flex gap-8">
+                           <nav class="w-64">
+                                <ol class="flex flex-col gap-1">
+                                    <li><a class="flex items-center gap-3 p-3 bg-primary/10 text-primary rounded-lg"><div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white font-bold">1</div><div><p class="font-semibold">Overview</p></div></a></li>
+                                    <li><a class="flex items-center gap-3 p-3 text-text-secondary-light dark:text-text-secondary-dark"><div class="flex h-8 w-8 items-center justify-center rounded-full border border-border-light dark:border-border-dark">2</div><div><p>Tasks & WBS</p></div></a></li>
+                                    <li><a class="flex items-center gap-3 p-3 text-text-secondary-light dark:text-text-secondary-dark"><div class="flex h-8 w-8 items-center justify-center rounded-full border border-border-light dark:border-border-dark">3</div><div><p>Resources</p></div></a></li>
+                                </ol>
+                            </nav>
+                            <div class="flex-1 bg-surface-light dark:bg-surface-dark rounded-lg p-8 border border-border-light dark:border-border-dark">
+                                <h3 class="text-2xl font-bold mb-6">Step 1: Project Overview</h3>
+                                <div class="flex flex-col gap-6">
+                                    <input type="text" placeholder="Project Name" class="form-input w-full rounded-lg p-3">
+                                    <textarea placeholder="Description" class="form-textarea w-full rounded-lg p-3 min-h-[150px]"></textarea>
+                                    <div class="flex justify-end gap-3 mt-4">
+                                        <button class="px-6 py-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark">Cancel</button>
+                                        <button class="px-6 py-2 rounded-lg bg-primary text-white font-semibold">Next Step</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Direction 5: Card-Based Layout -->
+        <div id="direction-5" class="mockup">
+            <h2 class="text-3xl font-bold mb-4">Direction 5: Card-Based Layout</h2>
+            <p class="mb-8 text-text-secondary-light dark:text-text-secondary-dark">Uses cards as the primary way to organize information. This modular approach is visually engaging and works well on both desktop and mobile devices.</p>
+            <div class="grid grid-cols-1 gap-8">
+                 <!-- Screen 1: Dashboard -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden">
+                     <div class="p-4 border-b border-border-light dark:border-border-dark"><h3 class="font-semibold">Screen: Projects Overview</h3></div>
+                     <div class="p-6 bg-background-light dark:bg-background-dark">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                             <a class="group flex flex-col gap-4 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1" href="#">
+                                <h4 class="text-lg font-semibold group-hover:text-primary">Downtown High-Rise</h4><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success w-fit">On Track</span>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-success h-1.5 rounded-full" style="width: 75%"></div></div>
+                                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Next Deadline: 14 Days</p>
+                            </a>
+                            <a class="group flex flex-col gap-4 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1" href="#">
+                                <h4 class="text-lg font-semibold group-hover:text-primary">Retail Complex</h4><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning w-fit">At Risk</span>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-warning h-1.5 rounded-full" style="width: 45%"></div></div>
+                                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Next Deadline: 8 Days</p>
+                            </a>
+                             <div class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border-light dark:border-border-dark p-6 text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/5 cursor-pointer">
+                                <span class="material-symbols-outlined text-4xl">add</span>
+                                <p class="font-medium">Create New Project</p>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 6: Focus Mode -->
+        <div id="direction-6" class="mockup">
+            <h2 class="text-3xl font-bold mb-4">Direction 6: Focus Mode</h2>
+            <p class="mb-8 text-text-secondary-light dark:text-text-secondary-dark">A full-screen, distraction-free experience. Navigation is hidden until needed, allowing the user to focus entirely on the current task, whether it's data input or analysis.</p>
+            <div class="grid grid-cols-1 gap-8">
+                 <!-- Screen 1: Simulation Dashboard -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden">
+                     <div class="p-4 border-b border-border-light dark:border-border-dark"><h3 class="font-semibold">Screen: Simulation Dashboard (Focus)</h3></div>
+                    <div class="p-2">
+                        <div class="h-[700px] w-full bg-background-light dark:bg-background-dark p-8 flex flex-col">
+                             <div class="flex-1 grid grid-cols-4 gap-6">
+                                <div class="col-span-3 bg-surface-light dark:bg-surface-dark rounded-lg border border-border-light dark:border-border-dark p-4 flex flex-col"><h4 class="font-semibold mb-2">Gantt Chart</h4><div class="flex-1">[Gantt Visualization]</div></div>
+                                <div class="col-span-1 flex flex-col gap-6">
+                                     <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-border-light dark:border-border-dark p-4"><h4 class="font-semibold text-sm mb-1">Schedule Variance</h4><p class="text-2xl font-bold text-success">+5.2%</p></div>
+                                     <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-border-light dark:border-border-dark p-4"><h4 class="font-semibold text-sm mb-1">Cost Variance</h4><p class="text-2xl font-bold text-danger">-2.8%</p></div>
+                                     <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-border-light dark:border-border-dark p-4 flex-1"><h4 class="font-semibold text-sm mb-2">AI Insights</h4><p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">High risk of delay in 'HVAC' task...</p></div>
+                                </div>
+                            </div>
+                            <div class="h-20 flex items-center justify-center gap-4 mt-6">
+                                <button class="px-6 py-3 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark flex items-center gap-2"><span class="material-symbols-outlined">replay</span> Reset</button>
+                                <button class="px-8 py-4 rounded-lg bg-primary text-white font-bold flex items-center gap-2 text-lg"><span class="material-symbols-outlined">play_arrow</span> Run Simulation</button>
+                                <button class="px-6 py-3 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark flex items-center gap-2"><span class="material-symbols-outlined">settings</span> Controls</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const switcher = document.getElementById('direction-switcher');
+        const mockups = document.querySelectorAll('.mockup');
+
+        function switchMockup(id) {
+            mockups.forEach(mockup => {
+                if (mockup.id === id) {
+                    mockup.classList.add('active');
+                } else {
+                    mockup.classList.remove('active');
+                }
+            });
+        }
+
+        switcher.addEventListener('change', (event) => {
+            switchMockup(event.target.value);
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        function applyTheme(isDarkMode) {
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let initialDarkMode = savedTheme ? savedTheme === 'dark' : prefersDark;
+        applyTheme(initialDarkMode);
+
+        themeToggle.addEventListener('click', () => {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            applyTheme(!isDarkMode);
+            localStorage.setItem('theme', !isDarkMode ? 'dark' : 'light');
+        });
+
+        // Initialize first view
+        switchMockup('direction-1');
+    </script>
+</body>
+</html>

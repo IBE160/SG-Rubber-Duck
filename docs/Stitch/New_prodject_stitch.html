@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create New Project Simulation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#121212",
+                        "muted": "#6c757d",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
+</head>
+<body class="font-display bg-background text-on-surface">
+<div class="relative flex min-h-screen w-full">
+<aside class="sticky top-0 hidden h-screen w-64 flex-col border-r border-slate-200 bg-background p-4 lg:flex">
+<div class="flex items-center gap-3 p-2">
+<div class="bg-primary flex h-10 w-10 items-center justify-center rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">construction</span>
+</div>
+<span class="text-xl font-bold text-on-surface">SimuBuild</span>
+</div>
+<nav class="mt-8 flex flex-1 flex-col gap-2">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted hover:bg-slate-100 hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-base">dashboard</span>
+<span class="text-sm font-medium">Active Projects</span>
+</a>
+<a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary" href="#">
+<span class="material-symbols-outlined text-base">add_circle</span>
+<span class="text-sm font-semibold">New Project Creation</span>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted hover:bg-slate-100 hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-base">archive</span>
+<span class="text-sm font-medium">Project Archive</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-2">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted hover:bg-slate-100 hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-base">settings</span>
+<span class="text-sm font-medium">User Profile &amp; Settings</span>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted hover:bg-slate-100 hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-base">help_outline</span>
+<span class="text-sm font-medium">Help &amp; Support</span>
+</a>
+<div class="mt-4 border-t border-slate-200 pt-4">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA2rXwS7OMmITFG5KcNrKROaH3wqwbeG7pXgi0uKlhmS7rXXMR5fzym4XKZcWenEXU107qOWjFIfjd74qlfJIMoDu9dsyN-VsdeRItx5byhvqSUuq8jy9W2zmSXm997OrJxzR_J2yNCatwscAgaa1Lrw9WrIG70zR-kWakdqJtzQF3GhbL_uKYSpwYpCHXQ0D5plxwjO0NJ6ZRYlTKmufjqxaDGXLcALI_lAPz2zgtY3GIPDp3fOoaVETw4DnM4x7yuWN52XHFIIdI");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-on-surface">Eleanor Vance</span>
+<span class="text-xs text-muted">Instructor</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 p-6 md:p-8 lg:p-10 bg-surface">
+<div class="mx-auto max-w-7xl">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-on-surface text-3xl font-bold leading-tight">Define New Project Simulation</p>
+<p class="text-muted text-base font-normal leading-normal">Follow the steps below to set up your project parameters.</p>
+</div>
+<button class="flex items-center gap-2 min-w-[84px] max-w-[480px] cursor-pointer justify-center overflow-hidden rounded-lg h-10 px-4 border border-slate-300 bg-background text-on-surface hover:bg-slate-50 text-sm font-medium leading-normal">
+<span class="material-symbols-outlined text-base">file_upload</span>
+<span class="truncate">Load from Template</span>
+</button>
+</div>
+<div class="mt-8 flex flex-col gap-8 lg:flex-row">
+<nav class="lg:w-64">
+<ol class="flex flex-row gap-2 overflow-x-auto lg:flex-col lg:gap-1">
+<li class="shrink-0 lg:shrink">
+<a class="flex items-center gap-3 rounded-lg p-3 bg-primary/10 text-primary" href="#project-overview">
+<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">1</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold leading-none">Project Overview</span>
+<span class="text-xs text-primary/80">Basic details</span>
+</div>
+</a>
+</li>
+<li class="shrink-0 lg:shrink">
+<a class="flex items-center gap-3 rounded-lg p-3 text-muted hover:bg-slate-100" href="#wbs">
+<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-background text-sm font-bold text-slate-500">2</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium leading-none text-on-surface">WBS &amp; Duration</span>
+<span class="text-xs">Tasks &amp; dependencies</span>
+</div>
+</a>
+</li>
+<li class="shrink-0 lg:shrink">
+<a class="flex items-center gap-3 rounded-lg p-3 text-muted hover:bg-slate-100" href="#resource-pool">
+<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-background text-sm font-bold text-slate-500">3</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium leading-none text-on-surface">Budget &amp; Resources</span>
+<span class="text-xs">Team &amp; equipment</span>
+</div>
+</a>
+</li>
+<li class="shrink-0 lg:shrink">
+<a class="flex items-center gap-3 rounded-lg p-3 text-muted hover:bg-slate-100" href="#risk-register">
+<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-background text-sm font-bold text-slate-500">4</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium leading-none text-on-surface">Risk Factors</span>
+<span class="text-xs">Potential issues</span>
+</div>
+</a>
+</li>
+</ol>
+</nav>
+<div class="flex-1">
+<div class="flex flex-col gap-10">
+<section class="rounded-xl border border-slate-200 bg-background p-6" id="project-overview">
+<h2 class="text-on-surface text-xl font-semibold leading-tight pb-6">Project Overview</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col flex-1">
+<p class="text-on-surface text-sm font-medium leading-normal pb-2">Project Name</p>
+<input class="form-input w-full rounded-lg text-on-surface focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 bg-background focus:border-primary h-12 placeholder:text-slate-400 px-4 text-base font-normal leading-normal" placeholder="e.g., Downtown Office Block" value=""/>
+</label>
+<label class="flex flex-col flex-1">
+<p class="text-on-surface text-sm font-medium leading-normal pb-2">Estimated Start Date</p>
+<input class="form-input w-full rounded-lg text-on-surface focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 bg-background focus:border-primary h-12 placeholder:text-slate-400 px-4 text-base font-normal leading-normal" type="date"/>
+</label>
+<label class="flex flex-col md:col-span-2">
+<p class="text-on-surface text-sm font-medium leading-normal pb-2">Project Description</p>
+<textarea class="form-textarea w-full rounded-lg text-on-surface focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 bg-background focus:border-primary min-h-32 placeholder:text-slate-400 p-4 text-base font-normal leading-normal" placeholder="Enter a brief description of the project"></textarea>
+</label>
+</div>
+</section>
+<section class="rounded-xl border border-slate-200 bg-background p-6" id="wbs">
+<div class="flex flex-wrap items-center justify-between gap-4 pb-6">
+<div class="flex items-center gap-2">
+<h2 class="text-on-surface text-xl font-semibold leading-tight">Work Breakdown Structure (WBS)</h2>
+<span class="material-symbols-outlined text-muted cursor-pointer" title="Add tasks, sub-tasks, and define dependencies.">help</span>
+</div>
+<button class="flex items-center gap-2 min-w-[84px] cursor-pointer rounded-lg h-10 px-4 bg-primary/10 text-primary hover:bg-primary/20 text-sm font-medium leading-normal">
+<span class="material-symbols-outlined text-base">add</span>
+<span class="truncate">Add Task</span>
+</button>
+</div>
+<div class="overflow-x-auto rounded-lg border border-slate-200">
+<table class="w-full text-left text-sm text-muted">
+<thead class="bg-slate-50 text-xs uppercase text-slate-500">
+<tr>
+<th class="px-6 py-3 font-medium" scope="col">Task Name</th>
+<th class="px-6 py-3 font-medium" scope="col">Duration (Days)</th>
+<th class="px-6 py-3 font-medium" scope="col">Predecessors</th>
+<th class="px-6 py-3 font-medium" scope="col"><span class="sr-only">Actions</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-slate-200">
+<td class="px-6 py-4 font-medium text-on-surface">1. Foundation Work</td>
+<td class="px-6 py-4">20</td>
+<td class="px-6 py-4">-</td>
+<td class="px-6 py-4 text-right"><button class="font-medium text-primary hover:underline">Edit</button></td>
+</tr>
+<tr class="border-b border-slate-200">
+<td class="px-6 py-4 font-medium text-on-surface pl-10">1.1 Site Excavation</td>
+<td class="px-6 py-4">5</td>
+<td class="px-6 py-4">-</td>
+<td class="px-6 py-4 text-right"><button class="font-medium text-primary hover:underline">Edit</button></td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-medium text-on-surface">2. Structural Framing</td>
+<td class="px-6 py-4">30</td>
+<td class="px-6 py-4">1</td>
+<td class="px-6 py-4 text-right"><button class="font-medium text-primary hover:underline">Edit</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="rounded-xl border border-slate-200 bg-background p-6" id="resource-pool">
+<div class="flex flex-wrap items-center justify-between gap-4 pb-6">
+<h2 class="text-on-surface text-xl font-semibold leading-tight">Budget &amp; Resources</h2>
+<button class="flex items-center gap-2 min-w-[84px] cursor-pointer rounded-lg h-10 px-4 bg-primary/10 text-primary hover:bg-primary/20 text-sm font-medium leading-normal">
+<span class="material-symbols-outlined text-base">add</span>
+<span class="truncate">Add Resource</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<label class="flex flex-col flex-1">
+<p class="text-on-surface text-sm font-medium leading-normal pb-2">Total Budget</p>
+<input class="form-input w-full rounded-lg text-on-surface focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 bg-background focus:border-primary h-12 placeholder:text-slate-400 px-4 text-base font-normal leading-normal" placeholder="$1,000,000" type="number" value=""/>
+</label>
+</div>
+<div class="overflow-x-auto rounded-lg border border-slate-200">
+<table class="w-full text-left text-sm text-muted">
+<thead class="bg-slate-50 text-xs uppercase text-slate-500">
+<tr>
+<th class="px-6 py-3 font-medium" scope="col">Resource Name</th>
+<th class="px-6 py-3 font-medium" scope="col">Quantity</th>
+<th class="px-6 py-3 font-medium" scope="col">Cost (per unit/hr)</th>
+<th class="px-6 py-3 font-medium" scope="col"><span class="sr-only">Actions</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-slate-200">
+<td class="px-6 py-4 font-medium text-on-surface">Senior Engineer</td>
+<td class="px-6 py-4">2</td>
+<td class="px-6 py-4">$75</td>
+<td class="px-6 py-4 text-right"><button class="font-medium text-primary hover:underline">Edit</button></td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-medium text-on-surface">Crane</td>
+<td class="px-6 py-4">1</td>
+<td class="px-6 py-4">$200</td>
+<td class="px-6 py-4 text-right"><button class="font-medium text-primary hover:underline">Edit</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="rounded-xl border border-slate-200 bg-background p-6" id="risk-register">
+<div class="flex flex-wrap items-center justify-between gap-4 pb-6">
+<h2 class="text-on-surface text-xl font-semibold leading-tight">Risk Factors</h2>
+<button class="flex items-center gap-2 min-w-[84px] cursor-pointer rounded-lg h-10 px-4 bg-primary/10 text-primary hover:bg-primary/20 text-sm font-medium leading-normal">
+<span class="material-symbols-outlined text-base">add</span>
+<span class="truncate">Add Risk</span>
+</button>
+</div>
+<div class="overflow-x-auto rounded-lg border border-slate-200">
+<table class="w-full text-left text-sm text-muted">
+<thead class="bg-slate-50 text-xs uppercase text-slate-500">
+<tr>
+<th class="px-6 py-3 font-medium" scope="col">Risk Description</th>
+<th class="px-6 py-3 font-medium" scope="col">Probability</th>
+<th class="px-6 py-3 font-medium" scope="col">Impact</th>
+<th class="px-6 py-3 font-medium" scope="col"><span class="sr-only">Actions</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-slate-200">
+<td class="px-6 py-4 font-medium text-on-surface">Material Delivery Delay</td>
+<td class="px-6 py-4"><span class="inline-flex items-center rounded-md bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">Medium</span></td>
+<td class="px-6 py-4"><span class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-800">High</span></td>
+<td class="px-6 py-4 text-right"><button class="font-medium text-primary hover:underline">Edit</button></td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-medium text-on-surface">Adverse Weather</td>
+<td class="px-6 py-4"><span class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Low</span></td>
+<td class="px-6 py-4"><span class="inline-flex items-center rounded-md bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">Medium</span></td>
+<td class="px-6 py-4 text-right"><button class="font-medium text-primary hover:underline">Edit</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<div class="sticky bottom-0 mt-10 flex items-center justify-end gap-3 border-t border-slate-200 bg-surface/80 py-4 backdrop-blur-sm">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 border border-slate-300 bg-background text-on-surface hover:bg-slate-50 text-sm font-medium leading-normal">
+<span class="truncate">Cancel</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-slate-600 text-white hover:bg-slate-700 text-sm font-medium leading-normal">
+<span class="truncate">Save as Draft</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white hover:bg-primary/90 text-sm font-medium leading-normal">
+<span class="truncate">Create Project</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>
