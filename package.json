@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "gsap": "^3.13.0",
+    "react-bits": "^1.0.5"
+  },
+  "devDependencies": {
+    "shadcn": "^3.5.0"
+  }
+}
