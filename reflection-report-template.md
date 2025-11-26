@@ -6,10 +6,10 @@
 
 **Gruppemedlemmer:**
 
-- [Navn 1] - Benjamin Thorstensen Eiksund - <beeik5043@himolde.no>
-- [Navn 2] - Ole Christian Risa Bakke - <ole.c.bakke@himolde.no>
-- [Navn 3] - Farhan Iqbal - <farhan.iqbal@himolde.no>
-- [Navn 4] - Kjetil Tronstad Lund - <kjetil.t.lund@himolde.no>
+- Benjamin Thorstensen Eiksund - <beeik5043@himolde.no>
+- Ole Christian Risa Bakke - <ole.c.bakke@himolde.no>
+- Farhan Iqbal - <farhan.iqbal@himolde.no>
+- Kjetil Tronstad Lund - <kjetil.t.lund@himolde.no>
 
 **Dato:** [05.12.2025]
 
@@ -19,8 +19,8 @@
 
 ### 2.1 Oversikt over prosjektet
 
-[Kort beskrivelse av hva dere har utviklet. Hva var hovedmålet med applikasjonen?]
--- Hovedmålet med prosjektet var å lage en applikasjon som bidrar i prosjektplanleggingen ved å bruke input fra bruker til å simulere hvor bra eller dårlig et prosjekt er. Applikasjonen skal beregne enkelte KPI'er som fremdriftsavvik og kostnadsavvik, og i tillegg vurdrer kritisk sti.
+Hovedmålet med prosjektet var å lage en applikasjon som bidrar i prosjektplanleggingen ved å bruke input fra bruker til å simulere hvor bra eller dårlig et prosjekt er. Applikasjonen skal beregne enkelte KPI'er som fremdriftsavvik og kostnadsavvik, og i tillegg vurdrer kritisk sti.
+
 -- Hva har vi utviklet??
 
 ### 2.2 Arbeidsmetodikk
@@ -59,16 +59,12 @@ KI ble naturligvis benyttet i flere deler av prosjektet, fra utarbeidelse av pro
 
 ### 3.1 Tekniske utfordringer
 
-[Beskriv 2-3 konkrete tekniske problemer dere møtte]
-
-**Utfordring 1: [Treghet]**
+**Utfordring 1: [Treghet ]**
 Det opplevdes treghet med Gemini CLI i VSCode, noe som gjorde at enkelte deler av prosjektet tok mye lenger tid enn forventet. Problemet lå sånn sett i selve KI og var ikke lett å løse på noe vis. Den fikk lov å jobbe nødvendig tid, men gjorde som sagt at enkelte ting tok veldig lang tid.
 
-**Utfordring 2: [Tittel]**
-
-- Problem: [Beskriv problemet]
-- Løsning: [Hvordan løste dere det?]
-- KI sin rolle: [Hvordan hjalp eller hindret KI dere?]
+**Utfordring 2: [KI går i ring]**
+Det var flere tilfeller hvor KI rett og slett gikk i ring, spesielt i ux-design fasen. Det kunne være at en løsning så bra ut, men vi ønsket en mindre endring. Plutselig var det gjort større endringer, fjernet elementer, eller at ting var flyttet på. I ny instruks til KI om å rette opp, kunne det gå i en hetl annen retning. 
+Dette var ikke nødvendigvis så lett å løse, for KI kunne jo i grunn ikke hjelpe. Selv etter gjentatte og tydelige instrukser. Så samtidig som man kanskje ønsket at ting så bedre ut eller fungerte noe anderledes, må man også noen ganger akseptere at det man har er godt nok. Vi er tross alt ikke eksperter og kan ikke gå inn i koden og finne alt.
 
 ### 3.2 Samarbeidsutfordringer
 
@@ -97,8 +93,6 @@ KI bidro positivt til koden, selvfølgelig fordi den forholder seg til etablerte
 
 ### 4.2 Begrensninger og ulemper
 
-[Reflekter over de negative aspektene]
-
 **Kvalitet og pålitelighet:**
 Oi, la oss bare si at KI ikke alltid er spesielt pålitelig. Det forekom tilfeller der KI ikke forsto en instruks, eller at den ikke påsto den ikke fant nødvendig fil. Eller at den ikke nødvendigvis fulgte instruksene og hvor kvaliteten ble så som så. Dette ble ofte løst ved å gjenta instrukser, eller be KI rette opp i sitt eget arbeid.
 
@@ -107,8 +101,8 @@ Det er nok lett å bli for avhengig av KI ja. Det er naturlig hvis man ikke besi
 
 **Kreativitet og problemløsning:**
 Opplevde ikke nødvendigvis at KI begrenset egen kreativitet, men det skal sies at KI fort leder kreativiteten litt. Dette bygger nok mest på egen manglende kunnskap, spesielt inngående i koder, ux eller gui. KI bygger jo ofte på historisk data, og da er det lett at foreslått løsning ikke nødvendigvis følger det som man selv ser for seg.
+For oss var det lett å havne i fellen av å bare la KI styre. At man ikke nødvendigvis ser hva som blir gjort, eller at man heller ber KI bestemme enn å gjøre det selv. Som for eksempel på design. Det er lett å be KI lage et forslag uten å gi for mye input og deretter bare akseptere utfallet. 
 
--------***Eksempler på situasjoner hvor KI begrenset kreativ tenkning????***
 
 ### 4.3 Sammenligning: Med og uten KI
 
@@ -161,8 +155,7 @@ Hvorvidt KI-koder er like forståelig som en menneskeskrevet koder, så kommer d
 
 KI er trent på store mengder historisk data og koder. Dette kan gjøre at den kan basere seg på utdaterte biblioteker og funksjoner som ikke lenger brukes. Eller at praksisen den er trent på ikke lenger brukes fordi den ikke samsvarer med blant annet nåtidens sikkerhetskrav. Så det er sannsynlig at selv om det kan fremstå som om den følger beste praksis og dagens standarder, så er det sannsynlig at den også benytter utdaterte løsninger. Dette kan være vanskelig å styre.
 Dette understreker viktigheten av å validere arbeidet som KI gjør for oss, og vi må huske at det er et verktøy og ikke en fasit. I profesjonell bruk må man sikre at den tekniske løsningen er riktig og fungerer, at sikkerhetsmessige aspekter er ivaretatt, og at det er dokumentert ovenfor kunde. Dette krever at personen som skal godkjenne løsningen har tilstrekkelig kunnskap til å avdekke feil eller vurdere hvorvidt løsningen faktisk følger gjeldende standard og beste praksis.
-
-  **** opplevde vi eksempler hvor KI foreslå utdaterte eller dårlige løsninger???****
+Vi opplevde delvis at ux-forslagene fra KI ikke var spesielt bra. Og da spesielt gui var gammeldags eller lite intuitivt. Dette skjer nok fordi KI baserer seg på historisk data og ikke nødvendigvis har mer moderne aspekter, sånn som Google Stitch kanskje har. 
 
 ### 6.3 Fremtidig utvikling
 
