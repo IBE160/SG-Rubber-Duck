@@ -1,28 +1,24 @@
-import json
-from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
+# backend/main.py
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List, Any
+from typing import List
 
-from fastapi.middleware.cors import CORSMiddleware
-from . import crud, models, schemas, logic, ai_insights
+from .config import settings
 from .database import SessionLocal, engine
+from . import models, schemas, crud
 
-
-# Create database tables
+# Create tables if they don't exist
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
-
-# Add CORS middleware to allow requests from the frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+app = FastAPI(
+    title=settings.app_name,
+    version=settings.app_version,
+    description=settings.app_description,
+    debug=settings.debug_mode,
 )
 
-# Dependency to get a DB session
+
+# Dependency for DB session
 def get_db():
     db = SessionLocal()
     try:
@@ -30,165 +26,197 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/simulate/cpm", response_model=dict)
-def simulate_cpm(tasks: List[logic.CPMTask]) -> Any:
-    """
-    Receives a list of tasks and calculates the Critical Path Method (CPM).
-    """
-    try:
-        result = logic.calculate_cpm(tasks)
-        return result
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the SG-Rubber-Duck Project API"}
+@app.get("/", tags=["Health"])
+async def root():
+    return {"message": "FastAPI is running!"}
 
-@app.post("/projects/", response_model=schemas.Project)
+
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "ok", "version": settings.app_version}
+
+
+# Project endpoints
+@app.post("/projects/", response_model=schemas.Project, tags=["Projects"])
 def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)):
     return crud.create_project(db=db, project=project)
 
-@app.get("/projects/", response_model=List[schemas.Project])
-def read_projects(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    projects = crud.get_projects(db, skip=skip, limit=limit)
-    return projects
 
-@app.get("/projects/{project_id}", response_model=schemas.Project)
+@app.get("/projects/", response_model=List[schemas.Project], tags=["Projects"])
+def read_projects(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.get_projects(db, skip=skip, limit=limit)
+
+
+@app.get("/projects/{project_id}", response_model=schemas.Project, tags=["Projects"])
 def read_project(project_id: int, db: Session = Depends(get_db)):
+    project = crud.get_project(db, project_id=project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
+
+
+@app.patch("/projects/{project_id}", response_model=schemas.Project, tags=["Projects"])
+def update_project(project_id: int, project: schemas.ProjectCreate, db: Session = Depends(get_db)):
     db_project = crud.get_project(db, project_id=project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    for var, value in project.model_dump(exclude_unset=True).items():
+        setattr(db_project, var, value)
+    db.add(db_project)
+    db.commit()
+    db.refresh(db_project)
     return db_project
 
-@app.post("/projects/{project_id}/tasks/", response_model=schemas.Task)
+
+@app.delete("/projects/{project_id}", tags=["Projects"])
+def delete_project(project_id: int, db: Session = Depends(get_db)):
+    db_project = crud.get_project(db, project_id=project_id)
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    db.delete(db_project)
+    db.commit()
+    return {"message": "Project deleted successfully"}
+
+
+# Task endpoints
+@app.post("/projects/{project_id}/tasks/", response_model=schemas.Task, tags=["Tasks"])
 def create_task_for_project(
     project_id: int, task: schemas.TaskCreate, db: Session = Depends(get_db)
 ):
+    # Ensure project exists
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
     return crud.create_task(db=db, task=task, project_id=project_id)
 
-@app.get("/projects/{project_id}/tasks/", response_model=List[schemas.Task])
+
+@app.get("/projects/{project_id}/tasks/", response_model=List[schemas.Task], tags=["Tasks"])
 def read_tasks_for_project(
     project_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
-    tasks = crud.get_tasks(db, project_id=project_id, skip=skip, limit=limit)
-    return tasks
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return crud.get_tasks(db, project_id=project_id, skip=skip, limit=limit)
 
-@app.patch("/tasks/{task_id}", response_model=schemas.Task)
+
+@app.patch("/tasks/{task_id}", response_model=schemas.Task, tags=["Tasks"])
 def update_task(task_id: int, task: schemas.TaskCreate, db: Session = Depends(get_db)):
     db_task = crud.update_task(db, task_id=task_id, task_in=task)
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return db_task
 
-@app.delete("/tasks/{task_id}", response_model=schemas.Task)
+
+@app.delete("/tasks/{task_id}", response_model=schemas.Task, tags=["Tasks"])
 def delete_task(task_id: int, db: Session = Depends(get_db)):
     db_task = crud.delete_task(db, task_id=task_id)
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return db_task
 
-# Risk Endpoints
-@app.post("/projects/{project_id}/risks/", response_model=schemas.Risk)
+
+# Risk endpoints
+@app.post("/projects/{project_id}/risks/", response_model=schemas.Risk, tags=["Risks"])
 def create_risk_for_project(
     project_id: int, risk: schemas.RiskCreate, db: Session = Depends(get_db)
 ):
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
     return crud.create_risk(db=db, risk=risk, project_id=project_id)
 
-@app.get("/projects/{project_id}/risks/", response_model=List[schemas.Risk])
+
+@app.get("/projects/{project_id}/risks/", response_model=List[schemas.Risk], tags=["Risks"])
 def read_risks_for_project(
     project_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
-    risks = crud.get_risks(db, project_id=project_id, skip=skip, limit=limit)
-    return risks
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return crud.get_risks(db, project_id=project_id, skip=skip, limit=limit)
 
-@app.patch("/risks/{risk_id}", response_model=schemas.Risk)
+
+@app.patch("/risks/{risk_id}", response_model=schemas.Risk, tags=["Risks"])
 def update_risk(risk_id: int, risk: schemas.RiskCreate, db: Session = Depends(get_db)):
     db_risk = crud.update_risk(db, risk_id=risk_id, risk_in=risk)
     if db_risk is None:
         raise HTTPException(status_code=404, detail="Risk not found")
     return db_risk
 
-@app.delete("/risks/{risk_id}", response_model=schemas.Risk)
+
+@app.delete("/risks/{risk_id}", response_model=schemas.Risk, tags=["Risks"])
 def delete_risk(risk_id: int, db: Session = Depends(get_db)):
     db_risk = crud.delete_risk(db, risk_id=risk_id)
     if db_risk is None:
         raise HTTPException(status_code=404, detail="Risk not found")
     return db_risk
 
-def run_simulation_and_save(project_id: int, iterations: int, db: Session):
-    """
-    The actual simulation logic that runs in the background.
-    Saves results to a file.
-    """
-    db_tasks = crud.get_tasks(db, project_id=project_id, limit=1000)
-    db_risks = crud.get_risks(db, project_id=project_id, limit=1000)
 
-    if not db_tasks:
-        # In a real app, you'd handle this error more gracefully,
-        # e.g., by updating a status in the database.
-        print(f"Project {project_id}: No tasks found, simulation aborted.")
-        return
-
-    cpm_tasks = [
-        logic.CPMTask(
-            id=task.id,
-            duration=task.duration,
-            cost=task.cost or 0,
-            dependencies=task.dependencies or []
-        ) for task in db_tasks
-    ]
-    
-    monte_carlo_risks = [
-        logic.MonteCarloRisk(
-            id=risk.id,
-            probability=risk.probability,
-            duration_impact=risk.duration_impact,
-            cost_impact=risk.cost_impact or 0,
-            affected_task_ids=risk.affected_task_ids or []
-        ) for risk in db_risks
-    ]
-    
-    try:
-        simulation_result = logic.run_monte_carlo_simulation(cpm_tasks, monte_carlo_risks, iterations)
-        insights = ai_insights.get_insights_from_simulation(simulation_result)
-        final_result = {**simulation_result, **insights}
-        
-        # Save result to a file
-        with open(f"{project_id}_simulation_result.json", "w") as f:
-            json.dump(final_result, f, indent=4)
-        print(f"Project {project_id}: Simulation finished and results saved.")
-
-    except Exception as e:
-        print(f"Project {project_id}: Simulation failed with error: {e}")
-
-
-@app.post("/projects/{project_id}/simulate", status_code=202)
-def run_project_simulation_background(
-    project_id: int, 
-    background_tasks: BackgroundTasks,
-    iterations: int = 1000, 
-    db: Session = Depends(get_db)
+# SimulationRun endpoints
+@app.post("/projects/{project_id}/simulations/", response_model=schemas.SimulationRun, tags=["Simulations"])
+def create_simulation_run(
+    project_id: int, simulation_run: schemas.SimulationRunCreate, db: Session = Depends(get_db)
 ):
-    """
-    Starts a Monte Carlo simulation in the background.
-    """
-    background_tasks.add_task(run_simulation_and_save, project_id, iterations, db)
-    return {"message": "Simulation started in the background. Check back later for results."}
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return crud.create_simulation_run(db=db, project_id=project_id, simulation_run=simulation_run)
 
 
-@app.get("/projects/{project_id}/simulation_result", response_model=dict)
-def get_simulation_result(project_id: int):
-    """
-    Retrieves the results of the latest simulation for a project.
-    """
-    try:
-        with open(f"{project_id}_simulation_result.json", "r") as f:
-            result = json.load(f)
-        return result
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Simulation result not found. Please run a simulation first.")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred while reading results: {str(e)}")
+@app.get("/projects/{project_id}/simulations/", response_model=List[schemas.SimulationRun], tags=["Simulations"])
+def read_simulation_runs_for_project(
+    project_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return crud.get_simulation_runs(db, project_id=project_id, skip=skip, limit=limit)
+
+
+@app.get("/simulations/{simulation_run_id}", response_model=schemas.SimulationRun, tags=["Simulations"])
+def read_simulation_run(simulation_run_id: int, db: Session = Depends(get_db)):
+    simulation_run = crud.get_simulation_run(db, simulation_run_id=simulation_run_id)
+    if simulation_run is None:
+        raise HTTPException(status_code=404, detail="Simulation run not found")
+    return simulation_run
+
+
+@app.patch("/simulations/{simulation_run_id}", response_model=schemas.SimulationRun, tags=["Simulations"])
+def update_simulation_run(
+    simulation_run_id: int, simulation_run: schemas.SimulationRunUpdate, db: Session = Depends(get_db)
+):
+    db_simulation_run = crud.update_simulation_run(db, simulation_run_id=simulation_run_id, simulation_run_in=simulation_run)
+    if db_simulation_run is None:
+        raise HTTPException(status_code=404, detail="Simulation run not found")
+    return db_simulation_run
+
+
+@app.delete("/simulations/{simulation_run_id}", tags=["Simulations"])
+def delete_simulation_run(simulation_run_id: int, db: Session = Depends(get_db)):
+    db_simulation_run = crud.delete_simulation_run(db, simulation_run_id=simulation_run_id)
+    if db_simulation_run is None:
+        raise HTTPException(status_code=404, detail="Simulation run not found")
+    return {"message": "Simulation run deleted successfully"}
+
+
+# EventLog endpoints
+@app.post("/simulations/{simulation_run_id}/events/", response_model=schemas.EventLog, tags=["Events"])
+def create_event_log(
+    simulation_run_id: int, event_log: schemas.EventLogCreate, db: Session = Depends(get_db)
+):
+    if crud.get_simulation_run(db, simulation_run_id) is None:
+        raise HTTPException(status_code=404, detail="Simulation run not found")
+    return crud.create_event_log(db=db, event_log=event_log, simulation_run_id=simulation_run_id)
+
+
+@app.get("/simulations/{simulation_run_id}/events/", response_model=List[schemas.EventLog], tags=["Events"])
+def read_event_logs_for_simulation(
+    simulation_run_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    if crud.get_simulation_run(db, simulation_run_id) is None:
+        raise HTTPException(status_code=404, detail="Simulation run not found")
+    return crud.get_event_logs(db, simulation_run_id=simulation_run_id, skip=skip, limit=limit)
+
+
+@app.delete("/events/{event_log_id}", tags=["Events"])
+def delete_event_log(event_log_id: int, db: Session = Depends(get_db)):
+    db_event_log = crud.delete_event_log(db, event_log_id=event_log_id)
+    if db_event_log is None:
+        raise HTTPException(status_code=404, detail="Event log not found")
+    return {"message": "Event log deleted successfully"}
