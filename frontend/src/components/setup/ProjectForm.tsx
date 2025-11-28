@@ -7,9 +7,9 @@ import {
   DialogTitle,
   TextField,
   Box,
+  CircularProgress,
 } from '@mui/material';
-import { useAppDispatch } from '../../store/hooks';
-import { createProject } from '../../store/projectSlice';
+import { useCreateProject } from '../../services/queries';
 
 interface ProjectFormProps {
   open: boolean;
@@ -17,22 +17,33 @@ interface ProjectFormProps {
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ open, onClose }) => {
-  const dispatch = useAppDispatch();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [budget, setBudget] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const handleSubmit = () => {
-    dispatch(createProject({
-      name,
-      description,
-      budget: parseFloat(budget),
-      start_date: startDate,
-      end_date: endDate,
-    }));
-    onClose();
+  const createProjectMutation = useCreateProject();
+
+  const handleSubmit = async () => {
+    try {
+      await createProjectMutation.mutateAsync({
+        name,
+        description,
+        budget: parseFloat(budget),
+        start_date: startDate,
+        end_date: endDate,
+      });
+      // Reset form and close
+      setName('');
+      setDescription('');
+      setBudget('');
+      setStartDate('');
+      setEndDate('');
+      onClose();
+    } catch (error) {
+      console.error('Failed to create project:', error);
+    }
   };
 
   return (
@@ -46,6 +57,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ open, onClose }) => {
             margin="normal"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            disabled={createProjectMutation.isPending}
           />
           <TextField
             label="Scope / Description"
@@ -55,6 +67,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ open, onClose }) => {
             margin="normal"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            disabled={createProjectMutation.isPending}
           />
           <TextField
             label="Budget"
@@ -63,6 +76,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ open, onClose }) => {
             margin="normal"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
+            disabled={createProjectMutation.isPending}
           />
           <TextField
             label="Start Date"
@@ -72,6 +86,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ open, onClose }) => {
             InputLabelProps={{ shrink: true }}
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
+            disabled={createProjectMutation.isPending}
           />
           <TextField
             label="End Date"
@@ -81,13 +96,20 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ open, onClose }) => {
             InputLabelProps={{ shrink: true }}
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
+            disabled={createProjectMutation.isPending}
           />
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} variant="contained">
-          Create
+        <Button onClick={onClose} disabled={createProjectMutation.isPending}>
+          Cancel
+        </Button>
+        <Button 
+          onClick={handleSubmit} 
+          variant="contained"
+          disabled={createProjectMutation.isPending || !name.trim()}
+        >
+          {createProjectMutation.isPending ? <CircularProgress size={24} /> : 'Create'}
         </Button>
       </DialogActions>
     </Dialog>
@@ -95,3 +117,4 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ open, onClose }) => {
 };
 
 export default ProjectForm;
+

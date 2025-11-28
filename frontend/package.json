@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
     "@reduxjs/toolkit": "^2.11.0",
+    "@tanstack/react-query": "^5.28.0",
     "dhtmlx-gantt": "^9.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
