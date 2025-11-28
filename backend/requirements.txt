@@ -5,3 +5,4 @@ pydantic-settings
 sqlalchemy>=2.0.0
 python-dotenv
 alembic>=1.10.0
+websockets
