@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { 
   Typography, 
   List, 
@@ -8,22 +8,21 @@ import {
   Divider, 
   Button,
   Box,
-  CircularProgress
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { fetchProjects, fetchProjectDetails } from '../../store/projectSlice';
+import { fetchProjectDetails } from '../../store/projectSlice';
+import { useProjects } from '../../services/queries';
 import ProjectForm from './ProjectForm';
 
 const ProjectList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { projects, status, error, currentProject } = useAppSelector((state) => state.projects);
+  const { currentProject } = useAppSelector((state) => state.projects);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchProjects());
-    }
-  }, [status, dispatch]);
+  // Use TanStack Query to fetch projects
+  const { data: projects = [], isLoading, error } = useProjects();
   
   const handleSelectProject = (projectId: number) => {
     dispatch(fetchProjectDetails(projectId));
@@ -39,13 +38,25 @@ const ProjectList: React.FC = () => {
 
   let content;
 
-  if (status === 'loading') {
+  if (isLoading) {
     content = (
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
         <CircularProgress />
       </Box>
     );
-  } else if (status === 'succeeded') {
+  } else if (error) {
+    content = (
+      <Alert severity="error">
+        Error: {error instanceof Error ? error.message : 'Failed to fetch projects'}
+      </Alert>
+    );
+  } else if (projects.length === 0) {
+    content = (
+      <Typography color="textSecondary" sx={{ py: 2 }}>
+        No projects yet. Create one to get started.
+      </Typography>
+    );
+  } else {
     content = (
       <List>
         {projects.map((project) => (
@@ -63,8 +74,6 @@ const ProjectList: React.FC = () => {
         ))}
       </List>
     );
-  } else if (status === 'failed') {
-    content = <Typography color="error">Error: {error}</Typography>;
   }
 
   return (
@@ -86,3 +95,4 @@ const ProjectList: React.FC = () => {
 };
 
 export default ProjectList;
+
