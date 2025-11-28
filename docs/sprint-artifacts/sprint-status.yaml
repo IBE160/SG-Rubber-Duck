@@ -44,7 +44,7 @@ scope:
     - id: S2.2
       epic: E2
       description: "Create WebSocket endpoint stub for simulation event streaming."
-      status: "pending"
+      status: "completed"
     - id: S3.1
       epic: E3
       description: "Initialize React + Vite project with core routing."
