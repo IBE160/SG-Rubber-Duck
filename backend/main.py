@@ -99,11 +99,24 @@ def read_tasks_for_project(
     return crud.get_tasks(db, project_id=project_id, skip=skip, limit=limit)
 
 
-@app.patch("/tasks/{task_id}", response_model=schemas.Task, tags=["Tasks"])
-def update_task(task_id: int, task: schemas.TaskCreate, db: Session = Depends(get_db)):
-    db_task = crud.update_task(db, task_id=task_id, task_in=task)
+@app.get("/tasks/{task_id}", response_model=schemas.Task, tags=["Tasks"])
+def read_task(task_id: int, db: Session = Depends(get_db)):
+    db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
+    return db_task
+
+
+@app.patch("/tasks/{task_id}", response_model=schemas.Task, tags=["Tasks"])
+def update_task(task_id: int, task: schemas.TaskUpdate, db: Session = Depends(get_db)):
+    db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if db_task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    for var, value in task.model_dump(exclude_unset=True).items():
+        setattr(db_task, var, value)
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
     return db_task
 
 
