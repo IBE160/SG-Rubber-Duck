@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UX Design Directions — IBE160 Simulator</title>
+  <style>
+    body { font-family: "Inter", "Segoe UI", system-ui, sans-serif; background: #0e172a; color: #e8edff; margin: 0; padding: 24px; }
+    h1, h2 { margin: 0 0 12px; }
+    section { background: #121c33; border: 1px solid #1f2942; border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; }
+    .note { color: #6b7a99; font-size: 14px; }
+    ul { margin: 8px 0 0 18px; }
+  </style>
+</head>
+<body>
+  <h1>Design Directions</h1>
+  <p class="note">Retning for å holde wireframes, UI-kit og KPI/AI-flater konsistente.</p>
+
+  <section>
+    <h2>Look & Feel</h2>
+    <ul>
+      <li>Mørk base (#0e172a/#121c33) med skarpe primærblå og amber aksenter.</li>
+      <li>Vis hierarki med størrelse/vekt og paneler, ikke bare farge.</li>
+      <li>Kompakte kort og tabeller; 8 px spacing-grid; avrunding 8–12 px.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Typography</h2>
+    <ul>
+      <li>Sans (Inter/Segoe) 16 px base; 18–20 px til headings; 13–14 px til labels.</li>
+      <li>Bruk semibold på navigasjon og KPI-titler; regular på brødtekst.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Navigation & Layout</h2>
+    <ul>
+      <li>3-panel setup (Liste / WBS / Detaljer) i Setup, 2-panel + tabber i Simulation.</li>
+      <li>Hold headeren ren: tittel + kontroller (Play/Pause/Stop, hastighet).</li>
+      <li>Tabber i detaljvisning og KPI/Logg for å begrense scroll.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Components</h2>
+    <ul>
+      <li>Buttons: primær (blå), sekundær (amber outline), destruktiv (rød).</li>
+      <li>Cards: KPI-kort med ikon, tall, trend; hover shadow + border.</li>
+      <li>Tables/tree: zebra eller subtle dividers, tydelige fokusrammer for tastatur.</li>
+      <li>Modals: maks 640 px bredde, tydelig tittel/CTA, escape og backdrop-click støttes.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>States & Feedback</h2>
+    <ul>
+      <li>Disabled vs hover/active skal være tydelig (opacity + cursor + border).</li>
+      <li>Feil/suksess-meldinger i inline alerts; bruk ikon + kort tekst.</li>
+      <li>Loading: skjelett for tabeller/kort; spinner kun på lokale knapper.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Accessibility</h2>
+    <ul>
+      <li>Kontrast minst AA; fokusmarkør på alle interaktive elementer.</li>
+      <li>Tastaturnavigasjon i tabeller/WBS og kontroller (Play/Pause/Stop).</li>
+      <li>Status-meldinger via ARIA-live på simulasjonsoppdateringer og feilmeldinger.</li>
+    </ul>
+  </section>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import { Project, Task, Resource, Risk } from '../types/domain';
-import { ProjectCreate } from '../store/projectSlice'; // We'll need to export this
-import { mockProjects, mockTasks, mockResources } from '../data/seed';
+import { ProjectCreate, TaskCreate, RiskCreate } from '../types/api';
+import { mockResources } from '../data/seed';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
 
@@ -71,7 +71,7 @@ export const createProject = async (projectData: ProjectCreate): Promise<Project
  * This function now makes real API calls for project and tasks,
  * but returns mock data for resources and risks.
  */
-export const getProjectDetails = async (projectId: string): Promise<{ project: Project; tasks: Task[]; resources: Resource[]; risks: Risk[] }> => {
+export const getProjectDetails = async (projectId: number): Promise<{ project: Project; tasks: Task[]; resources: Resource[]; risks: Risk[] }> => {
   console.log(`API: Fetching details for project ${projectId}...`);
 
   const projectPromise = fetch(`${API_BASE_URL}/projects/${projectId}`);
@@ -270,7 +270,7 @@ export const getSimulationResult = async (projectId: number): Promise<MonteCarlo
  * The backend would return a simulation run ID.
  * Corresponds to: POST /simulate
  */
-export const startSimulation = (projectId: string): Promise<{ simulationId: string }> => {
+export const startSimulation = (projectId: number): Promise<{ simulationId: string }> => {
     console.log(`API: Starting simulation for project ${projectId}...`);
     const simulationId = `sim-${Date.now()}`;
     // TODO: Connect to WebSocket/SSE endpoint for live updates using this simulationId

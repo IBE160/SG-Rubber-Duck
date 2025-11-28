@@ -1,0 +1,8 @@
+<story-context key="{{story_key}}" epic="{{epic_id}}">
+  <summary>{{one-line summary}}</summary>
+  <user-journey>{{where in the flow this triggers}}</user-journey>
+  <api>{{endpoints or WS topics touched}}</api>
+  <data>{{entities/fields impacted}}</data>
+  <dependencies>{{feature flags, auth, platform constraints}}</dependencies>
+  <risks>{{edge cases, performance, security}}</risks>
+</story-context>

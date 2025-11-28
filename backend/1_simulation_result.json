@@ -1,0 +1,38 @@
+{
+    "base_duration": 10,
+    "base_critical_path": [
+        1
+    ],
+    "base_cost": 1000.0,
+    "iterations": 1000,
+    "mean_duration": 10.0,
+    "std_dev_duration": 0.0,
+    "p50_duration": 10.0,
+    "p80_duration": 10.0,
+    "p90_duration": 10.0,
+    "duration_distribution": [
+        1000
+    ],
+    "bin_edges_duration": [
+        9.5,
+        10.5
+    ],
+    "mean_cost": 1000.0,
+    "std_dev_cost": 0.0,
+    "p50_cost": 1000.0,
+    "p80_cost": 1000.0,
+    "p90_cost": 1000.0,
+    "cost_distribution": [
+        1000
+    ],
+    "bin_edges_cost": [
+        999.5,
+        1000.5
+    ],
+    "ai_assessment": "Mock Assessment: The simulation results indicate a high probability of schedule overrun. The base duration is optimistic, while the P80 duration suggests a significant buffer is needed.",
+    "ai_recommendations": [
+        "Mock Recommendation 1: Review the tasks on the critical path, as they are the primary drivers of the project's duration.",
+        "Mock Recommendation 2: Allocate additional resources to critical path tasks to reduce their duration.",
+        "Mock Recommendation 3: Develop mitigation plans for the risks that have the highest probability and impact."
+    ]
+}

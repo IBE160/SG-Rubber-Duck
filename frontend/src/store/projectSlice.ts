@@ -1,25 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Project, Task, Resource, Risk } from '../types/domain';
 import * as api from '../services/api';
-
-export interface ProjectCreate {
-  name: string;
-  description: string;
-  budget: number;
-  start_date: string;
-  end_date: string;
-}
-
-// Interfaces for Task API calls
-export interface TaskCreate {
-  text: string;
-  start_date: string; // date string
-  duration: number;
-  progress?: number;
-  parent?: number | null; // Assuming parent ID from backend is number
-}
-
-export interface TaskUpdate extends Partial<TaskCreate> {}
+import { ProjectCreate, TaskCreate, TaskUpdate, RiskCreate, RiskUpdate } from '../types/api';
 
 export interface MonteCarloSimulationResult {
   base_duration: number;
@@ -66,22 +48,13 @@ const initialState: ProjectState = {
   simulationResult: null,
 };
 
-// --- Risk API Interfaces ---
-export interface RiskCreate {
-  description: string;
-  likelihood: 'Low' | 'Medium' | 'High';
-  impact: 'Low' | 'Medium' | 'High';
-  affected_task_ids: number[];
-}
-export interface RiskUpdate extends Partial<RiskCreate> {}
-
 // --- Async Thunks ---
 export const fetchProjects = createAsyncThunk('projects/fetchProjects', async () => {
   const response = await api.getProjects();
   return response;
 });
 
-export const fetchProjectDetails = createAsyncThunk('projects/fetchProjectDetails', async (projectId: string) => {
+export const fetchProjectDetails = createAsyncThunk('projects/fetchProjectDetails', async (projectId: number) => {
   const response = await api.getProjectDetails(projectId);
   return response;
 });
@@ -109,7 +82,7 @@ export const updateTask = createAsyncThunk(
 
 export const deleteTask = createAsyncThunk(
   'projects/deleteTask',
-  async (taskId: number, { dispatch }) => {
+  async (taskId: number) => {
     await api.deleteTask(taskId);
     // Optionally refetch tasks or remove from state locally
     // If we have a current project, refetch its details to get updated task list
@@ -165,7 +138,7 @@ const projectSlice = createSlice({
   name: 'projects',
   initialState,
   reducers: {
-    setCurrentProject(state, action: PayloadAction<string | null>) {
+    setCurrentProject(state, action: PayloadAction<number | null>) {
         if (action.payload === null) {
             state.currentProject = null;
         } else {
@@ -280,7 +253,7 @@ const projectSlice = createSlice({
         state.status = 'loading';
         state.simulationResult = null; // Clear previous results
       })
-      .addCase(runSimulation.fulfilled, (state, action) => {
+      .addCase(runSimulation.fulfilled, (state) => {
         // Now only indicates that the simulation has started in the background
         state.status = 'loading'; // Stay in loading state until results are fetched
       })

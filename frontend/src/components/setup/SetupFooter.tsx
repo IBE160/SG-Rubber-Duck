@@ -5,11 +5,11 @@ import { useAppSelector } from '../../store/hooks';
 import { Task } from '../../types/domain';
 
 const hasCycle = (tasks: Task[]) => {
-  const adj = new Map<string, string[]>();
+  const adj = new Map<number, number[]>();
   tasks.forEach((t) => adj.set(t.id, t.predecessors));
-  const visiting = new Set<string>();
-  const visited = new Set<string>();
-  const dfs = (id: string): boolean => {
+  const visiting = new Set<number>();
+  const visited = new Set<number>();
+  const dfs = (id: number): boolean => {
     if (visiting.has(id)) return true;
     if (visited.has(id)) return false;
     visiting.add(id);

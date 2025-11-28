@@ -1,0 +1,30 @@
+sprint: "Sprint 1 – Foundations"
+dates:
+  start: "TBD"
+  end: "TBD"
+team_capacity:
+  dev_days: 20
+  notes: "Adjust once team roster is final."
+
+goals:
+  - "Backend/API skeleton running (FastAPI, Postgres schema, CRUD)."
+  - "Simulation engine baseline with CPM + WS stream stub."
+  - "Setup/Simulation UI shells wired to API/WS."
+
+scope:
+  epics:
+    - E1 Backend & Data Foundations
+    - E2 Simulation Engine & Real-time
+    - E3 Frontend UX (Setup/Simulation shell)
+  stories_tbd: true
+
+risks:
+  - id: R1
+    description: "Gantt/WS integration may slip; choose a library and validate WS payloads early."
+    mitigation: "Prototype WS contract + mock feed; keep HTTP fallback for demo."
+  - id: R2
+    description: "Schema changes mid-sprint could churn migrations."
+    mitigation: "Freeze MVP schema for Project/Task/Risk before coding; add Alembic guardrails."
+
+notes:
+  - "Add story keys and owners once sprint planning is finalized."

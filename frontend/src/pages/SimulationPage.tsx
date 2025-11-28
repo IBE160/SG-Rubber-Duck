@@ -44,8 +44,9 @@ const SimulationPage: React.FC = () => {
       navigate('/');
       return;
     }
-    if (!currentProject || currentProject.id !== projectId) {
-      dispatch(fetchProjectDetails(projectId));
+    const numericId = Number(projectId);
+    if (!currentProject || currentProject.id !== numericId) {
+      dispatch(fetchProjectDetails(numericId));
     }
   }, [projectId, dispatch, navigate, currentProject]);
 
@@ -69,8 +70,9 @@ const SimulationPage: React.FC = () => {
   
   // Effect to auto-start simulation once project is loaded
   useEffect(() => {
-     if (projectStatus === 'succeeded' && projectId && currentProject?.id === projectId && simStatus === 'idle') {
-      api.startSimulation(projectId).then(res => {
+     const numericId = projectId ? Number(projectId) : null;
+     if (projectStatus === 'succeeded' && numericId !== null && currentProject?.id === numericId && simStatus === 'idle') {
+      api.startSimulation(numericId).then(res => {
         dispatch(startSimAction({ simulationId: res.simulationId, initialTasks: tasks }));
       })
     }

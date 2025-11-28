@@ -40,17 +40,22 @@ const getBounds = (tasks: Task[]) => {
   return { min: new Date(min), max: new Date(max), totalDays };
 };
 
-const GanttPanel: React.FC = () => {
+interface Props {
+  tasksOverride?: Task[];
+}
+
+const GanttPanel: React.FC<Props> = ({ tasksOverride }) => {
   const { tasks: baseTasks, risks } = useAppSelector((state) => state.projects);
   const [zoom, setZoom] = useState<number>(1); // 0.5x, 1x, 2x
   const [showGrid] = useState(true);
 
   const tasks: BarTask[] = useMemo(() => {
-    return baseTasks.map((t) => ({
+    const source = tasksOverride && tasksOverride.length ? tasksOverride : baseTasks;
+    return source.map((t) => ({
       ...t,
       affectedByRisk: risks.filter((r) => r.affected_task_ids.includes(t.id)),
     }));
-  }, [baseTasks, risks]);
+  }, [baseTasks, risks, tasksOverride]);
 
   const criticalIds = useMemo(() => computeCriticalPath(tasks), [tasks]);
   const { min, totalDays } = useMemo(() => getBounds(tasks), [tasks]);
