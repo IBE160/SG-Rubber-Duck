@@ -1,22 +1,70 @@
 sprint: "Sprint 1 – Foundations"
 dates:
-  start: "TBD"
-  end: "TBD"
+  start: "2025-12-01" # Assuming next Monday as start
+  end: "2025-12-14" # 2-week sprint
 team_capacity:
   dev_days: 20
-  notes: "Adjust once team roster is final."
+  notes: "Assumed 2 developers for 2 weeks."
 
 goals:
-  - "Backend/API skeleton running (FastAPI, Postgres schema, CRUD)."
-  - "Simulation engine baseline with CPM + WS stream stub."
-  - "Setup/Simulation UI shells wired to API/WS."
+  - "Establish a functional backend API skeleton with basic project/task management."
+  - "Implement core CPM logic and a WebSocket stub for simulation streaming."
+  - "Set up foundational frontend UI shells for Setup and Simulation, with basic API and WebSocket connectivity."
 
 scope:
   epics:
     - E1 Backend & Data Foundations
     - E2 Simulation Engine & Real-time
     - E3 Frontend UX (Setup/Simulation shell)
-  stories_tbd: true
+  stories:
+    - id: S1.1
+      epic: E1
+      description: "Initialize FastAPI app and basic configuration."
+      status: "pending"
+    - id: S1.2
+      epic: E1
+      description: "Define SQLAlchemy models for Project, Task, Risk, SimulationRun, EventLog."
+      status: "pending"
+    - id: S1.3
+      epic: E1
+      description: "Implement CRUD endpoints for Project resource."
+      status: "pending"
+    - id: S1.4
+      epic: E1
+      description: "Implement CRUD endpoints for Task resource (excluding dependencies)."
+      status: "pending"
+    - id: S1.5
+      epic: E1
+      description: "Set up Alembic for database migrations."
+      status: "pending"
+    - id: S2.1
+      epic: E2
+      description: "Implement basic Critical Path Method (CPM) calculation logic."
+      status: "pending"
+    - id: S2.2
+      epic: E2
+      description: "Create WebSocket endpoint stub for simulation event streaming."
+      status: "pending"
+    - id: S3.1
+      epic: E3
+      description: "Initialize React + Vite project with core routing."
+      status: "pending"
+    - id: S3.2
+      epic: E3
+      description: "Develop UI shell for Project Setup screen."
+      status: "pending"
+    - id: S3.3
+      epic: E3
+      description: "Develop UI shell for Simulation screen."
+      status: "pending"
+    - id: S3.4
+      epic: E3
+      description: "Integrate TanStack Query for basic frontend data fetching."
+      status: "pending"
+    - id: S3.5
+      epic: E3
+      description: "Establish basic WebSocket connection in frontend."
+      status: "pending"
 
 risks:
   - id: R1
@@ -27,4 +75,5 @@ risks:
     mitigation: "Freeze MVP schema for Project/Task/Risk before coding; add Alembic guardrails."
 
 notes:
-  - "Add story keys and owners once sprint planning is finalized."
+  - "Story keys and owners to be assigned during daily standups."
+  - "Focus on vertical slices to demonstrate end-to-end flow, even if basic."

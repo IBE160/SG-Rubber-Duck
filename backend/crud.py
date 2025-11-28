@@ -74,3 +74,55 @@ def delete_risk(db: Session, risk_id: int):
         db.delete(db_risk)
         db.commit()
     return db_risk
+
+# SimulationRun CRUD
+def get_simulation_run(db: Session, simulation_run_id: int):
+    return db.query(models.SimulationRun).filter(models.SimulationRun.id == simulation_run_id).first()
+
+def get_simulation_runs(db: Session, project_id: int, skip: int = 0, limit: int = 100):
+    return db.query(models.SimulationRun).filter(models.SimulationRun.project_id == project_id).offset(skip).limit(limit).all()
+
+def create_simulation_run(db: Session, project_id: int, simulation_run: schemas.SimulationRunCreate):
+    db_simulation_run = models.SimulationRun(project_id=project_id, **simulation_run.model_dump())
+    db.add(db_simulation_run)
+    db.commit()
+    db.refresh(db_simulation_run)
+    return db_simulation_run
+
+def update_simulation_run(db: Session, simulation_run_id: int, simulation_run_in: schemas.SimulationRunUpdate):
+    db_simulation_run = db.query(models.SimulationRun).filter(models.SimulationRun.id == simulation_run_id).first()
+    if db_simulation_run:
+        for var, value in simulation_run_in.model_dump(exclude_unset=True).items():
+            setattr(db_simulation_run, var, value)
+        db.add(db_simulation_run)
+        db.commit()
+        db.refresh(db_simulation_run)
+    return db_simulation_run
+
+def delete_simulation_run(db: Session, simulation_run_id: int):
+    db_simulation_run = db.query(models.SimulationRun).filter(models.SimulationRun.id == simulation_run_id).first()
+    if db_simulation_run:
+        db.delete(db_simulation_run)
+        db.commit()
+    return db_simulation_run
+
+# EventLog CRUD
+def get_event_log(db: Session, event_log_id: int):
+    return db.query(models.EventLog).filter(models.EventLog.id == event_log_id).first()
+
+def get_event_logs(db: Session, simulation_run_id: int, skip: int = 0, limit: int = 100):
+    return db.query(models.EventLog).filter(models.EventLog.simulation_run_id == simulation_run_id).offset(skip).limit(limit).all()
+
+def create_event_log(db: Session, event_log: schemas.EventLogCreate, simulation_run_id: int):
+    db_event_log = models.EventLog(**event_log.model_dump(), simulation_run_id=simulation_run_id)
+    db.add(db_event_log)
+    db.commit()
+    db.refresh(db_event_log)
+    return db_event_log
+
+def delete_event_log(db: Session, event_log_id: int):
+    db_event_log = db.query(models.EventLog).filter(models.EventLog.id == event_log_id).first()
+    if db_event_log:
+        db.delete(db_event_log)
+        db.commit()
+    return db_event_log

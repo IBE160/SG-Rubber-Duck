@@ -35,7 +35,7 @@
     - [x] File: ux-design-specification.md
     - [x] File: ux-color-themes.html
     - [x] File: ux-design-directions.html
-  - [ ] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
+  - [x] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
 
 ## Fase 2
 
@@ -44,26 +44,26 @@
     - [x] File: architecture.md
   - [x] /run-agent-task pm *create-epics-and-stories {prompt / user-input-file}
     - [x] File: epics.md
-  - [ ] /run-agent-task tea *test-design {prompt / user-input-file}
-  - [ ] /run-agent-task architect *solutioning-gate-check {prompt / user-input-file}
+  - [x] /run-agent-task tea *test-design {prompt / user-input-file}
+  - [x] /run-agent-task architect *solutioning-gate-check {prompt / user-input-file}
 
 ## Fase 3
 
 - [ ] Implementation
-  - [ ] /run-agent-task sm *sprint-planning {prompt / user-input-file}
+  - [x] /run-agent-task sm *sprint-planning {prompt / user-input-file}
     - [x] File: sprint-artifacts/sprint-status.yaml
   - foreach epic in sprint planning:
-    - [ ] /run-agent-task sm create-epic-tech-context {prompt / user-input-file}
+    - [x] /run-agent-task sm create-epic-tech-context {prompt / user-input-file}
       - [ ] File: sprint-artifacts/tech-spec-epic-{{epic_id}}.md
-    - [ ] /run-agent-task sm validate-epic-tech-context {prompt / user-input-file}
+    - [x] /run-agent-task sm validate-epic-tech-context {prompt / user-input-file}
     - foreach story in epic:
-      - [ ] /run-agent-task sm *create-story {prompt / user-input-file}
+      - [x] /run-agent-task sm *create-story {prompt / user-input-file}
         - [ ] File: sprint-artifacts/{{story_key}}.md
-      - [ ] /run-agent-task sm *validate-create-story {prompt / user-input-file}
-      - [ ] /run-agent-task sm *create-story-context {prompt / user-input-file}
+      - [x] /run-agent-task sm *validate-create-story {prompt / user-input-file}
+      - [x] /run-agent-task sm *create-story-context {prompt / user-input-file}
         - [ ] File: sprint-artifacts/{{story_key}}.context.xml
-      - [ ] /run-agent-task sm *validate-story-context {prompt / user-input-file}
-      - [ ] /run-agent-task sm *story-ready-for-dev {prompt / user-input-file}
+      - [x] /run-agent-task sm *validate-story-context {prompt / user-input-file}
+      - [x] /run-agent-task sm *story-ready-for-dev {prompt / user-input-file}
       while code-review != approved:
         - [ ] /run-agent-task dev *develop-story {prompt / user-input-file}
         - [ ] /run-agent-task dev *code-review {prompt / user-input-file}
@@ -71,6 +71,12 @@
       - [ ] /run-agent-task sm *test-review {prompt / user-input-file}
     - [ ] /run-agent-task sm *epic-retrospective {prompt / user-input-file}
 
+### Story S1.1 — Initialize FastAPI app (Epic E1)
+- [x] Files: sprint-artifacts/S1.1.md, sprint-artifacts/S1.1.context.md
+- [x] /run-agent-task dev *develop-story "Start FastAPI with root/health, config via env"
+- [ ] /run-agent-task dev *code-review "Review S1.1 implementation"
+- [ ] /run-agent-task dev *story-done "Mark S1.1 done after review"
+- [ ] /run-agent-task sm *test-review "Post-review validation"
 
 
 
