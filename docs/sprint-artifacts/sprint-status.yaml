@@ -32,7 +32,7 @@ scope:
     - id: S1.4
       epic: E1
       description: "Implement CRUD endpoints for Task resource (excluding dependencies)."
-      status: "pending"
+      status: "completed"
     - id: S1.5
       epic: E1
       description: "Set up Alembic for database migrations."
