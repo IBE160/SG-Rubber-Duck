@@ -18,13 +18,19 @@ import {
   MenuItem,
   IconButton,
   Tooltip,
+  CircularProgress,
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete Icon
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useAppSelector } from '../../store/hooks';
 import { Task } from '../../types/domain';
-import { createTask, updateTask, deleteTask } from '../../store/projectSlice'; // Import async thunks
+import { 
+  useCreateTask, 
+  useUpdateTask, 
+  useDeleteTask,
+  useProjectDetails 
+} from '../../services/queries';
 
 const hasCycle = (tasks: Task[]): boolean => {
   const adj = new Map<number, number[]>();
@@ -52,9 +58,18 @@ const hasCycle = (tasks: Task[]): boolean => {
 };
 
 const WbsTable: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { tasks, currentProject, resources } = useAppSelector((state) => state.projects);
-  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null); // Use number for ID
+  const { currentProject } = useAppSelector((state) => state.projects);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+
+  // Fetch project details including tasks and resources
+  const { data: projectDetails, isLoading } = useProjectDetails(currentProject?.id || null);
+  const tasks = useMemo(() => projectDetails?.tasks || [], [projectDetails?.tasks]);
+  const resources = useMemo(() => projectDetails?.resources || [], [projectDetails?.resources]);
+
+  // Mutations for task management
+  const createTaskMutation = useCreateTask(currentProject?.id || 0);
+  const updateTaskMutation = useUpdateTask(currentProject?.id || 0);
+  const deleteTaskMutation = useDeleteTask(currentProject?.id || 0);
 
   const taskMap = useMemo(() => new Map(tasks.map((t) => [t.id, t])), [tasks]); // Use number IDs
   const missingPreds = useMemo(() => {
@@ -73,49 +88,58 @@ const WbsTable: React.FC = () => {
     );
   }
 
-  // Helper to ensure currentProject.id is valid
-  const projectId = currentProject.id;
-  if (projectId === undefined || projectId === null) {
-      return (
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-            <Typography variant="h6" color="error">
-                Error: Current project ID is missing. Cannot manage tasks.
-            </Typography>
-        </Box>
-      );
+  if (!currentProject) {
+    return (
+      <Box sx={{ textAlign: 'center', mt: 4 }}>
+        <Typography variant="h6" color="text.secondary">
+          Select a project to view its Work Breakdown Structure.
+        </Typography>
+      </Box>
+    );
   }
 
-  const handleFieldChange = (taskId: number, field: keyof Task, value: string | number | number[]) => { // Use number for ID
-    dispatch(updateTask({ taskId, taskData: { [field]: value } }));
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const handleFieldChange = async (taskId: number, field: keyof Task, value: string | number | number[]) => {
+    await updateTaskMutation.mutateAsync({
+      taskId,
+      data: { [field]: value },
+    });
   };
 
-  const handlePredecessorsChange = (taskId: number, value: string) => { // Use number for ID
+  const handlePredecessorsChange = async (taskId: number, value: string) => {
     const ids = value
       .split(',')
       .map((v) => v.trim())
       .filter(Boolean)
-      .map(Number) // Convert to number
-      .filter(id => !isNaN(id)); // Filter out invalid numbers
-    dispatch(updateTask({ taskId, taskData: { predecessors: ids } }));
+      .map(Number)
+      .filter(id => !isNaN(id));
+    await updateTaskMutation.mutateAsync({
+      taskId,
+      data: { predecessors: ids },
+    });
   };
 
-  const handleAddTask = () => {
-    if (projectId) {
-      const newTaskData = {
-        text: 'New Task',
-        start_date: new Date().toISOString().slice(0, 10),
-        duration: 1,
-        progress: 0,
-        parent: null,
-        // predecessors: [], // Removed as not directly in TaskCreate
-        cost: 0,
-      };
-      dispatch(createTask({ projectId: projectId, taskData: newTaskData }));
-    }
+  const handleAddTask = async () => {
+    const newTaskData = {
+      text: 'New Task',
+      start_date: new Date().toISOString().slice(0, 10),
+      duration: 1,
+      progress: 0,
+      parent: null,
+      cost: 0,
+    };
+    await createTaskMutation.mutateAsync(newTaskData);
   };
 
-  const handleDeleteTask = (taskId: number) => {
-    dispatch(deleteTask(taskId));
+  const handleDeleteTask = async (taskId: number) => {
+    await deleteTaskMutation.mutateAsync(taskId);
   };
 
   const invalidCycle = hasCycle(tasks);
@@ -134,17 +158,25 @@ const WbsTable: React.FC = () => {
             ? 'One or more predecessors refer to missing tasks.'
             : null;
 
-  const handleIndent = (taskId: number) => { // Use number for ID
+  const handleIndent = async (taskId: number) => {
     const idx = tasks.findIndex((t) => t.id === taskId);
-    if (idx > 0 && tasks[idx-1]) { // Ensure previous task exists
+    if (idx > 0 && tasks[idx-1]) {
       const newParent = tasks[idx - 1].id;
-      dispatch(updateTask({ taskId, taskData: { parent: newParent } }));
+      await updateTaskMutation.mutateAsync({
+        taskId,
+        data: { parent: newParent },
+      });
     }
   };
 
-  const handleOutdent = (taskId: number) => { // Use number for ID
-    dispatch(updateTask({ taskId, taskData: { parent: null } }));
+  const handleOutdent = async (taskId: number) => {
+    await updateTaskMutation.mutateAsync({
+      taskId,
+      data: { parent: null },
+    });
   };
+
+  const isLoading_ = createTaskMutation.isPending || updateTaskMutation.isPending || deleteTaskMutation.isPending;
 
   return (
     <Box>
@@ -152,7 +184,12 @@ const WbsTable: React.FC = () => {
         <Typography variant="h6">
           Work Breakdown Structure for "{currentProject.name}"
         </Typography>
-        <Button variant="contained" size="small" onClick={handleAddTask}>
+        <Button 
+          variant="contained" 
+          size="small" 
+          onClick={handleAddTask}
+          disabled={isLoading_}
+        >
           Add Task
         </Button>
       </Stack>
@@ -185,6 +222,7 @@ const WbsTable: React.FC = () => {
                     error={!task.text || !task.text.trim()}
                     helperText={!task.text || !task.text.trim() ? 'Name required' : ''}
                     onChange={(e) => handleFieldChange(task.id, 'text', e.target.value)}
+                    disabled={isLoading_}
                   />
                 </TableCell>
                 <TableCell align="right" sx={{ width: 120 }}>
@@ -197,6 +235,7 @@ const WbsTable: React.FC = () => {
                     error={task.duration < 0}
                     helperText={task.duration < 0 ? 'Must be >= 0' : ''}
                     onChange={(e) => handleFieldChange(task.id, 'duration', Number(e.target.value))}
+                    disabled={isLoading_}
                   />
                 </TableCell>
                 <TableCell sx={{ width: 160 }}>
@@ -206,6 +245,7 @@ const WbsTable: React.FC = () => {
                     aria-label={`Start date for ${task.text}`}
                     value={task.start_date}
                     onChange={(e) => handleFieldChange(task.id, 'start_date', e.target.value)}
+                    disabled={isLoading_}
                   />
                 </TableCell>
                 <TableCell>
@@ -215,7 +255,7 @@ const WbsTable: React.FC = () => {
                         <IconButton
                           size="small"
                           onClick={() => handleIndent(task.id)}
-                          disabled={index === 0}
+                          disabled={index === 0 || isLoading_}
                           aria-label="Indent task"
                         >
                           <ArrowForwardIcon fontSize="small" />
@@ -227,7 +267,7 @@ const WbsTable: React.FC = () => {
                         <IconButton
                           size="small"
                           onClick={() => handleOutdent(task.id)}
-                          disabled={task.parent === null}
+                          disabled={task.parent === null || isLoading_}
                           aria-label="Outdent task"
                         >
                           <ArrowBackIcon fontSize="small" />
@@ -244,6 +284,7 @@ const WbsTable: React.FC = () => {
                     helperText="Comma-separated task IDs"
                     error={missingPreds.has(task.id)}
                     FormHelperTextProps={{ sx: { color: missingPreds.has(task.id) ? 'error.main' : 'text.secondary' } }}
+                    disabled={isLoading_}
                   />
                   <Box sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                     {task.predecessors.map((pId) => (
@@ -258,6 +299,7 @@ const WbsTable: React.FC = () => {
                     aria-label={`Resource for ${task.text}`}
                     onChange={(e) => handleFieldChange(task.id, 'resource_id', Number(e.target.value))}
                     sx={{ mt: 1 }}
+                    disabled={isLoading_}
                   >
                     <MenuItem value="">No resource</MenuItem>
                     {resources.map((r) => (
@@ -266,7 +308,12 @@ const WbsTable: React.FC = () => {
                   </Select>
                 </TableCell>
                 <TableCell>
-                  <IconButton size="small" onClick={() => handleDeleteTask(task.id)} aria-label="delete task">
+                  <IconButton 
+                    size="small" 
+                    onClick={() => handleDeleteTask(task.id)} 
+                    aria-label="delete task"
+                    disabled={isLoading_}
+                  >
                     <DeleteIcon fontSize="small" color="error" />
                   </IconButton>
                 </TableCell>
