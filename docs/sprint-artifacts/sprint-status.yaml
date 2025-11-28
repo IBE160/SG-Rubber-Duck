@@ -36,7 +36,7 @@ scope:
     - id: S1.5
       epic: E1
       description: "Set up Alembic for database migrations."
-      status: "pending"
+      status: "completed"
     - id: S2.1
       epic: E2
       description: "Implement basic Critical Path Method (CPM) calculation logic."
