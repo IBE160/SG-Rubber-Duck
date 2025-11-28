@@ -25,7 +25,7 @@ const ProjectList: React.FC = () => {
     }
   }, [status, dispatch]);
   
-  const handleSelectProject = (projectId: string) => {
+  const handleSelectProject = (projectId: number) => {
     dispatch(fetchProjectDetails(projectId));
   };
 

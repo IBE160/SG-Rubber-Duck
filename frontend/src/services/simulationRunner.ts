@@ -24,9 +24,9 @@ export class SimulationRunner {
     private intervalId: number | null = null;
     private day = 0;
     
-    private tasks: Map<string, SimTask>;
+    private tasks: Map<number, SimTask>;
     private risks: Risk[];
-    private resources: Map<string, Resource>;
+    private resources: Map<number, Resource>;
     private projectStartDate: Date;
     
     private dispatch: AppDispatch;

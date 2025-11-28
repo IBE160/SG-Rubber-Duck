@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { runSimulation, fetchSimulationResult } from '../../store/projectSlice';
 

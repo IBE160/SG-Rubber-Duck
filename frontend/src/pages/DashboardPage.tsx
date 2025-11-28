@@ -7,7 +7,7 @@ import SimulationControls from '../components/simulation/SimulationControls'; //
 import { useAppSelector } from '../store/hooks';
 
 const DashboardPage: React.FC = () => {
-  const { tasks, simulationResult } = useAppSelector((state) => state.projects);
+  const { simulationResult } = useAppSelector((state) => state.projects);
 
   // The CPM result gives us calculated task details, but not in the GanttTask format.
   // We can enrich our base tasks with CPM data for the Gantt chart in a future step.
@@ -66,7 +66,7 @@ const DashboardPage: React.FC = () => {
                         height={value}
                         fill="#1976d2"
                       >
-                        <title>{`~${simulationResult.bin_edges[index].toFixed(0)} days: ${value} runs`}</title>
+                        <title>{`~${simulationResult.bin_edges_duration[index].toFixed(0)} days: ${value} runs`}</title>
                       </rect>
                     ))}
                   </svg>
