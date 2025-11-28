@@ -7,7 +7,6 @@
 **Gruppemedlemmer:**
 
 - Benjamin Thorstensen Eiksund - <beeik5043@himolde.no>
-- Ole Christian Risa Bakke - <ole.c.bakke@himolde.no>
 - Farhan Iqbal - <farhan.iqbal@himolde.no>
 - Kjetil Tronstad Lund - <kjetil.t.lund@himolde.no>
 
@@ -195,9 +194,6 @@ Tidsrammen var noe krevende fordi vi kom litt sent i gang, og det var mye å set
 
 Oppsummert har IBE160 gjort programmering mer tilgjengelig for meg. Jeg har gått fra helt blank kunnskap til å forstå mye mer av prosessene, begrepene og hvor KI passer inn. Erfaringen har vist at kvalitet tar tid, også med KI, men at kombinasjonen av nysgjerrighet, struktur og samarbeid kan gi reell mestring.
 
-**Ole Christian Risa Bakke:**
-[Personlig refleksjon over egen læring og utvikling]
-
 **Farhan Iqbal:**
 Jeg startet IBE160 med nokså likt utgangspunkt som mine medstudenter - solid teknisk forståelse, uten erfaring med programmering. Til vanlig studerer jeg økonomi ved en handelshøyskole i Norge, men har sterk interesse for programmering, FinTech, finansiell modellering og automatisering. Derfor var det naturlig for meg å melde meg på emnet og lære mest mulig om hvordan AI kan anvendes til å bygge komplekse, men stabile modeller og bidra til å effektivisering.
 
@@ -208,7 +204,7 @@ I dette semesteret brukte jeg erfaringen og læringen fra IBE160 til å bygge en
 Til tross for at gruppen vår består av nettstudenter og kom sent i gang, har samarbeidet og dynamikken vært svært bra. Det vises velvilje og ønske om å bidra. Denne dynamikken og velviljen har vært en viktig faktor for at vi på kort tid har kommet såpass langt.
 
 **Kjetil Tronstad Lund:**
-Det har vært svært interessant å jobbe med IBE160 og denne oppgaven. For meg har det vært en område som har vært relativt ukjent, men også en arbeidsmåte som er ganske anderledes. Fra i det hele tatt bare det å åpne VSCode, til det å se at KI faktisk genererer noe på forespørsel, til et form for resulatat. Dette kan være svært nyttig til senere bruk, i hvert fall å kjenne til konseptet og kanskje leke seg litt mer i fremtiden. Gruppa fremsto som å ha en god dynamikk og vi fikk etter hvert fordelt noen oppgaver. Jeg tror en av de største "utfordringene" på en måte er når man har gruppeoppgave med kun nettstudenter som jobber til ulike tider, som har ulik bakgrunn og kompetanse. Det krever litt mer enn om man alle sammen hadde vært tilstede på skolen. Uten å gi for mye kritikk til faglærere, så lider også faget noe av at vi ikke har lærebok, det loves at deler av den skal tilgjengeliggjøres [noe som ikke er gjort når dette skrives], og det avlyses en del forelesninger. Hadde faget vært godt strukturert, men en god fagbok så studentene kan drive noe selvstudie, så tror jeg det ville gått bedre. Samtidig bør dere kanskje vurdere om det kan gis en bedre anbefaling til hvordan nettstudenter kan samarbeide. Det er fort gjort at man kommer for sent i gang, eller at én gjør store deler av oppgaven alene uten å kommunisere med de andre [nei, dette var ikke tilfelle hos oss]. Dette kan kanskje også redusere eventuelle frafall. Men på det jevne så har det vært en svært god og bratt læring, som jeg tror at jeg for min del vil ha god nytte av senere.
+Det har vært svært interessant å jobbe med IBE160 og denne oppgaven. For meg har det vært en område som har vært relativt ukjent, men også en arbeidsmåte som er ganske anderledes. Fra i det hele tatt bare det å åpne VSCode, til det å se at KI faktisk genererer noe på forespørsel, til et form for resulatat. Dette kan være svært nyttig til senere bruk, i hvert fall å kjenne til konseptet og kanskje leke seg litt mer i fremtiden. Vi opplevde dessverre at et av medlemmene ikke deltok i arbeidet og ble kastet ut. Dette forstyrrer dynamikken litt. I tillegg kom vi noe sent i gang. Jeg tror en av de største "utfordringene" på en måte er når man har gruppeoppgave med kun nettstudenter som jobber til ulike tider, som har ulik bakgrunn og kompetanse. Det krever litt mer enn om man alle sammen hadde vært tilstede på skolen. Uten å gi for mye kritikk til faglærere, så lider også faget noe av at vi ikke har lærebok, det loves at deler av den skal tilgjengeliggjøres [noe som ikke er gjort når dette skrives], og det avlyses en del forelesninger. Hadde faget vært godt strukturert, men en god fagbok så studentene kan drive noe selvstudie, så tror jeg det ville gått bedre. Samtidig bør dere kanskje vurdere om det kan gis en bedre anbefaling til hvordan nettstudenter kan samarbeide. Det er fort gjort at man kommer for sent i gang, eller at én gjør store deler av oppgaven alene uten å kommunisere med de andre [nei, dette var ikke tilfelle hos oss]. Dette kan kanskje også redusere eventuelle frafall. Men på det jevne så har det vært en svært god og bratt læring, som jeg tror at jeg for min del vil ha god nytte av senere.
 
 ---
 
