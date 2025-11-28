@@ -33,6 +33,15 @@ class TaskBase(BaseModel):
 class TaskCreate(TaskBase):
     pass
 
+class TaskUpdate(BaseModel):
+    text: Optional[str] = None
+    start_date: Optional[date] = None
+    duration: Optional[int] = None
+    progress: Optional[float] = None
+    parent: Optional[int] = None
+    cost: Optional[float] = None
+    dependencies: Optional[List[int]] = None
+
 class Task(TaskBase):
     id: int
     project_id: int

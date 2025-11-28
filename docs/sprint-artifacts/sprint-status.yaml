@@ -20,15 +20,15 @@ scope:
     - id: S1.1
       epic: E1
       description: "Initialize FastAPI app and basic configuration."
-      status: "pending"
+      status: "completed"
     - id: S1.2
       epic: E1
       description: "Define SQLAlchemy models for Project, Task, Risk, SimulationRun, EventLog."
-      status: "pending"
+      status: "completed"
     - id: S1.3
       epic: E1
       description: "Implement CRUD endpoints for Project resource."
-      status: "pending"
+      status: "completed"
     - id: S1.4
       epic: E1
       description: "Implement CRUD endpoints for Task resource (excluding dependencies)."
