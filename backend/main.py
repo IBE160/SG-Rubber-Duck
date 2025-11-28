@@ -1,7 +1,9 @@
 # backend/main.py
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 from typing import List
+import asyncio
+import json
 
 from .config import settings
 from .database import SessionLocal, engine
@@ -268,3 +270,142 @@ def calculate_project_cpm(project_id: int, db: Session = Depends(get_db)):
         return result
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"CPM calculation error: {str(e)}")
+
+
+# WebSocket endpoints for simulation event streaming
+class ConnectionManager:
+    """Manages WebSocket connections for active simulations"""
+    
+    def __init__(self):
+        self.active_connections: dict[int, list[WebSocket]] = {}
+    
+    async def connect(self, websocket: WebSocket, simulation_id: int):
+        """Register a new WebSocket connection for a simulation"""
+        await websocket.accept()
+        if simulation_id not in self.active_connections:
+            self.active_connections[simulation_id] = []
+        self.active_connections[simulation_id].append(websocket)
+    
+    def disconnect(self, simulation_id: int, websocket: WebSocket):
+        """Remove a WebSocket connection"""
+        if simulation_id in self.active_connections:
+            self.active_connections[simulation_id].remove(websocket)
+            if not self.active_connections[simulation_id]:
+                del self.active_connections[simulation_id]
+    
+    async def broadcast(self, simulation_id: int, message: dict):
+        """Send a message to all connections for a simulation"""
+        if simulation_id in self.active_connections:
+            disconnected = []
+            for connection in self.active_connections[simulation_id]:
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    disconnected.append(connection)
+            
+            for connection in disconnected:
+                self.disconnect(simulation_id, connection)
+
+
+manager = ConnectionManager()
+
+
+@app.websocket("/ws/simulations/{simulation_id}/events")
+async def websocket_simulation_events(websocket: WebSocket, simulation_id: int, db: Session = Depends(get_db)):
+    """
+    WebSocket endpoint for receiving simulation events in real-time.
+    
+    Clients connect with: ws://localhost:8001/ws/simulations/{simulation_id}/events
+    
+    Server sends events like:
+    {
+        "event_type": "task_started",
+        "timestamp": "2025-11-28T17:00:00",
+        "task_id": 1,
+        "details": {}
+    }
+    
+    Clients can send:
+    {
+        "action": "ping"
+    }
+    """
+    # Verify simulation exists
+    simulation = crud.get_simulation_run(db, simulation_id)
+    if simulation is None:
+        await websocket.close(code=404)
+        return
+    
+    await manager.connect(websocket, simulation_id)
+    
+    # Send connection confirmation
+    await websocket.send_json({
+        "event_type": "connected",
+        "message": f"Connected to simulation {simulation_id}",
+        "timestamp": get_timestamp()
+    })
+    
+    try:
+        while True:
+            # Receive message from client (for keep-alive or commands)
+            data = await websocket.receive_json()
+            
+            if data.get("action") == "ping":
+                # Respond to ping
+                await websocket.send_json({
+                    "event_type": "pong",
+                    "timestamp": get_timestamp()
+                })
+            elif data.get("action") == "subscribe_updates":
+                # Send last event log entries as initial data
+                events = crud.get_event_logs(db, simulation_id, skip=0, limit=50)
+                for event in events:
+                    await websocket.send_json({
+                        "event_type": event.event_type,
+                        "timestamp": event.timestamp.isoformat(),
+                        "task_id": event.task_id,
+                        "risk_id": event.risk_id,
+                        "details": event.details or {}
+                    })
+    
+    except WebSocketDisconnect:
+        manager.disconnect(simulation_id, websocket)
+    except Exception as e:
+        manager.disconnect(simulation_id, websocket)
+        print(f"WebSocket error: {e}")
+
+
+def get_timestamp():
+    """Get current timestamp in ISO format"""
+    from datetime import datetime
+    return datetime.utcnow().isoformat()
+
+
+@app.post("/simulations/{simulation_id}/broadcast-event/", tags=["Simulation"])
+async def broadcast_event(
+    simulation_id: int,
+    event: schemas.EventLogCreate,
+    db: Session = Depends(get_db)
+):
+    """
+    Broadcast an event to all connected WebSocket clients for a simulation.
+    This is used by the simulation engine to push events in real-time.
+    """
+    # Verify simulation exists
+    simulation = crud.get_simulation_run(db, simulation_id)
+    if simulation is None:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+    
+    # Save event to database
+    db_event = crud.create_event_log(db, event, simulation_id)
+    
+    # Broadcast to connected clients
+    await manager.broadcast(simulation_id, {
+        "event_type": event.event_type,
+        "timestamp": db_event.timestamp.isoformat(),
+        "task_id": event.task_id,
+        "risk_id": event.risk_id,
+        "details": event.details or {}
+    })
+    
+    return {"status": "event_broadcasted", "event_id": db_event.id}

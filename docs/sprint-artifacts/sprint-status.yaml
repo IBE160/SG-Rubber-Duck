@@ -40,7 +40,7 @@ scope:
     - id: S2.1
       epic: E2
       description: "Implement basic Critical Path Method (CPM) calculation logic."
-      status: "pending"
+      status: "completed"
     - id: S2.2
       epic: E2
       description: "Create WebSocket endpoint stub for simulation event streaming."
