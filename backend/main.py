@@ -6,6 +6,7 @@ from typing import List
 from .config import settings
 from .database import SessionLocal, engine
 from . import models, schemas, crud
+from .cpm import calculate_cpm
 
 # Create tables if they don't exist
 models.Base.metadata.create_all(bind=engine)
@@ -233,3 +234,37 @@ def delete_event_log(event_log_id: int, db: Session = Depends(get_db)):
     if db_event_log is None:
         raise HTTPException(status_code=404, detail="Event log not found")
     return {"message": "Event log deleted successfully"}
+
+
+# CPM Calculation endpoints
+@app.post("/projects/{project_id}/calculate-cpm/", tags=["Simulation"])
+def calculate_project_cpm(project_id: int, db: Session = Depends(get_db)):
+    """
+    Calculate the Critical Path Method for a project.
+    Returns critical path, project duration, and task schedules.
+    """
+    project = crud.get_project(db, project_id=project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Get all tasks for the project
+    tasks = crud.get_tasks(db, project_id=project_id, skip=0, limit=1000)
+    
+    if not tasks:
+        raise HTTPException(status_code=400, detail="Project has no tasks")
+    
+    # Prepare task data for CPM
+    task_data = [
+        {
+            "id": task.id,
+            "duration": task.duration,
+            "dependencies": task.dependencies or []
+        }
+        for task in tasks
+    ]
+    
+    try:
+        result = calculate_cpm(task_data, project.start_date)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"CPM calculation error: {str(e)}")
