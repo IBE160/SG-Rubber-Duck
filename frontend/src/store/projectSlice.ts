@@ -1,30 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Project, Task, Resource, Risk } from '../types/domain';
+import { Project, Task, Resource, Risk, SimulationResults } from '../types/domain';
 import * as api from '../services/api';
 import { ProjectCreate, TaskCreate, TaskUpdate, RiskCreate, RiskUpdate } from '../types/api';
-
-export interface MonteCarloSimulationResult {
-  base_duration: number;
-  base_critical_path: number[];
-  base_cost: number;
-  iterations: number;
-  mean_duration: number;
-  std_dev_duration: number;
-  p50_duration: number;
-  p80_duration: number;
-  p90_duration: number;
-  duration_distribution: number[];
-  bin_edges_duration: number[];
-  mean_cost: number;
-  std_dev_cost: number;
-  p50_cost: number;
-  p80_cost: number;
-  p90_cost: number;
-  cost_distribution: number[];
-  bin_edges_cost: number[];
-  ai_assessment: string;
-  ai_recommendations: string[];
-}
 
 export interface ProjectState {
   projects: Project[];
@@ -34,7 +11,7 @@ export interface ProjectState {
   risks: Risk[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
-  simulationResult: MonteCarloSimulationResult | null;
+  simulationResult: SimulationResults | null;
 }
 
 const initialState: ProjectState = {
@@ -103,8 +80,8 @@ export const runSimulation = createAsyncThunk(
 
 export const fetchSimulationResult = createAsyncThunk(
   'projects/fetchSimulationResult',
-  async (projectId: number) => {
-    const response = await api.getSimulationResult(projectId);
+  async (simulationRunId: number) => {
+    const response = await api.getSimulationResults(simulationRunId);
     return response;
   }
 );

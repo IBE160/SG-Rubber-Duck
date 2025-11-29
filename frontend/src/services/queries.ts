@@ -198,17 +198,17 @@ export const useDeleteRisk = (projectId: number) => {
 // ============================================================================
 
 /**
- * Get Monte Carlo simulation results for a project
+ * Get simulation results for a simulation run (stub until backend provides endpoint)
  */
-export const useSimulationResult = (projectId: number | null) => {
+export const useSimulationResult = (simulationRunId: number | null) => {
   return useQuery({
-    queryKey: queryKeys.simulations.result(projectId || 0),
+    queryKey: queryKeys.simulations.result(simulationRunId || 0),
     queryFn: () =>
-      projectId
-        ? api.getSimulationResult(projectId)
-        : Promise.reject(new Error('No project ID')),
-    enabled: !!projectId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
+      simulationRunId != null
+        ? api.getSimulationResults(simulationRunId)
+        : Promise.reject(new Error('No simulation run ID')),
+    enabled: simulationRunId != null,
+    staleTime: 10 * 60 * 1000,
     retry: 1,
   });
 };
@@ -221,12 +221,10 @@ export const useRunSimulation = (projectId: number) => {
 
   return useMutation({
     mutationFn: () => api.runSimulation(projectId),
-    onSuccess: () => {
-      // Invalidate simulation results to refetch
+    onSuccess: (res) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.simulations.result(projectId),
+        queryKey: queryKeys.simulations.result(res.simulation_run_id),
       });
     },
   });
 };
-

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rubber duck logo">
+  <defs>
+    <linearGradient id="body" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe780"/>
+      <stop offset="100%" stop-color="#f6c542"/>
+    </linearGradient>
+    <linearGradient id="wing" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff7b3"/>
+      <stop offset="100%" stop-color="#ffe07f"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#body)" d="M180 220c-48 0-88-39-88-88 0-12 10-22 22-22 38 0 70 31 70 70 0 14-2 27-4 40z"/>
+  <path fill="url(#body)" d="M180 220c-32 0-58 26-58 58 0 22 12 49 30 66 15 14 33 26 54 30 26 6 48 21 68 42 18 18 46 34 73 34h32c74 0 134-60 134-134 0-18-15-34-34-34h-36c-38 0-70-31-70-69 0-19-16-35-35-35h-32c-45 0-85-32-94-77z"/>
+  <circle cx="358" cy="178" r="18" fill="#f6ad2e"/>
+  <circle cx="358" cy="178" r="9" fill="#1c1c28"/>
+  <path d="M394 210c10-5 20-7 31-7 11 0 22 3 32 7 6 3 7 12 1 17-9 6-21 9-33 9s-23-3-31-9c-6-4-6-13 0-17z" fill="#d6224f"/>
+  <path fill="url(#wing)" d="M242 318c0-34 28-62 62-62 12 0 22 10 22 22v40c0 34-28 62-62 62-12 0-22-10-22-22v-40z"/>
+</svg>

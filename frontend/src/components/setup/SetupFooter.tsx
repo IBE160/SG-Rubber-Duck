@@ -30,12 +30,18 @@ const hasCycle = (tasks: Task[]) => {
 const SetupFooter: React.FC = () => {
   const navigate = useNavigate();
   const { currentProject, tasks } = useAppSelector((state) => state.projects);
+  const normalizedTasks = tasks.map(t => ({
+    ...t,
+    predecessors: t.predecessors || [],
+    duration: t.duration ?? 0,
+    text: t.text || '',
+  }));
 
-  const hasTasks = tasks.length > 0;
-  const hasValidDurations = tasks.every(t => t.duration >= 0);
-  const hasNames = tasks.every(t => t.text && t.text.trim().length > 0);
-  const hasValidPreds = tasks.every(t => t.predecessors.every(pid => tasks.some(x => x.id === pid)));
-  const noCycles = !hasCycle(tasks);
+  const hasTasks = normalizedTasks.length > 0;
+  const hasValidDurations = normalizedTasks.every(t => t.duration >= 0);
+  const hasNames = normalizedTasks.every(t => t.text.trim().length > 0);
+  const hasValidPreds = normalizedTasks.every(t => (t.predecessors || []).every(pid => normalizedTasks.some(x => x.id === pid)));
+  const noCycles = !hasCycle(normalizedTasks as Task[]);
   const isDataValid = currentProject !== null && hasTasks && hasValidDurations && hasNames && hasValidPreds && noCycles;
 
   const handleStartSimulation = () => {

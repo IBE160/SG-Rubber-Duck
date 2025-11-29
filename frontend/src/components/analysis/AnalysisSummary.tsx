@@ -3,9 +3,9 @@ import Grid from '@mui/material/Grid';
 import { Card, CardContent, Typography } from '@mui/material';
 
 interface AnalysisResults {
-  finalCost: number;
-  finalDuration: number;
-  risksOccurred: number;
+  finalCost?: number;
+  finalDuration?: number;
+  risksOccurred?: number;
 }
 
 const KpiCard: React.FC<{ title: string; value: string | number; color?: string }> = ({ title, value, color }) => (
@@ -22,17 +22,20 @@ const KpiCard: React.FC<{ title: string; value: string | number; color?: string 
 
 const AnalysisSummary: React.FC<{ results: AnalysisResults | null }> = ({ results }) => {
   if (!results) return null;
+  const finalCost = results.finalCost ?? 0;
+  const finalDuration = results.finalDuration ?? 0;
+  const risksOccurred = results.risksOccurred ?? 0;
 
   return (
     <Grid container spacing={2} sx={{ mb: 2 }}>
       <Grid item xs={12} md={4}>
-        <KpiCard title="Final Cost" value={`$${results.finalCost.toLocaleString()}`} />
+        <KpiCard title="Final Cost" value={`$${finalCost.toLocaleString()}`} />
       </Grid>
       <Grid item xs={12} md={4}>
-        <KpiCard title="Final Duration" value={`${results.finalDuration} days`} />
+        <KpiCard title="Final Duration" value={`${finalDuration} days`} />
       </Grid>
       <Grid item xs={12} md={4}>
-        <KpiCard title="Risks Occurred" value={results.risksOccurred} color="warning.main" />
+        <KpiCard title="Risks Occurred" value={risksOccurred} color="warning.main" />
       </Grid>
     </Grid>
   );

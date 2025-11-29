@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from .database import Base
 
 
@@ -28,7 +28,7 @@ class Task(Base):
     duration = Column(Integer)
     progress = Column(Float, default=0.0)
     cost = Column(Float, default=0.0)
-    dependencies = Column(JSON, default=[])
+    dependencies = Column(JSON, default=list)
     parent = Column(Integer)  # For sub-tasks, as seen in Gantt data
     project_id = Column(Integer, ForeignKey("projects.id"))
 
@@ -44,7 +44,7 @@ class Risk(Base):
     impact = Column(String)  # e.g., "High", "Medium", "Low"
     duration_impact = Column(Integer, default=0)
     cost_impact = Column(Float, default=0.0)
-    affected_task_ids = Column(JSON, default=[])
+    affected_task_ids = Column(JSON, default=list)
     project_id = Column(Integer, ForeignKey("projects.id"))
 
     project = relationship("Project", back_populates="risks")
@@ -56,7 +56,7 @@ class SimulationRun(Base):
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("projects.id"))
     status = Column(String, default="pending")  # pending, running, completed, failed
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     started_at = Column(DateTime, nullable=True)
     completed_at = Column(DateTime, nullable=True)
     
@@ -65,7 +65,7 @@ class SimulationRun(Base):
     total_duration = Column(Integer, nullable=True)  # Final project duration
     total_cost = Column(Float, nullable=True)  # Final project cost
     critical_path = Column(JSON, default=[])  # Task IDs in critical path
-    results = Column(JSON, default={})  # Aggregated simulation results
+    results = Column(JSON, default=dict)  # Aggregated simulation results
 
     project = relationship("Project", back_populates="simulation_runs")
     events = relationship("EventLog", back_populates="simulation_run", cascade="all, delete-orphan")
@@ -76,10 +76,10 @@ class EventLog(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     simulation_run_id = Column(Integer, ForeignKey("simulation_runs.id"))
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     event_type = Column(String, index=True)  # e.g., "task_started", "task_completed", "risk_triggered"
     task_id = Column(Integer, nullable=True)
     risk_id = Column(Integer, nullable=True)
-    details = Column(JSON, default={})  # Additional event-specific data
+    details = Column(JSON, default=dict)  # Additional event-specific data
 
     simulation_run = relationship("SimulationRun", back_populates="events")

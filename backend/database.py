@@ -1,29 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy.exc import OperationalError
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+def _make_engine(url: str):
+    """Create SQLAlchemy engine with SQLite-specific args when needed."""
+    if url.startswith("sqlite"):
+        return create_engine(url, connect_args={"check_same_thread": False})
+    return create_engine(url)
 
-# Try configured DB, fall back to SQLite if missing or unreachable
-engine = None
-if DATABASE_URL:
-    try:
-        test_engine = create_engine(DATABASE_URL)
-        with test_engine.connect() as _:
-            pass
-        engine = test_engine
-    except OperationalError:
-        print("DATABASE_URL not reachable. Falling back to local SQLite app.db")
-
-if engine is None:
-    DATABASE_URL = "sqlite:///./app.db"
-    engine = create_engine(
-        DATABASE_URL, connect_args={"check_same_thread": False}
-    )
+# Prefer explicit DATABASE_URL; fall back to local SQLite for dev/test
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
+engine = _make_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

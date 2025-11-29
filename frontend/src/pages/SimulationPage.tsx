@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Paper, Typography, Tabs, Tab } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchProjectDetails } from '../store/projectSlice';
 import * as api from '../services/api';
-import { startSimulation as startSimAction } from '../store/simulationSlice';
+import { startSimulation as startSimAction, pushEvent, applyTaskEvent, simulationError } from '../store/simulationSlice';
 import SimulationControls from '../components/simulation/SimulationControls';
 import GanttPanel from '../components/simulation/GanttPanel';
 import KpiDashboard from '../components/simulation/KpiDashboard';
 import EventLog from '../components/simulation/EventLog';
-import { SimulationRunner } from '../services/simulationRunner';
-import { store } from '../store/store';
+import { useWebSocket } from '../services/websocket';
+import { fetchSimulationResult } from '../store/projectSlice';
 
 // (TabPanel component remains the same)
 interface TabPanelProps {
@@ -32,11 +32,12 @@ const SimulationPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { currentProject, tasks, resources, risks, status: projectStatus } = useAppSelector((state) => state.projects);
+  const { currentProject, tasks, status: projectStatus } = useAppSelector((state) => state.projects);
   const simStatus = useAppSelector(state => state.simulation.status);
   const simTasks = useAppSelector(state => state.simulation.tasks);
   const [tabValue, setTabValue] = useState(0);
-  const runnerRef = useRef<SimulationRunner | null>(null);
+  const simulationId = useAppSelector(state => state.simulation.simulationId);
+  const [, setPolling] = useState<ReturnType<typeof setInterval> | null>(null);
 
   // Effect to fetch initial data
   useEffect(() => {
@@ -50,33 +51,63 @@ const SimulationPage: React.FC = () => {
     }
   }, [projectId, dispatch, navigate, currentProject]);
 
-  // Effect to manage the simulation runner lifecycle
-  useEffect(() => {
-    if (simStatus === 'running' && !runnerRef.current && tasks.length > 0) {
-      // Create and start the runner
-      runnerRef.current = new SimulationRunner(tasks, risks, resources, dispatch, store.getState);
-      runnerRef.current.start();
-    } else if (simStatus !== 'running' && runnerRef.current) {
-      // Stop the runner
-      runnerRef.current.stop();
-      runnerRef.current = null;
-    }
-
-    // Cleanup on unmount
-    return () => {
-      runnerRef.current?.stop();
-    };
-  }, [simStatus, tasks, risks, resources, dispatch]);
-  
   // Effect to auto-start simulation once project is loaded
   useEffect(() => {
      const numericId = projectId ? Number(projectId) : null;
      if (projectStatus === 'succeeded' && numericId !== null && currentProject?.id === numericId && simStatus === 'idle') {
-      api.startSimulation(numericId).then(res => {
-        dispatch(startSimAction({ simulationId: res.simulationId, initialTasks: tasks }));
-      })
+      api.runSimulation(numericId).then(res => {
+        dispatch(startSimAction({ simulationId: res.simulation_run_id, initialTasks: tasks }));
+      }).catch(err => {
+        dispatch(simulationError(String(err)));
+      });
     }
   }, [projectStatus, currentProject, projectId, simStatus, dispatch, tasks]);
+
+  // Poll simulation status until completed, then fetch results
+  useEffect(() => {
+    if (!simulationId) return;
+    const interval = setInterval(async () => {
+      try {
+        const status = await api.getSimulationStatus(simulationId);
+        if (status.status === 'completed' || status.status === 'failed') {
+          clearInterval(interval);
+          setPolling(null);
+          dispatch(fetchSimulationResult(simulationId));
+        }
+      } catch (err) {
+        console.error('Failed to poll simulation status', err);
+        dispatch(simulationError('Simulation status polling failed'));
+      }
+    }, 1000);
+    setPolling(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [simulationId, dispatch]);
+
+  // WebSocket subscription to backend events
+  const { events: wsEvents } = useWebSocket(simulationId ? String(simulationId) : null);
+  useEffect(() => {
+    wsEvents.forEach(ev => {
+      dispatch(pushEvent({
+        type: (ev.event_type as any) || 'SIM_START',
+        event_type: ev.event_type,
+        timestamp: ev.timestamp,
+        task_id: ev.task_id,
+        risk_id: ev.risk_id,
+        details: ev.details,
+        message: ev.event_type,
+      }));
+      dispatch(applyTaskEvent({
+        type: ev.event_type as any,
+        event_type: ev.event_type,
+        timestamp: ev.timestamp,
+        task_id: ev.task_id,
+        risk_id: ev.risk_id,
+        details: ev.details,
+      }));
+    });
+  }, [wsEvents, dispatch]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);

@@ -91,4 +91,6 @@ def test_run_simulation_background(client):
     
     # This endpoint now runs in the background and returns 202
     assert response.status_code == 202
-    assert response.json() == {"message": "Simulation started in the background. Check back later for results."}
+    body = response.json()
+    assert body["message"] == "Simulation started in the background. Check back later for results."
+    assert "simulation_run_id" in body

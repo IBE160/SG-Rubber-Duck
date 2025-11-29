@@ -8,7 +8,7 @@ export type SimTaskState = Task;
 
 export interface SimulationState {
   status: SimulationStatus;
-  simulationId: string | null;
+  simulationId: number | null;
   currentDay: number;
   speed: number; // 1x, 2x, 4x
   events: SimulationEvent[];
@@ -34,16 +34,12 @@ const simulationSlice = createSlice({
   name: 'simulation',
   initialState,
   reducers: {
-    startSimulation(state, action: PayloadAction<{ simulationId: string, initialTasks: Task[] }>) {
+    startSimulation(state, action: PayloadAction<{ simulationId: number; initialTasks: Task[] }>) {
       state.status = 'running';
       state.simulationId = action.payload.simulationId;
-      state.tasks = action.payload.initialTasks; // Initialize with the project tasks
+      state.tasks = action.payload.initialTasks;
       state.currentDay = 0;
-      state.events = [{
-        timestamp: Date.now(),
-        type: 'SIM_START',
-        message: 'Simulation started.'
-      }];
+      state.events = [];
     },
     pauseSimulation(state) {
       if (state.status === 'running') {
@@ -66,14 +62,45 @@ const simulationSlice = createSlice({
     setSimulationSpeed(state, action: PayloadAction<number>) {
       state.speed = action.payload;
     },
-    // This will be called by the mock simulation runner
-    tick(state, action: PayloadAction<{ day: number, kpis: KpiValues, newEvents: SimulationEvent[], updatedTasks: SimTaskState[] }>) {
-        if (state.status !== 'running') return;
-        state.currentDay = action.payload.day;
-        state.kpis = action.payload.kpis;
-        state.events.push(...action.payload.newEvents);
-        state.tasks = action.payload.updatedTasks; // Update task progress
-        state.kpiHistory = [...state.kpiHistory, { day: action.payload.day, sv: action.payload.kpis.sv, cv: action.payload.kpis.cv }].slice(-200);
+    pushEvent(state, action: PayloadAction<SimulationEvent>) {
+      const normalizedType = (action.payload.event_type as any) || action.payload.type || 'event';
+      state.events = [...state.events.slice(-199), { ...action.payload, type: normalizedType }];
+      if (normalizedType === 'SIM_END' || normalizedType === 'simulation_completed') {
+        state.status = 'finished';
+      }
+    },
+  applyTaskEvent(state, action: PayloadAction<SimulationEvent>) {
+      const evt = action.payload;
+      if (!state.tasks.length || (!evt.task_id && !evt.task_id)) return;
+      const tid = evt.task_id;
+      const tasks = state.tasks.map(t => {
+        if (t.id !== tid) return t;
+        if (evt.type === 'task_started' || evt.event_type === 'task_started') {
+          return { ...t, progress: 0 };
+        }
+        if (evt.type === 'day_advanced' || evt.event_type === 'day_advanced') {
+          const duration = t.duration || 1;
+          const increment = 1 / duration;
+          const nextProgress = Math.min(1, (t.progress ?? 0) + increment);
+          return { ...t, progress: nextProgress };
+        }
+        if (evt.type === 'task_completed' || evt.event_type === 'task_completed') {
+          return { ...t, progress: 1 };
+        }
+        return t;
+      });
+      state.tasks = tasks;
+      if (evt.event_type === 'simulation_completed') {
+        state.status = 'finished';
+      }
+    },
+    tick(state, action: PayloadAction<{ day: number; kpis: KpiValues; newEvents: SimulationEvent[]; updatedTasks: SimTaskState[] }>) {
+      if (state.status !== 'running') return;
+      state.currentDay = action.payload.day;
+      state.kpis = action.payload.kpis;
+      state.events = [...state.events, ...action.payload.newEvents].slice(-200);
+      state.tasks = action.payload.updatedTasks;
+      state.kpiHistory = [...state.kpiHistory, { day: action.payload.day, sv: action.payload.kpis.sv, cv: action.payload.kpis.cv }].slice(-200);
     },
     simulationError(state, action: PayloadAction<string>) {
         state.status = 'error';
@@ -88,6 +115,8 @@ export const {
   resumeSimulation,
   stopSimulation,
   setSimulationSpeed,
+  pushEvent,
+  applyTaskEvent,
   tick,
   simulationError,
 } = simulationSlice.actions;

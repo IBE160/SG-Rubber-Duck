@@ -3,6 +3,7 @@ import { Box, Paper, Typography, Container, Tabs, Tab, Table, TableBody, TableCe
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../store/hooks';
 import * as api from '../services/api';
+import { SimulationResults } from '../types/domain';
 
 import AnalysisSummary from '../components/analysis/AnalysisSummary';
 import AiPanel from '../components/analysis/AiPanel';
@@ -32,7 +33,7 @@ const AnalysisPage: React.FC = () => {
   const risks = useAppSelector(state => state.projects.risks);
   const simTasks = useAppSelector(state => state.simulation.tasks);
   
-  const [results, setResults] = useState<api.SimulationResults | null>(null);
+  const [results, setResults] = useState<SimulationResults | null>(null);
   const [insights, setInsights] = useState<api.AiInsights | null>(null);
   const [loading, setLoading] = useState(true);
   const [tabValue, setTabValue] = React.useState(0);
@@ -56,7 +57,13 @@ const AnalysisPage: React.FC = () => {
                 api.getSimulationResults(simulationId),
                 api.getAiInsights(simulationId)
             ]);
-            setResults(simResults);
+            const normalized: SimulationResults = {
+              ...simResults,
+              finalCost: simResults.total_cost ?? simResults.finalCost ?? 0,
+              finalDuration: simResults.total_duration ?? simResults.finalDuration ?? 0,
+              risksOccurred: simResults.risk_events ?? simResults.risksOccurred ?? 0,
+            };
+            setResults(normalized);
             setInsights(aiInsights);
         } catch (error) {
             console.error("Failed to fetch analysis data", error);
