@@ -50,10 +50,12 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride }) => {
   const [showGrid] = useState(true);
 
   const tasks: BarTask[] = useMemo(() => {
-    const source = tasksOverride && tasksOverride.length ? tasksOverride : baseTasks;
+    const source = tasksOverride && tasksOverride.length ? tasksOverride : (baseTasks || []);
     return source.map((t) => ({
       ...t,
-      affectedByRisk: risks.filter((r) => r.affected_task_ids.includes(t.id)),
+      predecessors: t.predecessors || [],
+      progress: t.progress ?? 0,
+      affectedByRisk: risks.filter((r) => r.affected_task_ids?.includes(t.id)),
     }));
   }, [baseTasks, risks, tasksOverride]);
 

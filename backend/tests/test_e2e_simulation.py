@@ -8,7 +8,6 @@ from backend import crud, schemas
 
 # All fixtures ('live_server', 'db_session') are now provided by conftest.py
 
-@pytest.mark.skip(reason="E2E test requires live server setup")
 @pytest.mark.anyio
 async def test_full_simulation_workflow(live_server: str, db_session: Session):
     """

@@ -21,17 +21,23 @@ def get_tasks(db: Session, project_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Task).filter(models.Task.project_id == project_id).offset(skip).limit(limit).all()
 
 def create_task(db: Session, task: schemas.TaskCreate, project_id: int):
-    db_task = models.Task(**task.model_dump(), project_id=project_id)
+    payload = task.model_dump()
+    deps = payload.pop("predecessors", payload.pop("dependencies", []))
+    db_task = models.Task(**payload, dependencies=deps, project_id=project_id)
     db.add(db_task)
     db.commit()
     db.refresh(db_task)
     return db_task
 
-def update_task(db: Session, task_id: int, task_in: schemas.TaskCreate):
+def update_task(db: Session, task_id: int, task_in):
     db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if db_task:
-        for var, value in task_in.dict(exclude_unset=True).items():
+        data = task_in.model_dump(exclude_unset=True)
+        deps = data.pop("predecessors", data.pop("dependencies", None))
+        for var, value in data.items():
             setattr(db_task, var, value)
+        if deps is not None:
+            db_task.dependencies = deps
         db.add(db_task)
         db.commit()
         db.refresh(db_task)
@@ -74,6 +80,40 @@ def delete_risk(db: Session, risk_id: int):
         db.delete(db_risk)
         db.commit()
     return db_risk
+
+# Resource CRUD
+def get_resources(db: Session, project_id: int, skip: int = 0, limit: int = 100):
+    return (
+        db.query(models.Resource)
+        .filter(models.Resource.project_id == project_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+def create_resource(db: Session, project_id: int, resource: schemas.ResourceCreate):
+    db_resource = models.Resource(project_id=project_id, **resource.model_dump(exclude={"project_id"}))
+    db.add(db_resource)
+    db.commit()
+    db.refresh(db_resource)
+    return db_resource
+
+def update_resource(db: Session, resource_id: int, resource_in: schemas.ResourceUpdate):
+    db_res = db.query(models.Resource).filter(models.Resource.id == resource_id).first()
+    if db_res:
+        for var, value in resource_in.model_dump(exclude_unset=True).items():
+            setattr(db_res, var, value)
+        db.add(db_res)
+        db.commit()
+        db.refresh(db_res)
+    return db_res
+
+def delete_resource(db: Session, resource_id: int):
+    db_res = db.query(models.Resource).filter(models.Resource.id == resource_id).first()
+    if db_res:
+        db.delete(db_res)
+        db.commit()
+    return db_res
 
 # SimulationRun CRUD
 def get_simulation_run(db: Session, simulation_run_id: int):

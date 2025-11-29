@@ -1,6 +1,5 @@
 import { Project, Task, Resource, Risk, SimulationRun, SimulationResults } from '../types/domain';
-import { ProjectCreate, TaskCreate, RiskCreate } from '../types/api';
-import { mockResources } from '../data/seed';
+import { ProjectCreate, ProjectUpdate, TaskCreate, RiskCreate } from '../types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
 
@@ -59,6 +58,39 @@ export const createProject = async (projectData: ProjectCreate): Promise<Project
   return response.json();
 };
 
+/**
+ * Deletes a project.
+ * Corresponds to: DELETE /projects/{project_id}
+ */
+export const deleteProject = async (projectId: number): Promise<void> => {
+  console.log(`API: Deleting project ${projectId}...`);
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete project');
+  }
+};
+
+/**
+ * Updates an existing project.
+ * Corresponds to: PATCH /projects/{project_id}
+ */
+export const updateProject = async (projectId: number, data: ProjectUpdate): Promise<Project> => {
+  console.log(`API: Updating project ${projectId}...`);
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update project');
+  }
+  return response.json();
+};
+
 
 /**
  * Fetches all details for a single project.
@@ -71,8 +103,9 @@ export const getProjectDetails = async (projectId: number): Promise<{ project: P
   const projectPromise = fetch(`${API_BASE_URL}/projects/${projectId}`);
   const tasksPromise = fetch(`${API_BASE_URL}/projects/${projectId}/tasks/`);
   const risksPromise = fetch(`${API_BASE_URL}/projects/${projectId}/risks/`);
+  const resourcesPromise = fetch(`${API_BASE_URL}/projects/${projectId}/resources/`);
 
-  const [projectResponse, tasksResponse, risksResponse] = await Promise.all([projectPromise, tasksPromise, risksPromise]);
+  const [projectResponse, tasksResponse, risksResponse, resourcesResponse] = await Promise.all([projectPromise, tasksPromise, risksPromise, resourcesPromise]);
 
   if (!projectResponse.ok) {
     throw new Error('Failed to fetch project details');
@@ -83,16 +116,19 @@ export const getProjectDetails = async (projectId: number): Promise<{ project: P
   if (!risksResponse.ok) {
     throw new Error('Failed to fetch risks for the project');
   }
+  if (!resourcesResponse.ok) {
+    throw new Error('Failed to fetch resources for the project');
+  }
 
   const project = await projectResponse.json();
   const tasks = await tasksResponse.json();
   const risks = await risksResponse.json();
+  const resources = await resourcesResponse.json();
 
-  // Resources are still mocked
   return {
     project,
     tasks,
-    resources: mockResources,
+    resources,
     risks,
   };
 };
@@ -147,6 +183,32 @@ export const deleteTask = async (taskId: number): Promise<void> => {
   if (!response.ok) {
     throw new Error('Failed to delete task');
   }
+};
+
+// Resource API Functions
+export const createResource = async (projectId: number, data: { name: string; cost_per_day: number }): Promise<Resource> => {
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}/resources/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...data, project_id: projectId }),
+  });
+  if (!response.ok) throw new Error('Failed to create resource');
+  return response.json();
+};
+
+export const updateResource = async (resourceId: number, data: Partial<{ name: string; cost_per_day: number }>): Promise<Resource> => {
+  const response = await fetch(`${API_BASE_URL}/resources/${resourceId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error('Failed to update resource');
+  return response.json();
+};
+
+export const deleteResource = async (resourceId: number): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/resources/${resourceId}`, { method: 'DELETE' });
+  if (!response.ok) throw new Error('Failed to delete resource');
 };
 
 // --- Risk API Functions ---

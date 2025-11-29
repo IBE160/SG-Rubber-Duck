@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from datetime import date, datetime
 from typing import List, Optional, Dict, Any
 
@@ -28,7 +28,7 @@ class TaskBase(BaseModel):
     progress: float = 0.0
     parent: Optional[int] = None
     cost: float = 0.0
-    dependencies: List[int] = []
+    predecessors: List[int] = Field(default_factory=list, validation_alias="dependencies", serialization_alias="predecessors")
 
 class TaskCreate(TaskBase):
     pass
@@ -40,7 +40,7 @@ class TaskUpdate(BaseModel):
     progress: Optional[float] = None
     parent: Optional[int] = None
     cost: Optional[float] = None
-    dependencies: Optional[List[int]] = None
+    predecessors: Optional[List[int]] = Field(default=None, validation_alias="dependencies", serialization_alias="predecessors")
 
 class Task(TaskBase):
     id: int
@@ -101,16 +101,44 @@ class ProjectBase(BaseModel):
     name: str
     description: Optional[str] = None
     budget: Optional[float] = None
+    contingency: float = 0.0
     start_date: date
     end_date: date
 
 class ProjectCreate(ProjectBase):
     pass
 
+class ProjectUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    budget: Optional[float] = None
+    contingency: Optional[float] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+
 class Project(ProjectBase):
     id: int
     tasks: List[Task] = []
     risks: List[Risk] = []
     simulation_runs: List[SimulationRun] = []
+    resources: List["Resource"] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+# Resource Schemas
+class ResourceBase(BaseModel):
+    name: str
+    cost_per_day: float = 0.0
+
+class ResourceCreate(ResourceBase):
+    project_id: int
+
+class ResourceUpdate(BaseModel):
+    name: Optional[str] = None
+    cost_per_day: Optional[float] = None
+
+class Resource(ResourceBase):
+    id: int
+    project_id: int
 
     model_config = ConfigDict(from_attributes=True)

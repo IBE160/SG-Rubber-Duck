@@ -65,18 +65,22 @@
       - [x] /run-agent-task sm *validate-story-context {prompt / user-input-file}
       - [x] /run-agent-task sm *story-ready-for-dev {prompt / user-input-file}
       while code-review != approved:
-        - [ ] /run-agent-task dev *develop-story {prompt / user-input-file}
-        - [ ] /run-agent-task dev *code-review {prompt / user-input-file}
-      - [ ] /run-agent-task dev *story-done {prompt / user-input-file}
-      - [ ] /run-agent-task sm *test-review {prompt / user-input-file}
-    - [ ] /run-agent-task sm *epic-retrospective {prompt / user-input-file}
+        - [x] /run-agent-task dev *develop-story {prompt / user-input-file}
+        - [x] /run-agent-task dev *code-review {prompt / user-input-file}
+      - [x] /run-agent-task dev *story-done {prompt / user-input-file}
+      - [x] /run-agent-task sm *test-review {prompt / user-input-file}
+    - [x] /run-agent-task sm *epic-retrospective {prompt / user-input-file}
 
 ### Story S1.1 — Initialize FastAPI app (Epic E1)
 - [x] Files: sprint-artifacts/S1.1.md, sprint-artifacts/S1.1.context.md
 - [x] /run-agent-task dev *develop-story "Start FastAPI with root/health, config via env"
-- [ ] /run-agent-task dev *code-review "Review S1.1 implementation"
-- [ ] /run-agent-task dev *story-done "Mark S1.1 done after review"
-- [ ] /run-agent-task sm *test-review "Post-review validation"
+- [x] /run-agent-task dev *develop-story "Add project PATCH (budget/contingency) + resource CRUD + schema migration"
+- [x] /run-agent-task dev *develop-story "Connect frontend resources to real API with create/update/delete"
+- [x] /run-agent-task qa *test "Backend smoke (pytest test_main.py) incl. simulation engine smoke"
+- [x] /run-agent-task dev *code-review "Review S1.1 implementation"
+- [x] /run-agent-task dev *story-done "Mark S1.1 done after review"
+- [x] /run-agent-task sm *test-review "Post-review validation"
+- [x] /run-agent-task sm *epic-retrospective "Document learnings for Epic E1/E2/E3 baseline"
 
 
 

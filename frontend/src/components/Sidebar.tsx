@@ -28,7 +28,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, handleDrawerToggle, collapsed, setCollapsed }) => {
   const location = useLocation();
   const navItems = [
-    { label: 'Setup', path: '/setup', icon: <SettingsSuggestOutlinedIcon /> },
     { label: 'Dashboard', path: '/dashboard', icon: <DashboardOutlinedIcon /> },
     { label: 'Insights', path: '/insights', icon: <InsightsOutlinedIcon /> },
     { label: 'Gantt Chart', path: '/gantt', icon: <TimelineOutlinedIcon /> },
@@ -36,6 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, handleDrawerToggle, colla
     { label: 'Risks', path: '/risks', icon: <WarningAmberOutlinedIcon /> },
     { label: 'Releases', path: '/releases', icon: <RocketLaunchOutlinedIcon /> },
     { label: 'Docs', path: '/docs', icon: <DescriptionOutlinedIcon /> },
+    { label: 'Setup', path: '/setup', icon: <SettingsSuggestOutlinedIcon /> },
   ];
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const playQuack = useCallback(() => {

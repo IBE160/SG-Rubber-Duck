@@ -13,6 +13,7 @@ import {
   TextField,
   Button,
   Alert,
+  Snackbar,
   Stack,
   Select,
   MenuItem,
@@ -60,10 +61,20 @@ const hasCycle = (tasks: Task[]): boolean => {
 const WbsTable: React.FC = () => {
   const { currentProject } = useAppSelector((state) => state.projects);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  const [drafts, setDrafts] = useState<Record<number, Partial<Task>>>({});
+  const [snack, setSnack] = useState<{ open: boolean; msg: string; severity: 'success' | 'error' | 'info' }>({
+    open: false,
+    msg: '',
+    severity: 'success',
+  });
 
   // Fetch project details including tasks and resources
   const { data: projectDetails, isLoading } = useProjectDetails(currentProject?.id || null);
-  const tasks = useMemo(() => projectDetails?.tasks || [], [projectDetails?.tasks]);
+  const rawTasks = useMemo(() => projectDetails?.tasks || [], [projectDetails?.tasks]);
+  const tasks = useMemo(
+    () => rawTasks.map((t) => ({ ...t, predecessors: t.predecessors || [] })),
+    [rawTasks]
+  );
   const resources = useMemo(() => projectDetails?.resources || [], [projectDetails?.resources]);
 
   // Mutations for task management
@@ -77,16 +88,6 @@ const WbsTable: React.FC = () => {
     tasks.forEach((t) => (t.predecessors || []).forEach((pid) => { if (!taskMap.has(pid)) missing.add(t.id); }));
     return missing;
   }, [tasks, taskMap]);
-
-  if (!currentProject) {
-    return (
-      <Box sx={{ textAlign: 'center', mt: 4 }}>
-        <Typography variant="h6" color="text.secondary">
-          Select a project to view its Work Breakdown Structure.
-        </Typography>
-      </Box>
-    );
-  }
 
   if (!currentProject) {
     return (
@@ -134,6 +135,7 @@ const WbsTable: React.FC = () => {
       progress: 0,
       parent: null,
       cost: 0,
+      predecessors: [] as number[],
     };
     await createTaskMutation.mutateAsync(newTaskData);
   };
@@ -145,7 +147,7 @@ const WbsTable: React.FC = () => {
   const invalidCycle = hasCycle(tasks);
   const invalidDuration = tasks.some((t) => t.duration < 0);
   const invalidNames = tasks.some((t) => !t.text || !t.text.trim());
-  const invalidPredRefs = tasks.some((t) => t.predecessors.some((pid) => !taskMap.has(pid)));
+  const invalidPredRefs = tasks.some((t) => (t.predecessors || []).some((pid) => !taskMap.has(pid)));
 
   const validationError =
     invalidCycle
@@ -176,10 +178,42 @@ const WbsTable: React.FC = () => {
     });
   };
 
+  const getDraftValue = (task: Task, field: keyof Task) => {
+    const draft = drafts[task.id];
+    if (draft && draft[field] !== undefined) return draft[field] as any;
+    return task[field] as any;
+  };
+
+  const setDraftValue = (taskId: number, field: keyof Task, value: any) => {
+    setDrafts((prev) => ({
+      ...prev,
+      [taskId]: { ...(prev[taskId] || {}), [field]: value },
+    }));
+  };
+
+  const commitDraftValue = async (taskId: number, field: keyof Task) => {
+    const draft = drafts[taskId];
+    if (!draft || draft[field] === undefined) return;
+    const value = draft[field] as any;
+    try {
+      await handleFieldChange(taskId, field, value);
+      setSnack({ open: true, msg: 'Saved', severity: 'success' });
+      setDrafts((prev) => {
+        const next = { ...(prev[taskId] || {}) };
+        delete next[field];
+        const rest = { ...prev, [taskId]: next };
+        if (!Object.keys(next).length) delete rest[taskId];
+        return rest;
+      });
+    } catch (err) {
+      setSnack({ open: true, msg: 'Save failed', severity: 'error' });
+    }
+  };
+
   const isLoading_ = createTaskMutation.isPending || updateTaskMutation.isPending || deleteTaskMutation.isPending;
 
   return (
-    <Box>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
         <Typography variant="h6">
           Work Breakdown Structure for "{currentProject.name}"
@@ -194,134 +228,186 @@ const WbsTable: React.FC = () => {
         </Button>
       </Stack>
       {validationError && <Alert severity="warning" sx={{ mb: 1 }}>{validationError}</Alert>}
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Task</TableCell>
-              <TableCell align="right">Duration (days)</TableCell>
-              <TableCell>Start Date</TableCell>
-              <TableCell>Predecessors</TableCell>
-              <TableCell></TableCell> {/* For Delete Button */}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tasks.map((task, index) => (
-                <TableRow 
-                  key={task.id} 
-                  sx={{ backgroundColor: index % 2 === 1 ? 'action.hover' : 'transparent' }}
-                  selected={selectedTaskId === task.id}
-                  onClick={() => setSelectedTaskId(task.id)}
-              >
-                <TableCell sx={{ minWidth: 200 }}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    aria-label={`Task name ${task.id}`}
-                    value={task.text}
-                    error={!task.text || !task.text.trim()}
-                    helperText={!task.text || !task.text.trim() ? 'Name required' : ''}
-                    onChange={(e) => handleFieldChange(task.id, 'text', e.target.value)}
-                    disabled={isLoading_}
-                  />
-                </TableCell>
-                <TableCell align="right" sx={{ width: 120 }}>
-                  <TextField
-                    type="number"
-                    size="small"
-                    inputProps={{ min: 0 }}
-                    aria-label={`Duration for ${task.text}`}
-                    value={task.duration}
-                    error={task.duration < 0}
-                    helperText={task.duration < 0 ? 'Must be >= 0' : ''}
-                    onChange={(e) => handleFieldChange(task.id, 'duration', Number(e.target.value))}
-                    disabled={isLoading_}
-                  />
-                </TableCell>
-                <TableCell sx={{ width: 160 }}>
-                  <TextField
-                    type="date"
-                    size="small"
-                    aria-label={`Start date for ${task.text}`}
-                    value={task.start_date}
-                    onChange={(e) => handleFieldChange(task.id, 'start_date', e.target.value)}
-                    disabled={isLoading_}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mb: 0.5 }}>
-                    <Tooltip title="Indent under previous task">
-                      <span>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleIndent(task.id)}
-                          disabled={index === 0 || isLoading_}
-                          aria-label="Indent task"
-                        >
-                          <ArrowForwardIcon fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title="Outdent to top level">
-                      <span>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleOutdent(task.id)}
-                          disabled={task.parent === null || isLoading_}
-                          aria-label="Outdent task"
-                        >
-                          <ArrowBackIcon fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                  </Stack>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    aria-label={`Predecessors for ${task.text}`}
-                    value={task.predecessors.join(', ')}
-                    onChange={(e) => handlePredecessorsChange(task.id, e.target.value)}
-                    helperText="Comma-separated task IDs"
-                    error={missingPreds.has(task.id)}
-                    FormHelperTextProps={{ sx: { color: missingPreds.has(task.id) ? 'error.main' : 'text.secondary' } }}
-                    disabled={isLoading_}
-                  />
-                  <Box sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {task.predecessors.map((pId) => (
-                      <Chip key={pId} label={taskMap.get(pId)?.text || String(pId)} size="small" />
-                    ))}
-                  </Box>
-                  <Select
-                    size="small"
-                    fullWidth
-                    value={task.resource_id || ''}
-                    displayEmpty
-                    aria-label={`Resource for ${task.text}`}
-                    onChange={(e) => handleFieldChange(task.id, 'resource_id', Number(e.target.value))}
-                    sx={{ mt: 1 }}
-                    disabled={isLoading_}
+      <Paper elevation={3} sx={{ borderRadius: 3, overflow: 'hidden', flex: 1, minHeight: 0 }}>
+        <Box sx={{ maxHeight: '60vh', overflow: 'auto', minWidth: 0 }}>
+          <TableContainer>
+            <Table 
+              size="small" 
+              stickyHeader
+              sx={{ 
+                borderCollapse: 'separate', 
+                borderSpacing: '0 14px',
+                '& th': { 
+                  borderBottom: 'none', 
+                  backgroundColor: 'rgba(255,255,255,0.04)',
+                  color: 'rgba(255,255,255,0.8)',
+                  fontWeight: 600,
+                  letterSpacing: 0.2,
+                } 
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ minWidth: 220 }}>Task</TableCell>
+                  <TableCell align="center" sx={{ width: 110 }}>Duration (days)</TableCell>
+                  <TableCell sx={{ width: 170 }}>Start Date</TableCell>
+                  <TableCell sx={{ minWidth: 220 }}>Predecessors</TableCell>
+                  <TableCell sx={{ width: 120 }} />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tasks.map((task, index) => (
+                  <TableRow 
+                    key={task.id} 
+                    sx={{ 
+                      background: 'linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))',
+                      boxShadow: '0px 14px 30px rgba(0,0,0,0.28)',
+                      borderRadius: 3,
+                      overflow: 'hidden',
+                      backdropFilter: 'blur(4px)',
+                      '& td': { borderBottom: 'none', borderTop: '1px solid rgba(255,255,255,0.04)' },
+                      '& td:first-of-type': { borderTopLeftRadius: 12, borderBottomLeftRadius: 12 },
+                      '& td:last-of-type': { borderTopRightRadius: 12, borderBottomRightRadius: 12 }
+                    }}
+                    selected={selectedTaskId === task.id}
+                    onClick={() => setSelectedTaskId(task.id)}
                   >
-                    <MenuItem value="">No resource</MenuItem>
-                    {resources.map((r) => (
-                      <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
-                    ))}
-                  </Select>
-                </TableCell>
-                <TableCell>
-                  <IconButton 
-                    size="small" 
-                    onClick={() => handleDeleteTask(task.id)} 
-                    aria-label="delete task"
-                    disabled={isLoading_}
-                  >
-                    <DeleteIcon fontSize="small" color="error" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    <TableCell sx={{ minWidth: 220 }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        aria-label={`Task name ${task.id}`}
+                        value={getDraftValue(task, 'text')}
+                        error={!getDraftValue(task, 'text') || !String(getDraftValue(task, 'text')).trim()}
+                        helperText={!getDraftValue(task, 'text') || !String(getDraftValue(task, 'text')).trim() ? 'Name required' : ''}
+                        placeholder="E.g. Foundation pour"
+                        InputProps={{ sx: { fontSize: 14, py: 1 } }}
+                        onChange={(e) => setDraftValue(task.id, 'text', e.target.value)}
+                        onBlur={() => commitDraftValue(task.id, 'text')}
+                        disabled={isLoading_}
+                      />
+                    </TableCell>
+                    <TableCell align="center" sx={{ width: 110 }}>
+                      <TextField
+                        type="number"
+                        size="small"
+                        inputProps={{ min: 0 }}
+                        aria-label={`Duration for ${task.text}`}
+                        value={getDraftValue(task, 'duration')}
+                        error={Number(getDraftValue(task, 'duration')) < 0}
+                        helperText={Number(getDraftValue(task, 'duration')) < 0 ? 'Must be >= 0' : ''}
+                        InputProps={{ sx: { fontSize: 14, py: 1 } }}
+                        onChange={(e) => setDraftValue(task.id, 'duration', Number(e.target.value))}
+                        onBlur={() => commitDraftValue(task.id, 'duration')}
+                        disabled={isLoading_}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ width: 170 }}>
+                      <TextField
+                        type="date"
+                        size="small"
+                        aria-label={`Start date for ${task.text}`}
+                        value={getDraftValue(task, 'start_date')}
+                        InputLabelProps={{ shrink: true }}
+                        InputProps={{ sx: { fontSize: 14, py: 1 } }}
+                        onChange={(e) => setDraftValue(task.id, 'start_date', e.target.value)}
+                        onBlur={() => commitDraftValue(task.id, 'start_date')}
+                        disabled={isLoading_}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ minWidth: 220 }}>
+                      <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mb: 0.5 }}>
+                        <Tooltip title="Indent under previous task">
+                          <span>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleIndent(task.id)}
+                              disabled={index === 0 || isLoading_}
+                              aria-label="Indent task"
+                            >
+                              <ArrowForwardIcon fontSize="small" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Outdent to top level">
+                          <span>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleOutdent(task.id)}
+                              disabled={task.parent === null || isLoading_}
+                              aria-label="Outdent task"
+                            >
+                              <ArrowBackIcon fontSize="small" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      </Stack>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        aria-label={`Predecessors for ${task.text}`}
+                        value={(getDraftValue(task, 'predecessors') as number[]).join(', ')}
+                        onChange={(e) => setDraftValue(task.id, 'predecessors', e.target.value.split(',').map((v) => v.trim()).filter(Boolean).map(Number))}
+                        onBlur={(e) => handlePredecessorsChange(task.id, e.target.value)}
+                        placeholder="Comma-separated IDs (e.g. 1, 3)"
+                        helperText="Predecessor IDs"
+                        error={missingPreds.has(task.id)}
+                        InputProps={{ sx: { fontSize: 13, py: 1 } }}
+                        FormHelperTextProps={{ sx: { color: missingPreds.has(task.id) ? 'error.main' : 'text.secondary' } }}
+                        disabled={isLoading_}
+                      />
+                      <Box sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {task.predecessors.map((pId) => (
+                          <Chip key={pId} label={taskMap.get(pId)?.text || String(pId)} size="small" />
+                        ))}
+                      </Box>
+                      <Select
+                        size="small"
+                        fullWidth
+                        value={getDraftValue(task, 'resource_id') || ''}
+                        displayEmpty
+                        aria-label={`Resource for ${task.text}`}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? undefined : Number(e.target.value);
+                          setDraftValue(task.id, 'resource_id', val);
+                          if (val !== undefined) commitDraftValue(task.id, 'resource_id');
+                        }}
+                        sx={{ mt: 1 }}
+                        disabled={isLoading_}
+                      >
+                        <MenuItem value="">No resource</MenuItem>
+                        {resources.map((r) => (
+                          <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                    <TableCell sx={{ width: 120 }}>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => handleDeleteTask(task.id)} 
+                        aria-label="delete task"
+                        disabled={isLoading_}
+                      >
+                        <DeleteIcon fontSize="small" color="error" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Paper>
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={1800}
+        onClose={() => setSnack((s) => ({ ...s, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert severity={snack.severity} variant="filled" onClose={() => setSnack((s) => ({ ...s, open: false }))}>
+          {snack.msg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
