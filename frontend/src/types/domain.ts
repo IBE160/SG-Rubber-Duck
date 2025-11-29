@@ -42,6 +42,51 @@ export interface Risk {
   affected_task_ids: number[]; // Now numbers
 }
 
+export interface SimulationRun {
+  id: number;
+  project_id: number;
+  status: string;
+  created_at: string;
+  started_at?: string | null;
+  completed_at?: string | null;
+  total_duration?: number | null;
+  total_cost?: number | null;
+  critical_path?: number[];
+  results?: SimulationResults | null;
+}
+
+export interface SimulationResults {
+  total_duration?: number;
+  total_cost?: number;
+  tasks_completed?: number;
+  risk_events?: number;
+  event_count?: number;
+  base_duration?: number;
+  critical_path?: number[];
+  timeline?: { day: number; active: number; completed: number }[];
+  p80_cost?: number; // optional future fields
+  p80_duration?: number;
+  base_cost?: number;
+  mean_duration?: number;
+  std_dev_duration?: number;
+  p50_duration?: number;
+  p90_duration?: number;
+  mean_cost?: number;
+  std_dev_cost?: number;
+  p50_cost?: number;
+  p90_cost?: number;
+  iterations?: number;
+  duration_distribution?: number[];
+  bin_edges_duration?: number[];
+  cost_distribution?: number[];
+  bin_edges_cost?: number[];
+  ai_assessment?: string;
+  ai_recommendations?: string[];
+  finalCost?: number;
+  finalDuration?: number;
+  risksOccurred?: number;
+}
+
 // Data structure for the Gantt chart
 export interface GanttTask {
     id: number;
@@ -64,12 +109,25 @@ export interface GanttLink {
 }
 
 // For simulation logs
-export type SimulationEventType = 'TASK_START' | 'TASK_END' | 'RISK_EVENT' | 'SIM_START' | 'SIM_END';
+export type SimulationEventType =
+  | 'TASK_START'
+  | 'TASK_END'
+  | 'RISK_EVENT'
+  | 'SIM_START'
+  | 'SIM_END'
+  | 'task_started'
+  | 'task_completed'
+  | 'simulation_completed'
+  | 'connected'
+  | 'pong';
 
 export interface SimulationEvent {
-    timestamp: number; // Unix timestamp or simulation day
-    type: SimulationEventType;
-    message: string;
+    timestamp: string | number;
+    type?: SimulationEventType | string;
+    event_type?: SimulationEventType | string;
+    message?: string;
+    task_id?: number;
+    risk_id?: number;
     details?: Record<string, unknown>;
 }
 

@@ -6,9 +6,11 @@
 const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8001';
 
 export interface SimulationEvent {
-  type: 'progress' | 'task_update' | 'risk_occurred' | 'cost_update' | 'error' | 'complete';
-  data: Record<string, unknown>;
+  event_type: string;
   timestamp: string;
+  task_id?: number;
+  risk_id?: number;
+  details?: Record<string, unknown>;
 }
 
 export class WebSocketClient {
@@ -36,8 +38,8 @@ export class WebSocketClient {
           console.log('WebSocket connected:', this.url);
           this.reconnectAttempts = 0;
           this.emit('connected', {
-            type: 'progress',
-            data: { status: 'connected' },
+            event_type: 'connected',
+            details: { status: 'connected' },
             timestamp: new Date().toISOString(),
           });
           resolve();
@@ -46,7 +48,7 @@ export class WebSocketClient {
         this.ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data) as SimulationEvent;
-            this.emit(data.type, data);
+            this.emit(data.event_type, data);
           } catch (err) {
             console.error('Failed to parse WebSocket message:', err);
           }
@@ -55,8 +57,8 @@ export class WebSocketClient {
         this.ws.onerror = (error) => {
           console.error('WebSocket error:', error);
           this.emit('error', {
-            type: 'error',
-            data: { error: String(error) },
+            event_type: 'error',
+            details: { error: String(error) },
             timestamp: new Date().toISOString(),
           });
           reject(error);
@@ -93,8 +95,8 @@ export class WebSocketClient {
     } else {
       console.error('Max reconnection attempts reached');
       this.emit('error', {
-        type: 'error',
-        data: { error: 'Connection lost - max reconnect attempts exceeded' },
+        event_type: 'error',
+        details: { error: 'Connection lost - max reconnect attempts exceeded' },
         timestamp: new Date().toISOString(),
       });
     }
@@ -179,25 +181,23 @@ export const useWebSocket = (simulationId: string | null) => {
     clientRef.current = client;
 
     // Subscribe to all events
-    const unsubscribeProgress = client.on('progress', (event) => {
-      eventsRef.current = [event, ...eventsRef.current].slice(0, 100); // Keep last 100 events
+    const addEvent = (event: SimulationEvent) => {
+      eventsRef.current = [event, ...eventsRef.current].slice(0, 200);
       setEvents([...eventsRef.current]);
-    });
+    };
 
-    const unsubscribeError = client.on('error', (event) => {
-      eventsRef.current = [event, ...eventsRef.current].slice(0, 100);
-      setEvents([...eventsRef.current]);
-      setError(String(event.data.error));
-    });
-
-    const unsubscribeComplete = client.on('complete', (event) => {
-      eventsRef.current = [event, ...eventsRef.current].slice(0, 100);
-      setEvents([...eventsRef.current]);
-    });
-
-    const unsubscribeConnected = client.on('connected', () => {
+    const unsubscribeConnected = client.on('connected', (event) => {
       setIsConnected(true);
       setError(null);
+      addEvent(event);
+    });
+    const unsubscribeStarted = client.on('simulation_started', addEvent);
+    const unsubscribeTaskStarted = client.on('task_started', addEvent);
+    const unsubscribeTaskCompleted = client.on('task_completed', addEvent);
+    const unsubscribeCompleted = client.on('simulation_completed', addEvent);
+    const unsubscribeError = client.on('error', (event) => {
+      addEvent(event);
+      setError(String(event.details?.error || 'WebSocket error'));
     });
 
     // Connect
@@ -208,10 +208,12 @@ export const useWebSocket = (simulationId: string | null) => {
 
     // Cleanup
     return () => {
-      unsubscribeProgress();
-      unsubscribeError();
-      unsubscribeComplete();
       unsubscribeConnected();
+      unsubscribeStarted();
+      unsubscribeTaskStarted();
+      unsubscribeTaskCompleted();
+      unsubscribeCompleted();
+      unsubscribeError();
       client.disconnect();
       clientRef.current = null;
     };

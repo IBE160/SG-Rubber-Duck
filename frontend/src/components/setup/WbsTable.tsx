@@ -74,7 +74,7 @@ const WbsTable: React.FC = () => {
   const taskMap = useMemo(() => new Map(tasks.map((t) => [t.id, t])), [tasks]); // Use number IDs
   const missingPreds = useMemo(() => {
     const missing = new Set<number>(); // Use number IDs
-    tasks.forEach((t) => t.predecessors.forEach((pid) => { if (!taskMap.has(pid)) missing.add(t.id); }));
+    tasks.forEach((t) => (t.predecessors || []).forEach((pid) => { if (!taskMap.has(pid)) missing.add(t.id); }));
     return missing;
   }, [tasks, taskMap]);
 

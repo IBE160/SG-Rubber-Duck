@@ -40,33 +40,33 @@ const DashboardPage: React.FC = () => {
               <>
                 <Typography variant="h6" gutterBottom>Monte Carlo Simulation</Typography>
                 <Typography variant="body2" title={`Based on ${simulationResult.iterations} iterations`}>
-                  Base Duration (CPM): <strong>{simulationResult.base_duration.toFixed(1)} days</strong>
+                  Base Duration (CPM): <strong>{(simulationResult.base_duration ?? 0).toFixed(1)} days</strong>
                 </Typography>
                 <Typography variant="body2">
-                  Mean Duration: <strong>{simulationResult.mean_duration.toFixed(1)} days</strong>
+                  Mean Duration: <strong>{(simulationResult.mean_duration ?? 0).toFixed(1)} days</strong>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Std. Deviation: {simulationResult.std_dev_duration.toFixed(1)} days
+                  Std. Deviation: {(simulationResult.std_dev_duration ?? 0).toFixed(1)} days
                 </Typography>
                 <Box sx={{ my: 2 }}>
                   <Typography variant="subtitle2">Probabilistic Durations:</Typography>
-                  <Typography variant="body2">50% Chance (P50): <strong>{simulationResult.p50_duration.toFixed(1)} days</strong></Typography>
-                  <Typography variant="body2">80% Chance (P80): <strong>{simulationResult.p80_duration.toFixed(1)} days</strong></Typography>
-                  <Typography variant="body2">90% Chance (P90): <strong>{simulationResult.p90_duration.toFixed(1)} days</strong></Typography>
+                  <Typography variant="body2">50% Chance (P50): <strong>{(simulationResult.p50_duration ?? 0).toFixed(1)} days</strong></Typography>
+                  <Typography variant="body2">80% Chance (P80): <strong>{(simulationResult.p80_duration ?? 0).toFixed(1)} days</strong></Typography>
+                  <Typography variant="body2">90% Chance (P90): <strong>{(simulationResult.p90_duration ?? 0).toFixed(1)} days</strong></Typography>
                 </Box>
                 <Typography variant="subtitle2">Duration Distribution:</Typography>
                 <Box sx={{ border: '1px solid #ccc', p: 1, borderRadius: 1 }}>
-                  <svg width="100%" height="100" viewBox={`0 0 100 ${Math.max(...simulationResult.duration_distribution)}`}>
-                    {simulationResult.duration_distribution.map((value, index) => (
+                  <svg width="100%" height="100" viewBox={`0 0 100 ${Math.max(...(simulationResult.duration_distribution || [0, 1]))}`}>
+                    {(simulationResult.duration_distribution || []).map((value, index) => (
                       <rect
                         key={index}
-                        x={(index / simulationResult.duration_distribution.length) * 100}
-                        y={Math.max(...simulationResult.duration_distribution) - value}
-                        width={100 / simulationResult.duration_distribution.length - 1}
+                        x={(index / (simulationResult.duration_distribution || []).length) * 100}
+                        y={Math.max(...(simulationResult.duration_distribution || [0])) - value}
+                        width={100 / (simulationResult.duration_distribution || []).length - 1}
                         height={value}
                         fill="#1976d2"
                       >
-                        <title>{`~${simulationResult.bin_edges_duration[index].toFixed(0)} days: ${value} runs`}</title>
+                        <title>{`~${(simulationResult.bin_edges_duration?.[index] ?? 0).toFixed(0)} days: ${value} runs`}</title>
                       </rect>
                     ))}
                   </svg>
@@ -93,7 +93,7 @@ const DashboardPage: React.FC = () => {
               </Typography>
               <Typography variant="subtitle2">Recommendations:</Typography>
               <ul>
-                {simulationResult.ai_recommendations.map((rec, index) => (
+                {(simulationResult.ai_recommendations || []).map((rec, index) => (
                   <li key={index}><Typography variant="body2">{rec}</Typography></li>
                 ))}
               </ul>

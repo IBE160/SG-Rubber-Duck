@@ -16,6 +16,7 @@ const KpiCard: React.FC<{ title: string; value: string; color?: string, descript
 
 const KpiDashboard: React.FC = () => {
   const { simulationResult, currentProject } = useAppSelector(state => state.projects);
+  const simEvents = useAppSelector(state => state.simulation.events);
 
   const formatCurrency = (value: number) => {
     if (typeof value !== 'number' || isNaN(value)) return '$0';
@@ -26,16 +27,26 @@ const KpiDashboard: React.FC = () => {
     return <Typography>Select a project to see KPIs.</Typography>;
   }
 
-  if (!simulationResult) {
+  const budget = currentProject.budget;
+  const taskCompletedCost = simEvents
+    .filter(e => e.event_type === 'task_completed' && typeof e.details?.cost === 'number')
+    .reduce((sum, e) => sum + (e.details?.cost as number), 0);
+  const lastDayEvent = simEvents.find(e => e.event_type === 'day_advanced');
+  const liveDuration = (lastDayEvent?.details as any)?.day || 0;
+
+  const totalCost = simulationResult?.total_cost ?? taskCompletedCost;
+  const totalDuration = simulationResult?.total_duration ?? liveDuration;
+  const tasksCompleted = simulationResult?.tasks_completed ?? simEvents.filter(e => e.event_type === 'task_completed').length;
+  const riskEvents = simulationResult?.risk_events ?? simEvents.filter(e => e.event_type === 'risk_triggered').length;
+  const baseDuration = simulationResult?.base_duration ?? undefined;
+  const criticalPath = simulationResult?.critical_path ?? [];
+  const overrun = totalCost - budget;
+
+  if (!simulationResult && simEvents.length === 0) {
     return (
         <Alert severity="info">Run a simulation to view Key Performance Indicators.</Alert>
     );
   }
-  
-  const budget = currentProject.budget;
-  const baseCost = simulationResult.base_cost;
-  const p80Cost = simulationResult.p80_cost;
-  const overrun = p80Cost - budget;
 
   return (
     <Box>
@@ -45,23 +56,31 @@ const KpiDashboard: React.FC = () => {
             <KpiCard title="Project Budget" value={formatCurrency(budget)} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-            <KpiCard title="Base Cost (CPM)" value={formatCurrency(baseCost)} description="Deterministic cost without risks." />
+            <KpiCard title="Total Cost" value={formatCurrency(totalCost)} description="Includes risk impacts when present." color={totalCost > budget ? 'error.main' : 'success.main'} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
             <KpiCard 
-              title="P80 Cost" 
-              value={formatCurrency(p80Cost)} 
-              description="80% confidence the project will not exceed this cost."
-              color={p80Cost > budget ? 'error.main' : 'success.main'}
+              title="Duration (days)" 
+              value={totalDuration?.toString() || '0'} 
+              description={baseDuration ? `Base CPM: ${baseDuration} days` : 'Live estimate'}
             />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
             <KpiCard 
-              title="Potential Overrun (P80)" 
+              title="Cost Overrun" 
               value={formatCurrency(overrun)} 
-              description="Difference between P80 Cost and Budget."
+              description="Difference between total cost and budget."
               color={overrun > 0 ? 'error.main' : 'text.primary'}
             />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+            <KpiCard title="Tasks Completed" value={tasksCompleted.toString()} description="Completed during this run." />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+            <KpiCard title="Risk Events" value={riskEvents.toString()} description="Triggered during this run." color={riskEvents > 0 ? 'warning.main' : 'success.main'} />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+            <KpiCard title="Critical Path" value={criticalPath.join(' → ') || 'N/A'} description="From CPM baseline." />
         </Grid>
       </Grid>
     </Box>

@@ -15,6 +15,10 @@ const getEventIcon = (type: SimulationEventType) => {
         case 'TASK_START': return <PlayCircleOutlineIcon color="primary" />;
         case 'TASK_END': return <CheckCircleOutlineIcon color="primary" />;
         case 'RISK_EVENT': return <WarningAmberIcon color="warning" />;
+        case 'task_started': return <PlayCircleOutlineIcon color="primary" />;
+        case 'task_completed': return <CheckCircleOutlineIcon color="primary" />;
+        case 'simulation_completed': return <CheckCircleOutlineIcon color="success" />;
+        case 'connected': return <PlayArrowIcon color="success" />;
         default: return <PlayCircleOutlineIcon color="disabled" />;
     }
 }
@@ -34,11 +38,11 @@ const EventLog: React.FC = () => {
         {events.map((event, index) => (
           <ListItem key={index}>
             <ListItemIcon sx={{ minWidth: 32 }}>
-                {getEventIcon(event.type)}
+                {getEventIcon((event.type ?? event.event_type ?? 'SIM_START') as SimulationEventType)}
             </ListItemIcon>
             <ListItemText
-              primary={event.message}
-              secondary={new Date(event.timestamp).toLocaleTimeString()}
+              primary={event.message || event.type || event.event_type}
+              secondary={`${new Date(event.timestamp).toLocaleTimeString()} • ${event.details ? JSON.stringify(event.details) : ''}`}
             />
           </ListItem>
         ))}
