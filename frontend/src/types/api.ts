@@ -6,6 +6,10 @@ export interface ProjectCreate {
   end_date: string;
 }
 
+export interface ProjectUpdate extends Partial<ProjectCreate> {
+  contingency?: number;
+}
+
 export interface TaskCreate {
   text: string;
   start_date: string;

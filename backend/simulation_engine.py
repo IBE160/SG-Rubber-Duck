@@ -42,9 +42,10 @@ class SimulationEngine:
       task_started, risk_triggered, task_completed, simulation_completed.
     """
 
-    def __init__(self, db: Session, simulation_run_id: int):
+    def __init__(self, db: Session, simulation_run_id: int, loop: asyncio.AbstractEventLoop):
         self.db = db
         self.simulation_run_id = simulation_run_id
+        self.loop = loop
         self.random = random.Random()
         self.event_count = 0
         self.risk_events = 0
@@ -66,8 +67,18 @@ class SimulationEngine:
             "risk_id": risk_id,
             "details": details,
         }
-        # Broadcast safely from sync context
-        asyncio.run(ws_manager.broadcast(self.simulation_run_id, payload))
+        future = asyncio.run_coroutine_threadsafe(
+            ws_manager.broadcast(self.simulation_run_id, payload), self.loop
+        )
+        try:
+            # Add a timeout to avoid blocking the simulation thread indefinitely
+            future.result(timeout=5.0)
+        except asyncio.TimeoutError:
+            print(f"WebSocket broadcast timed out for event: {event_type}")
+        except Exception as e:
+            # In a real app, you would have more robust logging
+            print(f"Error broadcasting WebSocket event: {e}")
+
         self.event_count += 1
 
     def _prepare_state(self, sim) -> Dict[int, TaskState]:

@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as api from './api';
-import { ProjectCreate, TaskCreate, RiskCreate } from '../types/api';
+import { ProjectCreate, ProjectUpdate, TaskCreate, RiskCreate } from '../types/api';
 
 // Query Keys for organized caching
 export const queryKeys = {
@@ -71,6 +71,36 @@ export const useCreateProject = () => {
     onSuccess: () => {
       // Invalidate projects list to refetch
       queryClient.invalidateQueries({ queryKey: queryKeys.projects.list() });
+    },
+  });
+};
+
+/**
+ * Update a project mutation
+ */
+export const useUpdateProject = (projectId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: ProjectUpdate) => api.updateProject(projectId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.list() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.details(projectId) });
+    },
+  });
+};
+
+/**
+ * Delete a project mutation
+ */
+export const useDeleteProject = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (projectId: number) => api.deleteProject(projectId),
+    onSuccess: (_data, projectId) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.list() });
+      queryClient.removeQueries({ queryKey: queryKeys.projects.details(projectId) });
     },
   });
 };
@@ -210,6 +240,46 @@ export const useSimulationResult = (simulationRunId: number | null) => {
     enabled: simulationRunId != null,
     staleTime: 10 * 60 * 1000,
     retry: 1,
+  });
+};
+
+// ============================================================================
+// RESOURCES
+// ============================================================================
+export const useCreateResource = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { name: string; cost_per_day: number }) => api.createResource(projectId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.details(projectId),
+      });
+    },
+  });
+};
+
+export const useUpdateResource = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ resourceId, data }: { resourceId: number; data: Partial<{ name: string; cost_per_day: number }> }) =>
+      api.updateResource(resourceId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.details(projectId),
+      });
+    },
+  });
+};
+
+export const useDeleteResource = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (resourceId: number) => api.deleteResource(resourceId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.details(projectId),
+      });
+    },
   });
 };
 

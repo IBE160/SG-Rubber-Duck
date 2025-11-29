@@ -72,7 +72,7 @@ def read_project(project_id: int, db: Session = Depends(get_db)):
 
 
 @app.patch("/projects/{project_id}", response_model=schemas.Project, tags=["Projects"])
-def update_project(project_id: int, project: schemas.ProjectCreate, db: Session = Depends(get_db)):
+def update_project(project_id: int, project: schemas.ProjectUpdate, db: Session = Depends(get_db)):
     db_project = crud.get_project(db, project_id=project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -127,12 +127,7 @@ def update_task(task_id: int, task: schemas.TaskUpdate, db: Session = Depends(ge
     db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
-    for var, value in task.model_dump(exclude_unset=True).items():
-        setattr(db_task, var, value)
-    db.add(db_task)
-    db.commit()
-    db.refresh(db_task)
-    return db_task
+    return crud.update_task(db, task_id=task_id, task_in=task)
 
 
 @app.delete("/tasks/{task_id}", response_model=schemas.Task, tags=["Tasks"])
@@ -248,6 +243,40 @@ def delete_event_log(event_log_id: int, db: Session = Depends(get_db)):
     if db_event_log is None:
         raise HTTPException(status_code=404, detail="Event log not found")
     return {"message": "Event log deleted successfully"}
+
+# Resource endpoints
+@app.get("/projects/{project_id}/resources/", response_model=List[schemas.Resource], tags=["Resources"])
+def read_resources_for_project(
+    project_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return crud.get_resources(db, project_id=project_id, skip=skip, limit=limit)
+
+
+@app.post("/projects/{project_id}/resources/", response_model=schemas.Resource, tags=["Resources"])
+def create_resource_for_project(
+    project_id: int, resource: schemas.ResourceCreate, db: Session = Depends(get_db)
+):
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return crud.create_resource(db, project_id=project_id, resource=resource)
+
+
+@app.patch("/resources/{resource_id}", response_model=schemas.Resource, tags=["Resources"])
+def update_resource(resource_id: int, resource: schemas.ResourceUpdate, db: Session = Depends(get_db)):
+    db_res = crud.update_resource(db, resource_id=resource_id, resource_in=resource)
+    if db_res is None:
+        raise HTTPException(status_code=404, detail="Resource not found")
+    return db_res
+
+
+@app.delete("/resources/{resource_id}", response_model=schemas.Resource, tags=["Resources"])
+def delete_resource(resource_id: int, db: Session = Depends(get_db)):
+    db_res = crud.delete_resource(db, resource_id=resource_id)
+    if db_res is None:
+        raise HTTPException(status_code=404, detail="Resource not found")
+    return db_res
 
 
 # CPM Calculation endpoints
@@ -377,11 +406,11 @@ async def broadcast_event(
     return {"status": "event_broadcasted", "event_id": db_event.id}
 
 
-def _run_simulation(simulation_run_id: int):
+def _run_simulation(simulation_run_id: int, loop: asyncio.AbstractEventLoop):
     """Background simulation runner using the robust SimulationEngine."""
     db = SessionLocal()
     try:
-        engine = SimulationEngine(db, simulation_run_id)
+        engine = SimulationEngine(db, simulation_run_id, loop)
         engine.run()
     finally:
         db.close()
@@ -408,7 +437,8 @@ def start_simulation_background(
         sim = crud.create_simulation_run(db, project_id, schemas.SimulationRunCreate(seed=None))
         target_id = sim.id
 
-    background_tasks.add_task(_run_simulation, target_id)
+    loop = asyncio.get_running_loop()
+    background_tasks.add_task(_run_simulation, target_id, loop)
     return {"message": "Simulation started in the background. Check back later for results.", "simulation_run_id": target_id}
 
 

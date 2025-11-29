@@ -11,12 +11,14 @@ class Project(Base):
     name = Column(String, index=True)
     description = Column(String)
     budget = Column(Float)
+    contingency = Column(Float, default=0.0)
     start_date = Column(Date)
     end_date = Column(Date)
 
     tasks = relationship("Task", back_populates="project", cascade="all, delete-orphan")
     risks = relationship("Risk", back_populates="project", cascade="all, delete-orphan")
     simulation_runs = relationship("SimulationRun", back_populates="project", cascade="all, delete-orphan")
+    resources = relationship("Resource", back_populates="project", cascade="all, delete-orphan")
 
 
 class Task(Base):
@@ -48,6 +50,17 @@ class Risk(Base):
     project_id = Column(Integer, ForeignKey("projects.id"))
 
     project = relationship("Project", back_populates="risks")
+
+
+class Resource(Base):
+    __tablename__ = "resources"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    cost_per_day = Column(Float, default=0.0)
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
+
+    project = relationship("Project", back_populates="resources")
 
 
 class SimulationRun(Base):

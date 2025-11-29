@@ -48,23 +48,23 @@ scope:
     - id: S3.1
       epic: E3
       description: "Initialize React + Vite project with core routing."
-      status: "pending"
+      status: "completed"
     - id: S3.2
       epic: E3
       description: "Develop UI shell for Project Setup screen."
-      status: "pending"
+      status: "completed"
     - id: S3.3
       epic: E3
       description: "Develop UI shell for Simulation screen."
-      status: "pending"
+      status: "completed"
     - id: S3.4
       epic: E3
       description: "Integrate TanStack Query for basic frontend data fetching."
-      status: "pending"
+      status: "completed"
     - id: S3.5
       epic: E3
       description: "Establish basic WebSocket connection in frontend."
-      status: "pending"
+      status: "completed"
 
 risks:
   - id: R1

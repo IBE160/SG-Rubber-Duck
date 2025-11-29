@@ -20,7 +20,7 @@ const SetupPage: React.FC = () => {
 
           {/* Middle Panel: WBS Table */}
           <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Paper elevation={2} sx={{ flexGrow: 1, p: 2, overflowY: 'auto', borderColor: 'rgba(255,255,255,0.08)' }}>
+            <Paper elevation={2} sx={{ flexGrow: 1, p: 2, overflow: 'hidden', borderColor: 'rgba(255,255,255,0.08)' }}>
               <WbsTable />
             </Paper>
           </Grid>

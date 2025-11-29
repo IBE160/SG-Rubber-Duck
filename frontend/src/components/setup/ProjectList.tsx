@@ -9,11 +9,15 @@ import {
   Button,
   Box,
   CircularProgress,
-  Alert
+  Alert,
+  IconButton,
+  Tooltip,
+  Paper,
 } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { fetchProjectDetails } from '../../store/projectSlice';
-import { useProjects } from '../../services/queries';
+import { fetchProjectDetails, setCurrentProject } from '../../store/projectSlice';
+import { useProjects, useDeleteProject } from '../../services/queries';
 import ProjectForm from './ProjectForm';
 
 const ProjectList: React.FC = () => {
@@ -23,9 +27,20 @@ const ProjectList: React.FC = () => {
 
   // Use TanStack Query to fetch projects
   const { data: projects = [], isLoading, error } = useProjects();
+  const deleteProjectMutation = useDeleteProject();
   
   const handleSelectProject = (projectId: number) => {
     dispatch(fetchProjectDetails(projectId));
+  };
+
+  const handleDeleteProject = async (projectId: number) => {
+    const projectName = projects.find((p) => p.id === projectId)?.name || 'this project';
+    const confirmed = window.confirm(`Delete ${projectName}? This action cannot be undone.`);
+    if (!confirmed) return;
+    await deleteProjectMutation.mutateAsync(projectId);
+    if (currentProject?.id === projectId) {
+      dispatch(setCurrentProject(null));
+    }
   };
 
   const handleOpenForm = () => {
@@ -60,14 +75,38 @@ const ProjectList: React.FC = () => {
     content = (
       <List>
         {projects.map((project) => (
-          <ListItem key={project.id} disablePadding>
+          <ListItem 
+            key={project.id} 
+            disablePadding
+            secondaryAction={
+              <Tooltip title="Delete project">
+                <IconButton edge="end" onClick={() => handleDeleteProject(project.id)} size="small">
+                  <DeleteOutlineIcon fontSize="small" color="error" />
+                </IconButton>
+              </Tooltip>
+            }
+            sx={{ mb: 1 }}
+          >
             <ListItemButton
               selected={currentProject?.id === project.id}
               onClick={() => handleSelectProject(project.id)}
+              sx={{
+                borderRadius: 2,
+                px: 2,
+                py: 1.5,
+                background: currentProject?.id === project.id 
+                  ? 'linear-gradient(135deg, rgba(70,130,255,0.25), rgba(70,130,255,0.1))'
+                  : 'rgba(255,255,255,0.04)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05))',
+                },
+              }}
             >
               <ListItemText 
                 primary={project.name} 
                 secondary={project.description} 
+                primaryTypographyProps={{ fontWeight: 600 }}
+                secondaryTypographyProps={{ color: 'text.secondary' }}
               />
             </ListItemButton>
           </ListItem>
@@ -77,22 +116,29 @@ const ProjectList: React.FC = () => {
   }
 
   return (
-    <>
-      <Typography variant="h6" gutterBottom>
+    <Paper
+      elevation={4}
+      sx={{
+        p: 2,
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
+        backdropFilter: 'blur(6px)',
+      }}
+    >
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, letterSpacing: 0.3 }}>
         Projects
       </Typography>
-      <Button variant="contained" fullWidth onClick={handleOpenForm}>
+      <Button variant="contained" fullWidth onClick={handleOpenForm} sx={{ mb: 2 }}>
         New Project
       </Button>
-      <Divider sx={{ my: 2 }} />
+      <Divider sx={{ my: 1 }} />
       {content}
       <ProjectForm
         open={isFormOpen}
         onClose={handleCloseForm}
       />
-    </>
+    </Paper>
   );
 };
 
 export default ProjectList;
-
