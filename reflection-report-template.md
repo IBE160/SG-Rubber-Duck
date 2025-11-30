@@ -20,7 +20,8 @@
 
 Hovedmålet med prosjektet var å lage en applikasjon som bidrar i prosjektplanleggingen ved å bruke input fra bruker til å simulere hvor bra eller dårlig et prosjekt er. Applikasjonen skal beregne enkelte KPI'er som fremdriftsavvik og kostnadsavvik, og i tillegg vurdrer kritisk sti.
 
--- Hva har vi utviklet??
+Vi har forsøkt å utvikle en applikasjon hvor bruker kan legge inn et prosjekt med detaljer om tasks og finansielle forhold. KI simulerer deretter prosjektet og setter opp et Gantt-skjema, beregner løpende SV og CV. KI skal i tillegg regne ut endelig kostnad og endelig varighet på prosjektet. KI skal også gi en skriftlig analyse av prosjektet og komme med eventuelle anbefaler til endringer dersom prosjektet er foran eller bak på tid eller budsjett. 
+
 
 ### 2.2 Arbeidsmetodikk
 
@@ -32,25 +33,28 @@ KI ble naturligvis benyttet i flere deler av prosjektet, fra utarbeidelse av pro
 
 [Liste over de viktigste teknologiene og verktøyene dere brukte]
 
-- Frontend: NextJS
+- Frontend: NextJS, React, Vite
 - Backend: Python
-- Database: [f.eks. Supabase, MongoDB, PostgreSQL] ??????
+- Database: Recharts, dhtmlx-gantt, gsap, OGL, react-bits/shadcn, Zod, SQLAlchemy, Alembic, SQLite, Pydantic, Websocket, python-dotenv
 - KI-verktøy: Gemini CLI
-- Andre verktøy: VS Code, BMAD
+- Andre verktøy: VS Code, BMAD, Google Stitch, npm, Git
 
 ### 2.4 Utviklingsfaser
 
-[Beskriv de ulike fasene i utviklingen]
+- [Hva gjorde dere i denne fasen?]
+- [Hvordan brukte dere KI her? Husk å lagre promptene deres! Inkluder ALLE stegene dere gjorde.]
 
 **Fase 1: Planlegging**
 
-- [Hva gjorde dere i denne fasen?]
-- [Hvordan brukte dere KI her? Husk å lagre promptene deres! Inkluder ALLE stegene dere gjorde.]
+I planleggingsfasen brukte vi KI aktivt for å utvikle et førsteutkast til prosjektforslag. Vi ga KI en kombinasjon av prosjekt-mal fra faglærer, oppgaveforslag, og la til våre egne ideer for hva vi ønsket av applikasjonen. KI genererte dermed proposal.md som var vårt utgangspunkt, men vi kjørte filen gjennom KI flere ganger hvor vi ba om forbedringer og endte til slutt opp med en versjon 3 som ble vårt endelige proposal. Vi passet på å lese over forslagene underveis for å avdekke eventuelle feil eller svakheter, men det ble ikke funnet noen. 
+
+Valg av prosjekt ble selvfølgelig også diskutert i planleggingsfasen. Vi øsnket å velge et prosjekt med moderat vanskelighetsgrad og som kunne kobles til andre fag enkelte av oss tar, som prosjektledelse. Valget var kanskje noe optimistisk, men vi mente det ville gi bedre læring enn å velge et for lett prosjekt. Og vi hadde jo KI til hjelp hele veien så vi følte oss trygg på valget. 
 
 **Fase 2: Utvikling**
 
-- [Hva gjorde dere i denne fasen?]
-- [Hvordan brukte dere KI her? Husk å lagre promptene deres! Inkluder ALLE stegene dere gjorde.]
+Utviklingsfasen bygget direkte på project_plan som var gitt av faglærer, og project_tracker som ble generert av KI med proposal v3. Fasene som var gitt i project_plan ga utgangspunkt for hvordan vi delte opp arbeidet. Dette ble gjort for å unngå overlapp og utilsiktede endringer i hverandres arbeid, i tillegg til å spille på enkeltes erfaring og kunnskap om denne type arbeid. 
+
+Vi fulgte i stor grad stegene i project_plan og project_tracker slik de står, spesielt siden mye av promptene var gitt i project_plan. KI ble selvfølgelig benyttet til hovedarbeidet med å skrive og forbedre koden. Den ble i tillegg enkelte ganger bedt om å forklare hvorfor den virket å hoppe over et steg, eller at den ikke genererte forventet fil. Ved siden av Gemini CLI og eventuelle KI-tjenester utenfor, benyttet vi Google Stitch [ja, også KI..] til å komme med forslag i ux-prosessen. Vi tok også inspirasjon fra andre nettsider, men det var begrenset med dette tilgjengelig. 
 
 ---
 
@@ -73,7 +77,7 @@ Gruppen opplevde ikke nødvendigvis noen nevneverdige utfordringer med samarbeid
 
 Context vindu fort brukt opp. Dette ble opplevd flere ganger og en naturlig utfordring uten å betale for bedre KI. I stor grad ble det løst ved å vente til neste dag, men selvfølgelig tidvis en begrensende faktor.
 AI gir andre resultater enn undervisningen (f.eks agent-navn, prosjekttype og nivå). Dette skjer kanskje hvis det er oppgraderinger i bamd-rammerverket eller andre endringer i prosjektplan. Det skaper litt usikkerhet, men har vært løst ved å spørre KI om hjelp og få en forklaring på hvorfor det er annerledes enn i undervisningen.
-Endringer i bmad/fra BIP. Henger litt sammen med punktet over, men det gjelder også endringer som gjøres underveis fra faglærer. At det legges til eller gjøres endringer i rammeverket. Dette har skapt litt utfordringer og usikkerhet, men ikke verre enn at det har løst seg selv i grunn.
+Endringer i bmad/fra BIP er også en utfordring. Henger litt sammen med punktet over, men det gjelder også endringer som gjøres underveis fra faglærer. At det legges til eller gjøres endringer i rammeverket. Dette har skapt litt utfordringer og usikkerhet når man allerede har påbegynt prosjektet, men ikke verre enn at det har løst seg selv i grunn.
 
 ---
 
@@ -168,8 +172,6 @@ KI kan være et veldig godt verktøy i prosessen for å skissere et forslag elle
 
 ### 7.1 Viktigste lærdommer
 
-[Liste de 3-5 viktigste tingene dere lærte gjennom prosjektet]
-
 1. Skap godt samarbeid
 2. Ha en god plan
 3. Vær klar og tydelig med AI for å unngå unødvendig tull.
@@ -204,7 +206,7 @@ I dette semesteret brukte jeg erfaringen og læringen fra IBE160 til å bygge en
 Til tross for at gruppen vår består av nettstudenter og kom sent i gang, har samarbeidet og dynamikken vært svært bra. Det vises velvilje og ønske om å bidra. Denne dynamikken og velviljen har vært en viktig faktor for at vi på kort tid har kommet såpass langt.
 
 **Kjetil Tronstad Lund:**
-Det har vært svært interessant å jobbe med IBE160 og denne oppgaven. For meg har det vært en område som har vært relativt ukjent, men også en arbeidsmåte som er ganske anderledes. Fra i det hele tatt bare det å åpne VSCode, til det å se at KI faktisk genererer noe på forespørsel, til et form for resulatat. Dette kan være svært nyttig til senere bruk, i hvert fall å kjenne til konseptet og kanskje leke seg litt mer i fremtiden. Vi opplevde dessverre at et av medlemmene ikke deltok i arbeidet og ble kastet ut. Dette forstyrrer dynamikken litt. I tillegg kom vi noe sent i gang. Jeg tror en av de største "utfordringene" på en måte er når man har gruppeoppgave med kun nettstudenter som jobber til ulike tider, som har ulik bakgrunn og kompetanse. Det krever litt mer enn om man alle sammen hadde vært tilstede på skolen. Uten å gi for mye kritikk til faglærere, så lider også faget noe av at vi ikke har lærebok, det loves at deler av den skal tilgjengeliggjøres [noe som ikke er gjort når dette skrives], og det avlyses en del forelesninger. Hadde faget vært godt strukturert, men en god fagbok så studentene kan drive noe selvstudie, så tror jeg det ville gått bedre. Samtidig bør dere kanskje vurdere om det kan gis en bedre anbefaling til hvordan nettstudenter kan samarbeide. Det er fort gjort at man kommer for sent i gang, eller at én gjør store deler av oppgaven alene uten å kommunisere med de andre [nei, dette var ikke tilfelle hos oss]. Dette kan kanskje også redusere eventuelle frafall. Men på det jevne så har det vært en svært god og bratt læring, som jeg tror at jeg for min del vil ha god nytte av senere.
+Det har vært svært interessant å jobbe med IBE160 og denne oppgaven. For meg har det vært en område som har vært relativt ukjent, men også en arbeidsmåte som er ganske anderledes. Fra i det hele tatt bare det å åpne VSCode, til det å se at KI faktisk genererer noe på forespørsel, til et form for resulatat. Dette kan være svært nyttig til senere bruk, i hvert fall å kjenne til konseptet og kanskje leke seg litt mer i fremtiden. Vi opplevde dessverre at et av medlemmene ikke deltok i arbeidet og ble kastet ut. Dette forstyrrer dynamikken litt. I tillegg kom vi noe sent i gang. Jeg tror en av de største "utfordringene" er når man har gruppeoppgave med kun nettstudenter som jobber til ulike tider, som har ulik bakgrunn og kompetanse. Det krever litt mer enn om man alle sammen hadde vært tilstede på skolen. Uten å gi for mye kritikk til faglærere, så lider også faget noe av at vi ikke har lærebok, det loves at deler av den skal tilgjengeliggjøres [noe som ikke er gjort når dette skrives], og det avlyses en del forelesninger. Hadde faget vært godt strukturert, men en god fagbok så studentene kan drive noe selvstudie, så tror jeg det ville gått bedre. Samtidig bør dere kanskje vurdere om det kan gis en bedre anbefaling til hvordan nettstudenter kan samarbeide. Det er fort gjort at man kommer for sent i gang, eller at én gjør store deler av oppgaven alene uten å kommunisere med de andre [nei, dette var ikke tilfelle hos oss]. Dette kan kanskje også redusere eventuelle frafall. Men på det jevne så har det vært en svært god og bratt læring, som jeg tror at jeg for min del vil ha god nytte av senere.
 
 ---
 
