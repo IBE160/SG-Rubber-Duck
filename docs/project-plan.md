@@ -26,7 +26,7 @@
 
 ## Fase 1
 
-- [ ] Planning
+- [x] Planning
   - [x] /run-agent-task pm *prd
     - [x] File: prd.md
   - [x] /run-agent-task pm *validate-prd
@@ -36,32 +36,35 @@
     - [x] File: ux-color-themes.html
     - [x] File: ux-design-directions.html
   - [x] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
+    - [x] File: ux-validation-report.md
 
 ## Fase 2
 
-- [ ] Solutioning
+- [x] Solutioning
   - [x] /run-agent-task architect *create-architecture {prompt / user-input-file}
     - [x] File: architecture.md
   - [x] /run-agent-task pm *create-epics-and-stories {prompt / user-input-file}
     - [x] File: epics.md
   - [x] /run-agent-task tea *test-design {prompt / user-input-file}
+    - [x] File: test-design.md
   - [x] /run-agent-task architect *solutioning-gate-check {prompt / user-input-file}
+    - [x] File: solutioning-gate-check.md
 
 ## Fase 3
 
-- [ ] Implementation
+- [x] Implementation
   - [x] /run-agent-task sm *sprint-planning {prompt / user-input-file}
     - [x] File: sprint-artifacts/sprint-status.yaml
   - foreach epic in sprint planning:
     - [x] /run-agent-task sm create-epic-tech-context {prompt / user-input-file}
-      - [ ] File: sprint-artifacts/tech-spec-epic-{{epic_id}}.md
+      - [x] File: sprint-artifacts/tech-spec-epic-{{epic_id}}.md
     - [x] /run-agent-task sm validate-epic-tech-context {prompt / user-input-file}
     - foreach story in epic:
       - [x] /run-agent-task sm *create-story {prompt / user-input-file}
-        - [ ] File: sprint-artifacts/{{story_key}}.md
+        - [x] File: sprint-artifacts/{{story_key}}.md
       - [x] /run-agent-task sm *validate-create-story {prompt / user-input-file}
       - [x] /run-agent-task sm *create-story-context {prompt / user-input-file}
-        - [ ] File: sprint-artifacts/{{story_key}}.context.xml
+        - [x] File: sprint-artifacts/{{story_key}}.context.xml
       - [x] /run-agent-task sm *validate-story-context {prompt / user-input-file}
       - [x] /run-agent-task sm *story-ready-for-dev {prompt / user-input-file}
       while code-review != approved:

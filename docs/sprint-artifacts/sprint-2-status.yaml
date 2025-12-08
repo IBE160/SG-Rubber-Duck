@@ -22,19 +22,19 @@ scope:
     - id: S4.1
       epic: E4
       description: "Implement asynchronous simulation orchestrator in the backend."
-      status: "pending"
+      status: "completed"
     - id: S5.1
       epic: E5
       description: "Connect real-time simulation data to UI components on Simulation Page."
-      status: "pending"
+      status: "completed"
     - id: S6.1
       epic: E6
       description: "Create an end-to-end test for the simulation workflow."
-      status: "pending"
+      status: "completed"
     - id: S7.1
       epic: E7
       description: "Create deployment documentation for backend and frontend."
-      status: "pending"
+      status: "completed"
 
 risks:
   - id: R3

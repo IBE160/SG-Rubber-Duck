@@ -1,23 +1,81 @@
-# Deployment Guide — SG-Rubber-Duck
+# Deployment
 
-## Backend (FastAPI)
-1) Env: set `DATABASE_URL` (Postgres for prod; e.g. `postgresql+psycopg2://user:pass@host:5432/db`). For local dev/test, SQLite fallback works: `sqlite:///./app.db`.
-2) Install deps: `cd backend && ./venv/bin/pip install -r requirements.txt`
-3) Migrations: `DATABASE_URL=... ./venv/bin/alembic upgrade head`
-4) Run server: `PYTHONPATH=.. DATABASE_URL=... ./venv/bin/uvicorn backend.main:app --host 0.0.0.0 --port 8001`
-5) Health check: `curl http://localhost:8001/health`
+## Backend
 
-## Frontend (React/Vite)
-1) Env: set `VITE_API_BASE_URL` (e.g. `http://localhost:8001`).
-2) Install deps: `cd frontend && npm install`
-3) Dev server: `npm run dev`
-4) Build: `npm run build`
-5) Preview: `npm run preview`
+### Prerequisites
 
-## Tests
-Backend: `PYTHONPATH=. DATABASE_URL=sqlite:///./backend/test.db ./backend/venv/bin/pytest`
-Frontend: `npm run build` (and optionally lint/tests if added).
+-   Python 3.10+
+-   PostgreSQL (or other a production-ready database)
 
-## Notes
-- Ensure migrations are run before starting backend.
-- For production, use Postgres, not SQLite; configure CORS and secrets via env.
+### Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/your-repository.git
+    cd your-repository/backend
+    ```
+
+2.  **Create a virtual environment:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Configure environment variables:**
+    Create a `.env` file in the `backend` directory and add the following variables:
+    ```
+    DATABASE_URL=postgresql://user:password@host:port/database_name
+    SECRET_KEY=your_secret_key
+    ```
+
+5.  **Run database migrations:**
+    ```bash
+    alembic upgrade head
+    ```
+
+### Running the application
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+## Frontend
+
+### Prerequisites
+
+-   Node.js 16+
+-   npm
+
+### Setup
+
+1.  **Navigate to the frontend directory:**
+    ```bash
+    cd ../frontend
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configure environment variables:**
+    Create a `.env.production` file in the `frontend` directory and add the following variables:
+    ```
+    VITE_API_BASE_URL=http://your-backend-api-url
+    VITE_WS_BASE_URL=ws://your-backend-ws-url
+    ```
+
+### Building the application
+
+```bash
+npm run build
+```
+
+### Running the application
+
+The `build` command will create a `dist` directory with the static files. You can serve these files with any static file server, such as Nginx or Vercel.
