@@ -1,5 +1,6 @@
 # backend/main.py
 from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect, BackgroundTasks
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
@@ -11,7 +12,7 @@ from .database import SessionLocal, engine
 from . import models, schemas, crud
 from .logic import calculate_cpm, CPMTask
 from .connection_manager import manager
-from .simulation_engine import SimulationEngine
+from .orchestrator import run_simulation
 
 # Create tables if they don't exist
 models.Base.metadata.create_all(bind=engine)
@@ -406,24 +407,15 @@ async def broadcast_event(
     return {"status": "event_broadcasted", "event_id": db_event.id}
 
 
-def _run_simulation(simulation_run_id: int, loop: asyncio.AbstractEventLoop):
-    """Background simulation runner using the robust SimulationEngine."""
-    db = SessionLocal()
-    try:
-        engine = SimulationEngine(db, simulation_run_id, loop)
-        engine.run()
-    finally:
-        db.close()
-
-
-@app.post("/projects/{project_id}/simulate", status_code=202, tags=["Simulation"])
-def start_simulation_background(
+@app.post("/projects/{project_id}/simulate", tags=["Simulation"])
+async def start_simulation_background(
     project_id: int,
     background_tasks: BackgroundTasks,
     simulation_run_id: int | None = None,
+    run_in_background: bool = True,
     db: Session = Depends(get_db),
 ):
-    """Start a simulation in the background (placeholder)."""
+    """Start a simulation in the background."""
     project = crud.get_project(db, project_id=project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -437,9 +429,12 @@ def start_simulation_background(
         sim = crud.create_simulation_run(db, project_id, schemas.SimulationRunCreate(seed=None))
         target_id = sim.id
 
-    loop = asyncio.get_running_loop()
-    background_tasks.add_task(_run_simulation, target_id, loop)
-    return {"message": "Simulation started in the background. Check back later for results.", "simulation_run_id": target_id}
+    if run_in_background:
+        background_tasks.add_task(run_simulation, db, target_id)
+        return JSONResponse(status_code=202, content={"message": "Simulation started in the background. Check back later for results.", "simulation_run_id": target_id})
+    else:
+        await run_simulation(db, target_id)
+        return {"message": "Simulation finished.", "simulation_run_id": target_id}
 
 
 @app.get("/simulations/{simulation_run_id}/status", response_model=schemas.SimulationRun, tags=["Simulations"])
