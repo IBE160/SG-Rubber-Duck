@@ -248,6 +248,7 @@ const WbsTable: React.FC = () => {
             >
               <TableHead>
                 <TableRow>
+                  <TableCell sx={{ width: 50 }}>ID</TableCell>
                   <TableCell sx={{ minWidth: 220 }}>Task</TableCell>
                   <TableCell align="center" sx={{ width: 110 }}>Duration (days)</TableCell>
                   <TableCell sx={{ width: 170 }}>Start Date</TableCell>
@@ -272,6 +273,9 @@ const WbsTable: React.FC = () => {
                     selected={selectedTaskId === task.id}
                     onClick={() => setSelectedTaskId(task.id)}
                   >
+                    <TableCell sx={{ width: 50, color: 'text.secondary' }}>
+                      {task.id}
+                    </TableCell>
                     <TableCell sx={{ minWidth: 220 }}>
                       <TextField
                         fullWidth

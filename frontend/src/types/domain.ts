@@ -4,6 +4,8 @@ export interface Project {
   description: string;
   budget: number;
   contingency: number; // Percentage
+  start_date: string;
+  end_date: string;
 }
 
 export interface Task {

@@ -12,11 +12,13 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@gsap/react": "^2.1.2",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
     "@reduxjs/toolkit": "^2.11.0",
     "@tanstack/react-query": "^5.28.0",
     "dhtmlx-gantt": "^9.1.0",
+    "gsap": "^3.14.1",
     "ogl": "^1.0.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -91,21 +91,25 @@ export const mockTasks: Task[] = [
   { id: 18, text: 'Final Inspections', start_date: '2026-07-06', duration: 5, progress: 0, parent: null, predecessors: [16, 17], cost: 5000, project_id: 1 },
   { id: 19, text: 'Project Handover', start_date: '2026-07-13', duration: 1, progress: 0, parent: null, predecessors: [18], cost: 1000, project_id: 1 },
 ];
-const totalCost = mockTasks.reduce((acc, task) => acc + task.cost, 0);
+// Calculate total cost (simulated)
 
-export const mockProjects: Project[] = [
-  { 
-    id: 1, 
-    name: 'Campus Build',
-    description: 'Construction of a new multi-purpose building on the main campus.',
-    budget: totalCost * 1.1, // Budget is 110% of planned cost
+export const seedProjects: Project[] = [
+  {
+    id: 1,
+    name: 'Office Complex Construction',
+    description: 'A 12-story commercial building with underground parking.',
+    budget: 12000000,
     contingency: 15, // 15%
+    start_date: '2025-01-01',
+    end_date: '2025-12-31'
   },
-  { 
-    id: 2, 
-    name: 'Library Renovation',
-    description: 'Complete overhaul of the west wing of the central library.',
-    budget: 500000,
+  {
+    id: 2,
+    name: 'Highway Expansion',
+    description: 'Widening of 20km of highway including 2 bridges.',
+    budget: 45000000,
     contingency: 20,
+    start_date: '2025-03-01',
+    end_date: '2026-06-30'
   },
 ];
