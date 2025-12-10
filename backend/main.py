@@ -34,6 +34,29 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+def cleanup_stale_simulations():
+    """
+    On server startup, check for any simulations stuck in 'running' state
+    (e.g. from a server crash or restart) and mark them as failed.
+    """
+    db = SessionLocal()
+    try:
+        stale_sims = db.query(models.SimulationRun).filter(models.SimulationRun.status == "running").all()
+        if stale_sims:
+            print(f"Startup: Found {len(stale_sims)} stale simulations. Marking them as failed.")
+            for sim in stale_sims:
+                sim.status = "failed"
+                sim.completed_at = datetime.now(timezone.utc)
+                # We could add a 'reason' to results if the schema allows, 
+                # but simply failing them releases the UI from waiting.
+            db.commit()
+    except Exception as e:
+        print(f"Startup: Error cleaning up stale simulations: {e}")
+    finally:
+        db.close()
+
+
 # Dependency for DB session
 def get_db():
     db = SessionLocal()

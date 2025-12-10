@@ -68,22 +68,39 @@ const SimulationPage: React.FC = () => {
   // Poll simulation status until completed, then fetch results
   useEffect(() => {
     if (!simulationId) return;
+
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const POLLING_TIMEOUT_MS = 60000; // 60 seconds
+
     const interval = setInterval(async () => {
       try {
         const status = await api.getSimulationStatus(simulationId);
         if (status.status === 'completed' || status.status === 'failed') {
           clearInterval(interval);
+          if (timeoutId) clearTimeout(timeoutId);
           setPolling(null);
           dispatch(fetchSimulationResult(simulationId));
         }
       } catch (err) {
         console.error('Failed to poll simulation status', err);
-        dispatch(simulationError('Simulation status polling failed'));
+        clearInterval(interval);
+        if (timeoutId) clearTimeout(timeoutId);
+        setPolling(null);
+        dispatch(simulationError('Simulation status polling failed due to network error.'));
       }
-    }, 1000);
+    }, 1000); // Poll every second
+
+    timeoutId = setTimeout(() => {
+      clearInterval(interval);
+      setPolling(null);
+      dispatch(simulationError('Simulation timed out: No completion status received within 60 seconds.'));
+      console.warn('Simulation polling timed out after 60 seconds.');
+    }, POLLING_TIMEOUT_MS);
+
     setPolling(interval);
     return () => {
       if (interval) clearInterval(interval);
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [simulationId, dispatch]);
 
