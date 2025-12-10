@@ -20,7 +20,7 @@ import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { fetchProjectDetails, setCurrentProject } from '../../store/projectSlice';
 import { useProjects, useDeleteProject } from '../../services/queries';
-import { createProject, createTask, createRisk, createResource } from '../../services/api';
+import { createProject, createTask, createRisk, createResource, updateTask } from '../../services/api';
 import { useQueryClient } from '@tanstack/react-query';
 import ProjectForm from './ProjectForm';
 
@@ -53,6 +53,7 @@ const ProjectList: React.FC = () => {
     setIsCreatingDemo(true);
     try {
       // 1. Create Project
+      console.log('Creating demo project...');
       const project = await createProject({
         name: "High-Rise Office Complex",
         description: "Construction of a 20-story office building with modern amenities.",
@@ -62,6 +63,7 @@ const ProjectList: React.FC = () => {
       });
 
       const pid = project.id;
+      console.log('Project created:', pid);
 
       // 2. Create Tasks (Sequential)
       const t1 = await createTask(pid, { text: "Site Preparation", duration: 10, start_date: project.start_date, progress: 0, parent: null });
@@ -73,11 +75,7 @@ const ProjectList: React.FC = () => {
       // Add dependencies (Predecessors)
       const updatePreds = async (tid: number, preds: number[]) => {
          try {
-             await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001'}/tasks/${tid}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ predecessors: preds })
-             });
+             await updateTask(tid, { predecessors: preds });
          } catch (e) { console.warn("Failed to link tasks", e); }
       };
 
@@ -101,7 +99,7 @@ const ProjectList: React.FC = () => {
 
     } catch (e) {
       console.error("Failed to create demo project", e);
-      alert("Failed to create demo project. Check console.");
+      alert(`Failed to create demo project: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setIsCreatingDemo(false);
     }
