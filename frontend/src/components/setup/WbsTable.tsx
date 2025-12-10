@@ -35,7 +35,7 @@ import {
 
 const hasCycle = (tasks: Task[]): boolean => {
   const adj = new Map<number, number[]>();
-  tasks.forEach((t) => adj.set(t.id, t.predecessors)); // Use number IDs
+  tasks.forEach((t) => adj.set(t.id, t.dependencies)); // Use dependencies
   const visiting = new Set<number>();
   const visited = new Set<number>();
 
@@ -74,7 +74,7 @@ const WbsTable: React.FC = () => {
   const { data: projectDetails, isLoading } = useProjectDetails(currentProject?.id || null);
   const rawTasks = useMemo(() => projectDetails?.tasks || [], [projectDetails?.tasks]);
   const tasks = useMemo(
-    () => rawTasks.map((t) => ({ ...t, predecessors: t.predecessors || [] })),
+    () => rawTasks.map((t) => ({ ...t, dependencies: t.dependencies || [] })), // Use dependencies
     [rawTasks]
   );
   const resources = useMemo(() => projectDetails?.resources || [], [projectDetails?.resources]);
@@ -87,7 +87,7 @@ const WbsTable: React.FC = () => {
   const taskMap = useMemo(() => new Map(tasks.map((t) => [t.id, t])), [tasks]); // Use number IDs
   const missingPreds = useMemo(() => {
     const missing = new Set<number>(); // Use number IDs
-    tasks.forEach((t) => (t.predecessors || []).forEach((pid) => { if (!taskMap.has(pid)) missing.add(t.id); }));
+    tasks.forEach((t) => (t.dependencies || []).forEach((pid) => { if (!taskMap.has(pid)) missing.add(t.id); })); // Use dependencies
     return missing;
   }, [tasks, taskMap]);
 
@@ -95,8 +95,8 @@ const WbsTable: React.FC = () => {
   useEffect(() => {
     const newDraft: Record<number, string> = {};
     tasks.forEach(task => {
-      // Initialize with the current task's predecessors, joined by ', '
-      newDraft[task.id] = (task.predecessors || []).join(', ');
+      // Initialize with the current task's dependencies, joined by ', '
+      newDraft[task.id] = (task.dependencies || []).join(', ');
     });
     setPredecessorInputDraft(newDraft);
   }, [tasks]);
@@ -141,7 +141,7 @@ const WbsTable: React.FC = () => {
     try {
       await updateTaskMutation.mutateAsync({
         taskId,
-        data: { predecessors: parsedIds }, // Use predecessors field which is handled by backend
+        data: { dependencies: parsedIds }, // Now sends 'dependencies'
       });
       setSnack({ open: true, msg: 'Predecessors saved', severity: 'success' });
     } catch (err) {
@@ -157,7 +157,7 @@ const WbsTable: React.FC = () => {
       progress: 0,
       parent: null,
       cost: 0,
-      predecessors: [] as number[],
+      dependencies: [] as number[], // Use dependencies
     };
     await createTaskMutation.mutateAsync(newTaskData);
   };
@@ -169,7 +169,7 @@ const WbsTable: React.FC = () => {
   const invalidCycle = hasCycle(tasks);
   const invalidDuration = tasks.some((t) => t.duration < 0);
   const invalidNames = tasks.some((t) => !t.text || !t.text.trim());
-  const invalidPredRefs = tasks.some((t) => (t.predecessors || []).some((pid) => !taskMap.has(pid)));
+  const invalidPredRefs = tasks.some((t) => (t.dependencies || []).some((pid) => !taskMap.has(pid))); // Use dependencies
 
   const validationError =
     invalidCycle
@@ -373,7 +373,7 @@ const WbsTable: React.FC = () => {
                         size="small"
                         aria-label={`Predecessors for ${task.text}`}
                         // Use local draft state for the value prop
-                        value={predecessorInputDraft[task.id] ?? (task.predecessors || []).join(', ')}
+                        value={predecessorInputDraft[task.id] ?? (task.dependencies || []).join(', ')} // Use task.dependencies
                         // Update local draft state on change
                         onChange={(e) => setPredecessorInputDraft((prev) => ({ ...prev, [task.id]: e.target.value }))}
                         // Parse and commit on blur
@@ -386,7 +386,7 @@ const WbsTable: React.FC = () => {
                         disabled={isLoading_}
                       />
                       <Box sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {task.predecessors.map((pId) => (
+                        {task.dependencies.map((pId) => ( // Use task.dependencies
                           <Chip key={pId} label={taskMap.get(pId)?.text || String(pId)} size="small" />
                         ))}
                       </Box>

@@ -17,8 +17,7 @@ export interface TaskCreate {
   progress?: number;
   parent?: number | null;
   cost?: number;
-  predecessors?: number[];
-  dependencies?: number[]; // backend naming
+  dependencies?: number[]; // Use dependencies
   resource_id?: number;
 }
 

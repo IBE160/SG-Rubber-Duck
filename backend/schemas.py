@@ -41,7 +41,13 @@ class TaskUpdate(BaseModel):
     progress: Optional[float] = None
     parent: Optional[int] = None
     cost: Optional[float] = None
-    predecessors: Optional[List[int]] = Field(default=None, validation_alias="dependencies", serialization_alias="predecessors")
+    # Use Field with validation_alias and serialization_alias for flexibility
+    predecessors: Optional[List[int]] = Field(
+        default=None,
+        validation_alias="dependencies",
+        serialization_alias="predecessors",
+        json_schema_extra={"alias": "dependencies"} # Explicitly hint for clients/docs
+    )
     resource_id: Optional[int] = None
 
 class Task(TaskBase):

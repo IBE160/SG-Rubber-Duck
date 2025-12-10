@@ -9,16 +9,16 @@ export interface Project {
 }
 
 export interface Task {
-  id: number; // Unique ID for the task, now a number from backend
-  text: string; // Name/description of the task
-  start_date: string; // YYYY-MM-DD format
-  duration: number; // in days
-  progress: number; // 0 to 1
-  parent: number | null; // ID of the parent task, now a number or null
-  predecessors: number[]; // Array of task IDs this task depends on, now numbers
+  id: number;
+  text: string;
+  start_date: string;
+  duration: number;
+  progress: number;
+  parent: number | null;
+  dependencies: number[]; // Array of task IDs that must be completed before this task can start
   cost: number;
-  resource_id?: number; // Assuming resource IDs are numbers
-  project_id: number; // Project ID foreign key
+  resource_id?: number;
+  project_id: number;
 }
 
 export interface Resource {
