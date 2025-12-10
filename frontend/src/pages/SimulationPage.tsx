@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchProjectDetails } from '../store/projectSlice';
 import * as api from '../services/api';
-import { startSimulation as startSimAction, pushEvent, applyTaskEvent, simulationError } from '../store/simulationSlice';
+import { startSimulation as startSimAction, pushEvent, applyTaskEvent, simulationError, resetSimulation } from '../store/simulationSlice';
 import SimulationControls from '../components/simulation/SimulationControls';
 import GanttPanel from '../components/simulation/GanttPanel';
 import KpiDashboard from '../components/simulation/KpiDashboard';
@@ -41,15 +41,17 @@ const SimulationPage: React.FC = () => {
 
   // Effect to fetch initial data
   useEffect(() => {
+    dispatch(resetSimulation()); // Clear old sim state
     if (!projectId) {
       navigate('/');
       return;
     }
     const numericId = Number(projectId);
-    if (!currentProject || currentProject.id !== numericId) {
+    // Always fetch latest details to capture any edits from Setup page
+    if (numericId) {
       dispatch(fetchProjectDetails(numericId));
     }
-  }, [projectId, dispatch, navigate, currentProject]);
+  }, [projectId, dispatch, navigate]);
 
   // Effect to auto-start simulation once project is loaded
   useEffect(() => {

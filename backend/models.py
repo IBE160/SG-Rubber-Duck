@@ -33,8 +33,10 @@ class Task(Base):
     dependencies = Column(JSON, default=list)
     parent = Column(Integer)  # For sub-tasks, as seen in Gantt data
     project_id = Column(Integer, ForeignKey("projects.id"))
+    resource_id = Column(Integer, ForeignKey("resources.id"), nullable=True)
 
     project = relationship("Project", back_populates="tasks")
+    resource = relationship("Resource")
 
 
 class Risk(Base):

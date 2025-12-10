@@ -43,7 +43,7 @@ The logging directory is organized as follows:
 No setup required! Just run:
 
 ```bash
-uv run .logging/process-api-requests.py
+11
 ```
 
 The `uv` tool automatically handles dependencies defined in the script header. Output files are saved to `.logging/requests/`.

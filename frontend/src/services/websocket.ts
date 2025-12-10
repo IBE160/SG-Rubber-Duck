@@ -195,6 +195,9 @@ export const useWebSocket = (simulationId: string | null) => {
     const unsubscribeTaskStarted = client.on('task_started', addEvent);
     const unsubscribeTaskCompleted = client.on('task_completed', addEvent);
     const unsubscribeCompleted = client.on('simulation_completed', addEvent);
+    const unsubscribeDayAdvanced = client.on('day_advanced', addEvent);
+    const unsubscribeRiskTriggered = client.on('risk_triggered', addEvent);
+    const unsubscribeFailed = client.on('simulation_failed', addEvent);
     const unsubscribeError = client.on('error', (event) => {
       addEvent(event);
       setError(String(event.details?.error || 'WebSocket error'));
@@ -213,6 +216,9 @@ export const useWebSocket = (simulationId: string | null) => {
       unsubscribeTaskStarted();
       unsubscribeTaskCompleted();
       unsubscribeCompleted();
+      unsubscribeDayAdvanced();
+      unsubscribeRiskTriggered();
+      unsubscribeFailed();
       unsubscribeError();
       client.disconnect();
       clientRef.current = null;

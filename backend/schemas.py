@@ -29,6 +29,7 @@ class TaskBase(BaseModel):
     parent: Optional[int] = None
     cost: float = 0.0
     predecessors: List[int] = Field(default_factory=list, validation_alias="dependencies", serialization_alias="predecessors")
+    resource_id: Optional[int] = None
 
 class TaskCreate(TaskBase):
     pass
@@ -41,6 +42,7 @@ class TaskUpdate(BaseModel):
     parent: Optional[int] = None
     cost: Optional[float] = None
     predecessors: Optional[List[int]] = Field(default=None, validation_alias="dependencies", serialization_alias="predecessors")
+    resource_id: Optional[int] = None
 
 class Task(TaskBase):
     id: int

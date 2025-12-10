@@ -41,6 +41,9 @@ const simulationSlice = createSlice({
       state.currentDay = 0;
       state.events = [];
     },
+    resetSimulation() {
+      return initialState;
+    },
     pauseSimulation(state) {
       if (state.status === 'running') {
         state.status = 'paused';
@@ -69,44 +72,82 @@ const simulationSlice = createSlice({
         state.status = 'finished';
       }
     },
-      applyTaskEvent(state, action: PayloadAction<SimulationEvent>) {
-        const evt = action.payload;
-        if (!state.tasks.length) return;
-  
-        const normalizedType = evt.event_type || evt.type;
-        
-        const tasks = state.tasks.map(t => {
-          // Handle explicit task events
-          if (evt.task_id === t.id) {
-              if (normalizedType === 'task_started') {
-                  return { ...t, progress: 0 };
+          applyTaskEvent(state, action: PayloadAction<SimulationEvent>) {
+            const evt = action.payload;
+            if (!state.tasks.length) return;
+      
+            const normalizedType = evt.event_type || evt.type;
+            
+            // Calculate derived dates based on simulation day
+            // Assuming the first task's start date is the project start anchor
+            const projectStart = new Date(state.tasks[0]?.start_date || Date.now()).getTime();
+      
+            if (normalizedType === 'day_advanced') {
+                const day = (evt.details?.day as number) || state.currentDay + 1;
+                state.currentDay = day;
+            }
+      
+            // Update Tasks
+            const tasks = state.tasks.map(t => {
+              // Handle explicit task events
+              if (evt.task_id === t.id) {
+                  if (normalizedType === 'task_started') {
+                      // Update start date to match actual simulation start
+                      const newStart = new Date(projectStart + (state.currentDay * 86400000)).toISOString().split('T')[0];
+                      return { ...t, progress: 0, start_date: newStart };
+                  }
+                  if (normalizedType === 'task_completed') {
+                      return { ...t, progress: 1 };
+                  }
               }
-              if (normalizedType === 'task_completed') {
-                  return { ...t, progress: 1 };
+      
+              // Handle day_advanced for active tasks
+              if (normalizedType === 'day_advanced') {
+                  const activeTasks = (evt.details?.active_tasks as number[]) || [];
+                  if (activeTasks.includes(t.id)) {
+                      const duration = t.duration || 1;
+                      // Increment progress, but cap at 0.99 until explicitly completed
+                      const increment = 1 / duration;
+                      const nextProgress = Math.min(0.99, (t.progress ?? 0) + increment);
+                      return { ...t, progress: nextProgress };
+                  }
               }
-          }
-  
-          // Handle day_advanced for active tasks
-          if (normalizedType === 'day_advanced') {
-              const activeTasks = (evt.details?.active_tasks as number[]) || [];
-              if (activeTasks.includes(t.id)) {
-                  const duration = t.duration || 1;
-                  // Increment progress, but cap at 0.99 until explicitly completed
-                  const increment = 1 / duration;
-                  const nextProgress = Math.min(0.99, (t.progress ?? 0) + increment);
-                  return { ...t, progress: nextProgress };
-              }
-          }
-          
-          return t;
-        });
-        state.tasks = tasks;
-        
-        if (normalizedType === 'simulation_completed') {
-          state.status = 'finished';
-        }
-      },
-  
+              
+              return t;
+            });
+            state.tasks = tasks;
+            
+            // Update KPIs
+            if (normalizedType === 'task_completed') {
+                const cost = (evt.details?.cost as number) || 0;
+                state.kpis.ac += cost;
+            }
+      
+            if (normalizedType === 'day_advanced') {
+                // Calculate EV (Earned Value)
+                const ev = state.tasks.reduce((sum, t) => sum + (t.cost * (t.progress || 0)), 0);
+                state.kpis.ev = ev;
+                
+                // Calculate PV (Planned Value) - Simplified: Assume linear burn of total budget over project duration
+                // A better approximation would require original baseline schedule
+                // For now, let's use a proxy: PV = EV (Schedule Variance = 0) unless we have baseline
+                // Or we can approximate PV based on day/total_duration * budget
+                // Let's leave PV as is or rough estimate to avoid wild SV
+                // state.kpis.pv = ... 
+      
+                // CV = EV - AC
+                state.kpis.cv = state.kpis.ev - state.kpis.ac;
+                
+                // SV = EV - PV (skipping for now as PV is hard to estimate without baseline obj)
+                // state.kpis.sv = ...
+      
+                state.kpiHistory.push({ day: state.currentDay, sv: state.kpis.sv, cv: state.kpis.cv });
+            }
+      
+            if (normalizedType === 'simulation_completed') {
+              state.status = 'finished';
+            }
+          },  
     tick(state, action: PayloadAction<{ day: number; kpis: KpiValues; newEvents: SimulationEvent[]; updatedTasks: SimTaskState[] }>) {
       if (state.status !== 'running') return;
       state.currentDay = action.payload.day;
@@ -124,6 +165,7 @@ const simulationSlice = createSlice({
 
 export const {
   startSimulation,
+  resetSimulation,
   pauseSimulation,
   resumeSimulation,
   stopSimulation,
