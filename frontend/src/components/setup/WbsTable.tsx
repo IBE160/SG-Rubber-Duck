@@ -123,7 +123,7 @@ const WbsTable: React.FC = () => {
       .filter(id => !isNaN(id));
     await updateTaskMutation.mutateAsync({
       taskId,
-      data: { predecessors: ids },
+      data: { dependencies: ids },
     });
   };
 
