@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { 
   Typography, 
   Box, 
@@ -62,6 +62,8 @@ const WbsTable: React.FC = () => {
   const { currentProject } = useAppSelector((state) => state.projects);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<Record<number, Partial<Task>>>({});
+  // New local state for predecessor input, managing the raw string value
+  const [predecessorInputDraft, setPredecessorInputDraft] = useState<Record<number, string>>({}); 
   const [snack, setSnack] = useState<{ open: boolean; msg: string; severity: 'success' | 'error' | 'info' }>({
     open: false,
     msg: '',
@@ -89,6 +91,16 @@ const WbsTable: React.FC = () => {
     return missing;
   }, [tasks, taskMap]);
 
+  // Effect to initialize predecessorInputDraft when tasks load or change
+  useEffect(() => {
+    const newDraft: Record<number, string> = {};
+    tasks.forEach(task => {
+      // Initialize with the current task's predecessors, joined by ', '
+      newDraft[task.id] = (task.predecessors || []).join(', ');
+    });
+    setPredecessorInputDraft(newDraft);
+  }, [tasks]);
+
   if (!currentProject) {
     return (
       <Box sx={{ textAlign: 'center', mt: 4 }}>
@@ -114,17 +126,27 @@ const WbsTable: React.FC = () => {
     });
   };
 
-  const handlePredecessorsChange = async (taskId: number, value: string) => {
-    const ids = value
+  const parsePredecessorInput = (input: string): number[] => {
+    return input
       .split(',')
       .map((v) => v.trim())
       .filter(Boolean)
       .map(Number)
       .filter(id => !isNaN(id));
-    await updateTaskMutation.mutateAsync({
-      taskId,
-      data: { dependencies: ids },
-    });
+  };
+
+  // This function is called on onBlur of the TextField
+  const handlePredecessorsBlur = async (taskId: number, value: string) => {
+    const parsedIds = parsePredecessorInput(value);
+    try {
+      await updateTaskMutation.mutateAsync({
+        taskId,
+        data: { predecessors: parsedIds }, // Use predecessors field which is handled by backend
+      });
+      setSnack({ open: true, msg: 'Predecessors saved', severity: 'success' });
+    } catch (err) {
+      setSnack({ open: true, msg: `Failed to save predecessors: ${err instanceof Error ? err.message : String(err)}`, severity: 'error' });
+    }
   };
 
   const handleAddTask = async () => {
@@ -350,11 +372,14 @@ const WbsTable: React.FC = () => {
                         fullWidth
                         size="small"
                         aria-label={`Predecessors for ${task.text}`}
-                        value={(getDraftValue(task, 'predecessors') as number[]).join(', ')}
-                        onChange={(e) => setDraftValue(task.id, 'predecessors', e.target.value.split(',').map((v) => v.trim()).filter(Boolean).map(Number))}
-                        onBlur={(e) => handlePredecessorsChange(task.id, e.target.value)}
+                        // Use local draft state for the value prop
+                        value={predecessorInputDraft[task.id] ?? (task.predecessors || []).join(', ')}
+                        // Update local draft state on change
+                        onChange={(e) => setPredecessorInputDraft((prev) => ({ ...prev, [task.id]: e.target.value }))}
+                        // Parse and commit on blur
+                        onBlur={(e) => handlePredecessorsBlur(task.id, e.target.value)}
                         placeholder="Comma-separated IDs (e.g. 1, 3)"
-                        helperText="Predecessor IDs"
+                        helperText="Comma-separated task IDs. Leave empty for no predecessors."
                         error={missingPreds.has(task.id)}
                         InputProps={{ sx: { fontSize: 13, py: 1 } }}
                         FormHelperTextProps={{ sx: { color: missingPreds.has(task.id) ? 'error.main' : 'text.secondary' } }}
@@ -374,6 +399,7 @@ const WbsTable: React.FC = () => {
                         onChange={(e) => {
                           const val = e.target.value === '' ? undefined : Number(e.target.value);
                           setDraftValue(task.id, 'resource_id', val);
+                          // Only commit if a valid resource is selected
                           if (val !== undefined) commitDraftValue(task.id, 'resource_id');
                         }}
                         sx={{ mt: 1 }}
