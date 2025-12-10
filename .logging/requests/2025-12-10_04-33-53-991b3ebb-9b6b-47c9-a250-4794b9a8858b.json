@@ -1,0 +1,237 @@
+[
+  {
+    "request": {
+      "session.id": "991b3ebb-9b6b-47c9-a250-4794b9a8858b",
+      "installation.id": "77f6a749-7ed4-46b3-b756-b091fde8b8a3",
+      "interactive": false,
+      "user.email": "kjtrolun@gmail.com",
+      "event.name": "gemini_cli.api_request",
+      "event.timestamp": "2025-12-10T04:34:07.232Z",
+      "model": "gemini-2.5-flash",
+      "prompt_id": "821364d10efc",
+      "request_text": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "This is the Gemini CLI. We are setting up the context for our chat.\nToday's date is onsdag 10. desember 2025 (formatted according to the user's locale).\nMy operating system is: win32\nThe project's temporary directory is: C:\\Users\\kjtro\\.gemini\\tmp\\c846e70095a22d14c92d9cec9d639c638458abfefb3ade2e67d6f5d058610919\nI'm currently working in the directory: C:\\Users\\kjtro\\Studie\\IBE160\\Arbeidskrav\\SG-Rubber-Duck\nHere is the folder structure of the current working directories:\n\nShowing up to 200 items (files + folders). Folders or files indicated with ... contain more items not shown, were ignored, or the display limit (200 items) was reached.\n\nC:\\Users\\kjtro\\Studie\\IBE160\\Arbeidskrav\\SG-Rubber-Duck\\\n├───.gitignore\n├───app.db\n├───frontend_dev.log\n├───LICENSE\n├───package-lock.json\n├───package.json\n├───proposalv3.md\n├───pytest.ini\n├───README.md\n├───reflection-report-template.md\n├───ws_test.db\n├───.bmad\\\n│   ├───_cfg\\\n│   │   ├───agent-manifest.csv\n│   │   ├───files-manifest.csv\n│   │   ├───manifest.yaml\n│   │   ├───task-manifest.csv\n│   │   ├───tool-manifest.csv\n│   │   ├───workflow-manifest.csv\n│   │   ├───agents\\\n│   │   └───ides\\\n│   ├───bmm\\\n│   │   ├───config.yaml\n│   │   ├───README.md\n│   │   ├───agents\\\n│   │   ├───docs\\\n│   │   ├───teams\\\n│   │   ├───testarch\\\n│   │   └───workflows\\\n│   ├───cis\\\n│   │   ├───config.yaml\n│   │   ├───README.md\n│   │   ├───agents\\\n│   │   ├───teams\\\n│   │   └───workflows\\\n│   ├───core\\\n│   │   ├───config.yaml\n│   │   ├───agents\\\n│   │   ├───resources\\\n│   │   ├───tasks\\\n│   │   ├───tools\\\n│   │   └───workflows\\\n│   └───docs\\\n│       ├───claude-code-instructions.md\n│       └───gemini-instructions.md\n├───.gemini\\\n│   ├───settings.json\n│   └───commands\\\n│       ├───bmad-agent-bmm-analyst.toml\n│       ├───bmad-agent-bmm-architect.toml\n│       ├───bmad-agent-bmm-dev.toml\n│       ├───bmad-agent-bmm-pm.toml\n│       ├───bmad-agent-bmm-sm.toml\n│       ├───bmad-agent-bmm-tea.toml\n│       ├───bmad-agent-bmm-tech-writer.toml\n│       ├───bmad-agent-bmm-ux-designer.toml\n│       ├───bmad-agent-cis-brainstorming-coach.toml\n│       ├───bmad-agent-cis-creative-problem-solver.toml\n│       ├───bmad-agent-cis-design-thinking-coach.toml\n│       ├───bmad-agent-cis-innovation-strategist.toml\n│       ├───bmad-agent-cis-README.toml\n│       ├───bmad-agent-cis-storyteller.toml\n│       ├───bmad-agent-core-bmad-master.toml\n│       ├───bmad-task-bmm-daily-standup.toml\n│       ├───bmad-task-core-adv-elicit.toml\n│       ├───bmad-task-core-index-docs.toml\n│       ├───bmad-task-core-validate-workflow.toml\n│       ├───bmad-task-core-workflow.toml\n│       └───run-agent-task.toml\n├───.git\\...\n├───.logging\\\n│   ├───.gitignore\n│   ├───api-viewer.html\n│   ├───api-viewer.html.bak\n│   ├───process-api-requests.py\n│   ├───README.md\n│   ├───requirements.txt\n│   ├───server.py\n│   ├───server.py.backup\n│   ├───telemetry.md\n│   ├───truncate.py\n│   ├───watcher.py\n│   └───requests\\\n│       ├───2025-11-22_16-48-34-b6c2f47d-b685-41f8-a124-6cbd828163bb.json\n│       ├───2025-11-22_17-02-57-997cf006-4525-45e2-858c-f113d8b8d62c.json\n│       ├───2025-11-22_17-06-06-5965cba4-e36d-4224-9291-2e33ab7e10a0.json\n│       ├───2025-11-22_17-18-10-e26f4b65-70c5-4764-a98a-60dda5d1657f.json\n│       ├───2025-11-22_17-44-35-992bd0d8-c86b-4c92-bb77-1f3eb46fb24d.json\n│       ├───2025-11-22_17-50-09-edea2b93-fa1d-46c6-8b7d-994522978500.json\n│       ├───2025-11-22_17-59-49-d42d64dd-f3d1-441a-aa80-763d0381d41c.json\n│       ├───2025-11-22_18-02-11-edea2b93-fa1d-46c6-8b7d-994522978500.json\n│       ├───2025-11-22_18-03-12-b406dca3-9917-40cc-892a-e511c474c889.json\n│       ├───2025-11-26_17-53-00-50488852-80ba-4671-9175-0bfcb2e6c4fe.json\n│       ├───2025-11-26_18-04-44-36442653-63e3-494f-931c-d19ac11d945f.json\n│       ├───2025-11-26_19-15-55-bd628893-278f-4e13-80dd-a24c2e9eba2d.json\n│       ├───2025-11-26_19-42-08-3e6849e4-78f0-4cf4-874b-675f743d65ea.json\n│       ├───2025-11-30_14-01-32-1b14e6b5-809e-4c22-b39e-db3dc4c142b7.json\n│       ├───2025-12-09_12-30-44-bb8a66f8-1f9f-4e0f-9052-538db3b58e8b.json\n│       ├───2025-12-09_13-02-15-72230671-ac32-48a2-b5e6-cd77c4c2e681.json\n│       ├───2025-12-10_03-52-09-b3580a57-ad8c-470b-a2d4-d2054058e962.json\n│       └───2025-12-10_03-57-12-9c375e5b-34fb-4851-9b00-ddebb49fb0dd.json\n├───.vscode\\\n│   ├───launch.json\n│   ├───mcp.json\n│   ├───settings.json\n│   └───tasks.json\n├───backend\\\n│   ├───__init__.py\n│   ├───1_simulation_result.json\n│   ├───ai_insights.py\n│   ├───alembic.ini\n│   ├───config.py\n│   ├───connection_manager.py\n│   ├───cpm.py\n│   ├───crud.py\n│   ├───database.py\n│   ├───logic.py\n│   ├───main.py\n│   ├───models.py\n│   ├───orchestrator.py\n│   ├───requirements.txt\n│   ├───schemas.py\n│   ├───simulation_engine.py\n│   ├───test_websocket_e2e.py\n│   ├───test.db\n│   ├───__pycache__\\\n│   ├───migrations\\\n│   │   ├───env.py\n│   │   ├───README\n│   │   ├───script.py.mako\n│   │   ├───__pycache__\\\n│   │   └───versions\\\n│   └───tests\\\n│       ├───__init__.py\n│       ├───conftest.py\n│       ├───test_e2e_simulation_workflow.py\n│       ├───test_e2e_simulation.py\n│       ├───test_logic.py\n│       ├───test_main.py\n│       └───test_websocket_e2e.py\n├───docs\\\n│   ├───analysis-wireframe.md\n│   ├───architecture.md\n│   ├───bmm-workflow-status.yaml\n│   ├───brainstorming-session-results-2025-11-12_1.md\n│   ├───brainstorming-session-results-2025-11-12.md\n│   ├───DEPLOYMENT.md\n│   ├───epics.md\n│   ├───high-fidelity-mockups.md\n│   ├───prd.md\n│   ├───product-brief-ibe160-2025-11-13.md\n│   ├───project-plan.md\n│   ├───project-setup-wireframe-v2.md\n│   ├───research-user-2025-11-12.md\n│   ├───simulation-wireframe.md\n│   ├───solutioning-gate-check.md\n│   ├───test-design.md\n│   ├───ux-color-themes.html\n│   ├───ux-design-directions.html\n│   ├───ux-design-specification.md\n│   ├───ux-validation-report.md\n│   ├───validation-report-20251126.md\n│   ├───visual-design-guidelines.md\n│   ├───images\\\n│   │   └───bmad-workflow.svg\n│   ├───sprint-artifacts\\\n│   │   ├───S1.1.context.md\n│   │   ├───S1.1.md\n│   │   ├───S1.2.md\n│   │   ├───S1.3.md\n│   │   ├───S1.4.md\n│   │   ├───S1.5.md\n│   │   └───S2.1.md\n│   │   └───...\n│   └───stories\\\n├───frontend\\\n│   ├───.gitignore\n│   ├───eslint.config.js\n│   ├───index.html\n│   ├───package-lock.json\n│   ├───package.json\n│   ├───README.md\n│   ├───tsconfig.app.json\n│   ├───tsconfig.json\n│   ├───tsconfig.node.json\n│   ├───vite.config.ts\n│   ├───node_modules\\...\n│   ├───public\\\n│   └───src\\\n├───node_modules\\...\n├───planning_tracker_proposal\\\n│   ├───chat_history.md\n│   ├───project_description.md\n│   ├───project_tracker.md\n│   ├───project_upgrade\n│   ├───proposal.md\n│   ├───proposalv2.md\n│   ├───proposalv3.1 technical architecture.md\n│   ├───proposalv3.md\n│   └───SG - Rubber Duck Debuggers.md\n└───src\\\n\nReminder: Do not return an empty response when a tool call is required.\n\nMy setup is complete. I will provide my first command in the next turn."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "version"
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "thoughtSignature": "Ci8Bjz1rX1j3lzj09VtBIUaSNtA7T1nZE/0+ku9cC3pR+UJdYDcpGdJuNmfJcASo8QpsAY89a18qXkzb3s3DhgRn7RqDjNArrp+bPq84n7MJsYGYGmBQ2IFVuLFZ/nzA06tqP8dfuRFFGY8Ji5NJ58ypygley22I7iT/PC6R8HGqruUWuz1G4QLlpu7bRBF4sucjAhvG057IGQoJlNHTCmkBjz1rX71T9PlAMLjRwze8bOWSFubXCDMMTxee6oTQBoPmISOFHQu7oYWdAYOmBZNK4zOQ0kvb12W8wJlAkidsRSxTALbEBI22woWMZ9Ipvr7bgu+JXtCobEG0dWxM3PNnY7Z4Kr0rxDQKsgEBjz1rX/eNAJGRcW7qcARxivJ5x1gExxTG4oJqTUiky6RPsCjM4U3SNJq/1TTgHyOXPUUykuDgAKx6Qc+Cv2jRAm9LxelVoeyEJyKeR/4G+q53563u4onuvMIUdE4IwArh6QmsIre2SX3hi46U3LgctufPmllaCNmzgvb6Dn1DgL9uwya7m7NW7xgyR98insvWJ3ncx1TPlB8KnNu9XJRW9YYATiExIOvc03rJ9Lx2q/IFCncBjz1rX6TYPWR2BsAK3CmYx/nbb/Ely8Tb3Xw5eOJ8ifPMHnqw60+n+/cILcnucj+gE3XwHLhaBogSpMwoD8g6GA1wE2/3JQ9OhDUJdiAOvl8kEUhajjlKI2T+DiPnVEykji7bZTARVDrl29LeQYuqYxEjSH0vcA==",
+              "text": "Okay, I'll check for a version in the `package.json` file."
+            },
+            {
+              "functionCall": {
+                "name": "read_file",
+                "args": {
+                  "file_path": "package.json"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "functionResponse": {
+                "id": "read_file-1765341239785-faf35a20db915",
+                "name": "read_file",
+                "response": {
+                  "output": "{\r\n  \"dependencies\": {\r\n    \"gsap\": \"^3.13.0\",\r\n    \"react-bits\": \"^1.0.5\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"shadcn\": \"^3.5.0\"\r\n  }\r\n}\r\n"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "thoughtSignature": "Ci0Bjz1rX/eJtYoPm93NREiGPYH7R9/yClzf+72UzcopuMzs6Ir/TYNqnl6HlhcKawGPPWtfSNkJ4T+F3EWlKy7H5iBu1nog6wBSP9bibPUhN30kQLdzqqeKrrs+Zpx1kZ5RsHrtLPOh65uYHRjsvdPUFAvuR6XfPwfm4PFodo70YwyrSH98GzuLQk2MPccNTdNfZPjIMcooTwLhCn8Bjz1rXwXrlY4L1NTmgJC6V33YR6gykJ1pBytn2YG2uqsy35ACWo4QO6HZ0J4m9r/Dw9Tdp0PWmfj8Bb/jgDQLVWy9YISE40HD7mOQfapIVrot/n3exHmLXnIN4v1AT9lGEQ51XJpsglJJ+woNBQBTQGGlQ2l6qeqjBcR6/eHkCpkBAY89a18+DWaB/8EnMe5hWJ4M0OKtbcJshiKRc+/MujbZQOKwD1ZdstXkt8hmuJ9PZj5qTjrhpy0qsfjugKvnz/RTZXQjCyuFL/QmIxotjVgZR4O/klQSKKTAgNuB3tKaUfpTPaLfIRBi2t/Z9iBV0Vv2HMW2nKVDJ6KqiCbJfrh1XhzbksbC5BdNb0j9AneY0AVI41gDqCzOClgBjz1rX6XBrOIwpBODo9IJwvccgsba0Eo5LZHyWZQkFCQqoCA6VLCz9Z18RT98TdGoCg+tZJVL7GDSIE61QBfh1lhbY0ILNAwlsTURqxMG1OQeKpyM2YYT",
+              "text": "The root `package.json` lacks a version. I'll check `frontend/package.json` for the project version, as is common for React/Vite projects."
+            },
+            {
+              "functionCall": {
+                "name": "read_file",
+                "args": {
+                  "file_path": "frontend/package.json"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "functionResponse": {
+                "id": "read_file-1765341242398-3f5e708f7ce46",
+                "name": "read_file",
+                "response": {
+                  "output": "{\r\n  \"name\": \"frontend\",\r\n  \"private\": true,\r\n  \"version\": \"0.0.0\",\r\n  \"type\": \"module\",\r\n  \"scripts\": {\r\n    \"dev\": \"vite\",\r\n    \"build\": \"tsc -b && vite build\",\r\n    \"lint\": \"eslint .\",\r\n    \"preview\": \"vite preview\"\r\n  },\r\n  \"dependencies\": {\r\n    \"@emotion/react\": \"^11.14.0\",\r\n    \"@emotion/styled\": \"^11.14.1\",\r\n    \"@mui/icons-material\": \"^5.18.0\",\r\n    \"@mui/material\": \"^5.18.0\",\r\n    \"@reduxjs/toolkit\": \"^2.11.0\",\r\n    \"@tanstack/react-query\": \"^5.28.0\",\r\n    \"dhtmlx-gantt\": \"^9.1.0\",\r\n    \"ogl\": \"^1.0.11\",\r\n    \"react\": \"^18.2.0\",\r\n    \"react-dom\": \"^18.2.0\",\r\n    \"react-redux\": \"^9.2.0\",\r\n    \"react-router-dom\": \"^7.9.6\",\r\n    \"recharts\": \"^3.5.0\",\r\n    \"zod\": \"^4.1.13\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"@eslint/js\": \"^9.39.1\",\r\n    \"@types/node\": \"^24.10.1\",\r\n    \"@types/react\": \"^18.2.5\",\r\n    \"@types/react-dom\": \"^18.2.3\",\r\n    \"@vitejs/plugin-react\": \"^5.1.1\",\r\n    \"eslint\": \"^9.39.1\",\r\n    \"eslint-plugin-react-hooks\": \"^7.0.1\",\r\n    \"eslint-plugin-react-refresh\": \"^0.4.24\",\r\n    \"globals\": \"^16.5.0\",\r\n    \"typescript\": \"~5.9.3\",\r\n    \"typescript-eslint\": \"^8.46.4\",\r\n    \"vite\": \"^7.2.4\"\r\n  }\r\n}\r\n"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "thoughtSignature": "Ci4Bjz1rXxgH/+Ds6ga1aAUnqRP3JMZQ/+dw7A7zmOZTcvxJvWsDpCfktmkI6qAlCmIBjz1rXzqm86QNxCnSxe2hlJu2DmsfNwug1PMYN+n8Be4Q0iKjX24ki0g1sGZfR/tPBNCTfCmiUPCCmuXSe0X+nGbRbHRxMVwA1Pc78ZsqN0yZw6THvYgSaZwaTnaaga4z/QpkAY89a1+7e1q2tXpxcOyxqCi24+FETau3982BJ94hq51BiLuuFFTbQR2TciJTiiBa/cr3onkvWuJmHDhwUOC5A3XfDYYiLw7XbbQEUmpXwwDkqdfULcbI2lSjLOWLBYqGb9nmvwqtAQGPPWtfZ/DMHkn8v1KBCB5WTl+McLejs1izY+L2xYv2vVsye7O6N4juXhfuPBEX/b+R8F93Bs9EvreIoznczVS/TCeU/YxWa/rqZOSdKp3P7WyYz0DU4YzNJIE3ThqRxoA+gBKfTKi1d1r8MI2ksvC9IS6Q1OcDjVUk/8S5/bA0WxeJd24Epv9mx3Q8TbHnJ4NRTwp2jrkI2dJHU8mCoVt8Ndx41JSHT+KvNdakCi8Bjz1rX7bxdOU5uOz9qJCxQo8K3uA/CruoYQ+e0e2m1DtztPElWG3cegbfvr5xYg==",
+              "text": "`frontend/package.json` shows the project version is \"0.0.0\". I'll report that."
+            },
+            {
+              "functionCall": {
+                "name": "run_shell_command",
+                "args": {
+                  "command": "echo \"Version: 0.0.0\""
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "functionResponse": {
+                "id": "run_shell_command-1765341245305-6204614f52527",
+                "name": "run_shell_command",
+                "response": {
+                  "error": "Tool \"run_shell_command\" not found in registry. Tools must use the exact names that are registered. Did you mean one of: \"search_file_content\", \"read_file\", \"save_memory\"?"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "thoughtSignature": "CiMBjz1rX32mBvE3u0a1Y7wlv6PK9lKbOss/751/0MPNnP/YBwpfAY89a1/C5p1L/uP6pGx60tgKu7oxTNUIsiVOqEoRGixSakNN4Qi0rXlNbVL7SZevznn5q++WwYaEu0BFtAe0Ge+otpDNV0OUqCVf718VLROYIChy/2AIgblNllrWvcwKfQGPPWtfy2xZyhj8kvf9xsff23K0ipRBOggRy9oHnUK+HbFAapJiRkojJjdOrO4vDDIAGdKu0ZdEwWfjSLJ0v6GVVsyITVeA89ENC0Zuc1wFSR0yZikxfCUaheevdim/UVsDYHIgwH5MiqcdEenFpGGCSOEvBXwA66dxuCa/CosBAY89a1/Jg3/FvcaTkiKfhaBLG/zMEmq/33nE8GTzO3VswyAvK2V+FbQ3RenFo+XhGdPusHdNLuD7Bl4zUSZeQc/rlNmdw8r4XZ0jX6rIg7WDOW/CXKc8fafplPa9zAcnfI+/7MhQNuGpoGY43fmRJPxT8T+AZxmBG1cogy2rS5DPtrO9lw8BHlmvcg==",
+              "text": "My mistake. I shouldn't have used `run_shell_command`. The version from `frontend/package.json` is \"0.0.0\"."
+            },
+            {
+              "functionCall": {
+                "name": "read_file",
+                "args": {
+                  "file_path": "frontend/package.json"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "functionResponse": {
+                "id": "read_file-1765341247215-c1bcf539cd949",
+                "name": "read_file",
+                "response": {
+                  "output": "{\r\n  \"name\": \"frontend\",\r\n  \"private\": true,\r\n  \"version\": \"0.0.0\",\r\n  \"type\": \"module\",\r\n  \"scripts\": {\r\n    \"dev\": \"vite\",\r\n    \"build\": \"tsc -b && vite build\",\r\n    \"lint\": \"eslint .\",\r\n    \"preview\": \"vite preview\"\r\n  },\r\n  \"dependencies\": {\r\n    \"@emotion/react\": \"^11.14.0\",\r\n    \"@emotion/styled\": \"^11.14.1\",\r\n    \"@mui/icons-material\": \"^5.18.0\",\r\n    \"@mui/material\": \"^5.18.0\",\r\n    \"@reduxjs/toolkit\": \"^2.11.0\",\r\n    \"@tanstack/react-query\": \"^5.28.0\",\r\n    \"dhtmlx-gantt\": \"^9.1.0\",\r\n    \"ogl\": \"^1.0.11\",\r\n    \"react\": \"^18.2.0\",\r\n    \"react-dom\": \"^18.2.0\",\r\n    \"react-redux\": \"^9.2.0\",\r\n    \"react-router-dom\": \"^7.9.6\",\r\n    \"recharts\": \"^3.5.0\",\r\n    \"zod\": \"^4.1.13\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"@eslint/js\": \"^9.39.1\",\r\n    \"@types/node\": \"^24.10.1\",\r\n    \"@types/react\": \"^18.2.5\",\r\n    \"@types/react-dom\": \"^18.2.3\",\r\n    \"@vitejs/plugin-react\": \"^5.1.1\",\r\n    \"eslint\": \"^9.39.1\",\r\n    \"eslint-plugin-react-hooks\": \"^7.0.1\",\r\n    \"eslint-plugin-react-refresh\": \"^0.4.24\",\r\n    \"globals\": \"^16.5.0\",\r\n    \"typescript\": \"~5.9.3\",\r\n    \"typescript-eslint\": \"^8.46.4\",\r\n    \"vite\": \"^7.2.4\"\r\n  }\r\n}\r\n"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "response": {
+      "session.id": "991b3ebb-9b6b-47c9-a250-4794b9a8858b",
+      "installation.id": "77f6a749-7ed4-46b3-b756-b091fde8b8a3",
+      "interactive": false,
+      "user.email": "kjtrolun@gmail.com",
+      "event.name": "gemini_cli.api_response",
+      "event.timestamp": "2025-12-10T04:34:08.036Z",
+      "model": "gemini-2.5-flash",
+      "duration_ms": 804,
+      "input_token_count": 10485,
+      "output_token_count": 8,
+      "cached_content_token_count": 0,
+      "thoughts_token_count": 0,
+      "tool_token_count": 0,
+      "total_token_count": 10493,
+      "prompt_id": "821364d10efc",
+      "auth_type": "oauth-personal",
+      "status_code": 200,
+      "finish_reasons": [
+        "stop",
+        "stop"
+      ],
+      "response_text": [
+        {
+          "candidates": [
+            {
+              "content": {
+                "role": "model",
+                "parts": [
+                  {
+                    "text": "Version: 0.0"
+                  }
+                ]
+              }
+            }
+          ],
+          "usageMetadata": {
+            "trafficType": "ON_DEMAND"
+          },
+          "modelVersion": "gemini-2.5-flash",
+          "responseId": "c9b044010b379aa6"
+        },
+        {
+          "candidates": [
+            {
+              "content": {
+                "role": "model",
+                "parts": [
+                  {
+                    "text": ".0"
+                  }
+                ]
+              },
+              "finishReason": "STOP"
+            }
+          ],
+          "usageMetadata": {
+            "promptTokenCount": 10485,
+            "candidatesTokenCount": 8,
+            "totalTokenCount": 10493,
+            "trafficType": "ON_DEMAND",
+            "promptTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 10485
+              }
+            ],
+            "candidatesTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 8
+              }
+            ]
+          },
+          "modelVersion": "gemini-2.5-flash",
+          "responseId": "c9b044010b379aa6"
+        }
+      ],
+      "http.status_code": 200
+    },
+    "error": null
+  }
+]

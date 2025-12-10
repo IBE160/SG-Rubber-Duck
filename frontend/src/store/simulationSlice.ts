@@ -69,31 +69,44 @@ const simulationSlice = createSlice({
         state.status = 'finished';
       }
     },
-  applyTaskEvent(state, action: PayloadAction<SimulationEvent>) {
-      const evt = action.payload;
-      if (!state.tasks.length || (!evt.task_id && !evt.task_id)) return;
-      const tid = evt.task_id;
-      const tasks = state.tasks.map(t => {
-        if (t.id !== tid) return t;
-        if (evt.type === 'task_started' || evt.event_type === 'task_started') {
-          return { ...t, progress: 0 };
+      applyTaskEvent(state, action: PayloadAction<SimulationEvent>) {
+        const evt = action.payload;
+        if (!state.tasks.length) return;
+  
+        const normalizedType = evt.event_type || evt.type;
+        
+        const tasks = state.tasks.map(t => {
+          // Handle explicit task events
+          if (evt.task_id === t.id) {
+              if (normalizedType === 'task_started') {
+                  return { ...t, progress: 0 };
+              }
+              if (normalizedType === 'task_completed') {
+                  return { ...t, progress: 1 };
+              }
+          }
+  
+          // Handle day_advanced for active tasks
+          if (normalizedType === 'day_advanced') {
+              const activeTasks = (evt.details?.active_tasks as number[]) || [];
+              if (activeTasks.includes(t.id)) {
+                  const duration = t.duration || 1;
+                  // Increment progress, but cap at 0.99 until explicitly completed
+                  const increment = 1 / duration;
+                  const nextProgress = Math.min(0.99, (t.progress ?? 0) + increment);
+                  return { ...t, progress: nextProgress };
+              }
+          }
+          
+          return t;
+        });
+        state.tasks = tasks;
+        
+        if (normalizedType === 'simulation_completed') {
+          state.status = 'finished';
         }
-        if (evt.type === 'day_advanced' || evt.event_type === 'day_advanced') {
-          const duration = t.duration || 1;
-          const increment = 1 / duration;
-          const nextProgress = Math.min(1, (t.progress ?? 0) + increment);
-          return { ...t, progress: nextProgress };
-        }
-        if (evt.type === 'task_completed' || evt.event_type === 'task_completed') {
-          return { ...t, progress: 1 };
-        }
-        return t;
-      });
-      state.tasks = tasks;
-      if (evt.event_type === 'simulation_completed') {
-        state.status = 'finished';
-      }
-    },
+      },
+  
     tick(state, action: PayloadAction<{ day: number; kpis: KpiValues; newEvents: SimulationEvent[]; updatedTasks: SimTaskState[] }>) {
       if (state.status !== 'running') return;
       state.currentDay = action.payload.day;

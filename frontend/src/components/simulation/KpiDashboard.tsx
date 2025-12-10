@@ -27,7 +27,7 @@ const KpiDashboard: React.FC = () => {
     return <Typography>Select a project to see KPIs.</Typography>;
   }
 
-  const budget = currentProject.budget;
+  const budget = currentProject.budget || 0;
   const taskCompletedCost = simEvents
     .filter(e => e.event_type === 'task_completed' && typeof e.details?.cost === 'number')
     .reduce((sum, e) => sum + (e.details?.cost as number), 0);
@@ -40,7 +40,7 @@ const KpiDashboard: React.FC = () => {
   const riskEvents = simulationResult?.risk_events ?? simEvents.filter(e => e.event_type === 'risk_triggered').length;
   const baseDuration = simulationResult?.base_duration ?? undefined;
   const criticalPath = simulationResult?.critical_path ?? [];
-  const overrun = totalCost - budget;
+  const variance = totalCost - budget;
 
   if (!simulationResult && simEvents.length === 0) {
     return (
@@ -56,7 +56,7 @@ const KpiDashboard: React.FC = () => {
             <KpiCard title="Project Budget" value={formatCurrency(budget)} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-            <KpiCard title="Total Cost" value={formatCurrency(totalCost)} description="Includes risk impacts when present." color={totalCost > budget ? 'error.main' : 'success.main'} />
+            <KpiCard title="Actual Cost" value={formatCurrency(totalCost)} description="Includes risk impacts when present." color={totalCost > budget ? 'error.main' : 'success.main'} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
             <KpiCard 
@@ -67,10 +67,10 @@ const KpiDashboard: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
             <KpiCard 
-              title="Cost Overrun" 
-              value={formatCurrency(overrun)} 
-              description="Difference between total cost and budget."
-              color={overrun > 0 ? 'error.main' : 'text.primary'}
+              title="Budget Variance" 
+              value={formatCurrency(variance)} 
+              description="Positive = Over Budget, Negative = Under Budget"
+              color={variance > 0 ? 'error.main' : 'success.main'}
             />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
