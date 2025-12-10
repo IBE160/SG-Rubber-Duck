@@ -430,10 +430,10 @@ async def start_simulation_background(
         target_id = sim.id
 
     if run_in_background:
-        background_tasks.add_task(run_simulation, db, target_id)
+        background_tasks.add_task(run_simulation, target_id)
         return JSONResponse(status_code=202, content={"message": "Simulation started in the background. Check back later for results.", "simulation_run_id": target_id})
     else:
-        await run_simulation(db, target_id)
+        await run_simulation(target_id)
         return {"message": "Simulation finished.", "simulation_run_id": target_id}
 
 

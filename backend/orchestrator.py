@@ -270,7 +270,17 @@ class SimulationEngine:
             },
         )
 
-async def run_simulation(db: Session, simulation_run_id: int):
+from .database import SessionLocal # Import SessionLocal
+
+# ... (rest of imports)
+
+# ... (TaskState and SimulationEngine classes remain unchanged)
+
+async def run_simulation(simulation_run_id: int): # Removed db argument
     """Orchestrates a single simulation run asynchronously."""
-    engine = SimulationEngine(db, simulation_run_id)
-    await engine.run()
+    db = SessionLocal() # Create new session
+    try:
+        engine = SimulationEngine(db, simulation_run_id)
+        await engine.run()
+    finally:
+        db.close() # Ensure session is closed
