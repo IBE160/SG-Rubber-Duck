@@ -4,6 +4,7 @@ import { Box, CircularProgress } from '@mui/material';
 import AppHeader from './components/AppHeader';
 import Sidebar, { collapsedWidth, expandedWidth } from './components/Sidebar';
 import GanttChart from './components/GanttChart/GanttChart';
+import HealthStatus from './components/HealthStatus';
 
 const SetupPage = lazy(() => import('./pages/SetupPage'));
 const SimulationPage = lazy(() => import('./pages/SimulationPage'));
@@ -70,6 +71,7 @@ const App: React.FC = () => {
           </Suspense>
         </Box>
       </Box>
+      <HealthStatus />
     </Box>
   );
 };
