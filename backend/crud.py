@@ -16,6 +16,13 @@ def create_project(db: Session, project: schemas.ProjectCreate):
     db.refresh(db_project)
     return db_project
 
+def delete_project(db: Session, project_id: int):
+    db_project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if db_project:
+        db.delete(db_project)
+        db.commit()
+    return db_project
+
 # Task CRUD
 def get_tasks(db: Session, project_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Task).filter(models.Task.project_id == project_id).offset(skip).limit(limit).all()

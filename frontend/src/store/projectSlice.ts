@@ -162,7 +162,7 @@ const projectSlice = createSlice({
               task[field] = Number(value);
               break;
             case 'predecessors':
-              // Predecessors not yet handled in backend Task model
+              task[field] = value as number[];
               break;
             case 'resource_id':
                 task[field] = (value as number);

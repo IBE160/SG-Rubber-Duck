@@ -28,7 +28,7 @@ class TaskBase(BaseModel):
     progress: float = 0.0
     parent: Optional[int] = None
     cost: float = 0.0
-    predecessors: List[int] = Field(default_factory=list, validation_alias="dependencies", serialization_alias="predecessors")
+    predecessors: List[int] = Field(default_factory=list, validation_alias="dependencies", serialization_alias="dependencies")
     resource_id: Optional[int] = None
 
 class TaskCreate(TaskBase):
@@ -45,7 +45,7 @@ class TaskUpdate(BaseModel):
     predecessors: Optional[List[int]] = Field(
         default=None,
         validation_alias="dependencies",
-        serialization_alias="predecessors",
+        serialization_alias="dependencies",
         json_schema_extra={"alias": "dependencies"} # Explicitly hint for clients/docs
     )
     resource_id: Optional[int] = None
