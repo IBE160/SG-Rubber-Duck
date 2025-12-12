@@ -1,7 +1,7 @@
 import { Project, Task, Resource, Risk, SimulationRun, SimulationResults } from '../types/domain';
 import { ProjectCreate, ProjectUpdate, TaskCreate, RiskCreate } from '../types/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8002';
 
 export interface SimulationStatusResponse extends SimulationRun {}
 

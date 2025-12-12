@@ -3,7 +3,7 @@
  * Manages real-time connections to backend simulation events
  */
 
-const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8001';
+const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8002';
 
 export interface SimulationEvent {
   event_type: string;

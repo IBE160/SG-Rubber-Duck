@@ -3,7 +3,7 @@ import { Box, Typography, Chip } from '@mui/material';
 import WifiOffIcon from '@mui/icons-material/WifiOff';
 import WifiIcon from '@mui/icons-material/Wifi';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8002';
 
 const HealthStatus: React.FC = () => {
   const [isOnline, setIsOnline] = useState<boolean | null>(null);

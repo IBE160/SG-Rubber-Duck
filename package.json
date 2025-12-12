@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "npm run dev --prefix frontend",
-    "start:backend": "python -m uvicorn backend.main:app --reload --port 8001",
+    "start:backend": "python -m uvicorn backend.main:app --reload --port 8002",
     "start:all": "start start_dev.bat"
   },
   "dependencies": {

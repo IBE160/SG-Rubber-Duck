@@ -71,7 +71,7 @@ The application simulates project management scenarios, allowing users to set up
     ```
 
 3.  **Configure environment variables:**
-    The frontend expects the backend to be running on port 8001. If you have changed the backend port, create a `.env` file and update the `VITE_API_BASE_URL` variable.
+    The frontend expects the backend to be running on port 8002. If you have changed the backend port, create a `.env` file and update the `VITE_API_BASE_URL` variable.
     ```sh
     cp .env.example .env
     ```
@@ -87,9 +87,9 @@ To run the backend server with auto-reloading for development:
 2.  Make sure your virtual environment is activated.
 3.  Run the following command:
     ```sh
-    uvicorn main:app --reload --port 8001
+    uvicorn main:app --reload --port 8002
     ```
-    The API will be available at `http://localhost:8001`.
+    The API will be available at `http://localhost:8002`.
 
 ### Frontend
 

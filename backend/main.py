@@ -343,7 +343,7 @@ async def websocket_simulation_events(websocket: WebSocket, simulation_id: int, 
     """
     WebSocket endpoint for receiving simulation events in real-time.
     
-    Clients connect with: ws://localhost:8001/ws/simulations/{simulation_id}/events
+    Clients connect with: ws://localhost:8002/ws/simulations/{simulation_id}/events
     
     Server sends events like:
     {

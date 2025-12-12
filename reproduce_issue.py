@@ -2,7 +2,7 @@ import requests
 import datetime
 import json
 
-API_URL = "http://localhost:8001"
+API_URL = "http://localhost:8002"
 
 def create_demo_project():
     print("1. Creating Project...")
