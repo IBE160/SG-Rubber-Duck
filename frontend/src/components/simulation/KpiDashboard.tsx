@@ -110,7 +110,7 @@ const KpiDashboard: React.FC = () => {
             <KpiCard title="Risk Events" value={riskEvents.toString()} description="Triggered during this run." color={riskEvents > 0 ? 'warning.main' : 'success.main'} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-            <KpiCard title="Critical / Driving Path" value={criticalPathString} description="From CPM baseline." />
+            <KpiCard title="Critical / Driving Path" value={criticalPathIds.join(' → ') || 'N/A'} description="From CPM baseline." />
         </Grid>
       </Grid>
     </Box>
