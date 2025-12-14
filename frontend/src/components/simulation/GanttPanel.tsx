@@ -7,29 +7,6 @@ import { Risk, Task } from '../../types/domain';
 type BarTask = Task & { affectedByRisk?: Risk[] };
 const MS_PER_DAY = 86400000;
 
-const computeCriticalPath = (tasks: Task[]): Set<number> => { // Return Set<number>
-  if (!tasks.length) return new Set<number>();
-  const duration = new Map(tasks.map((t) => [t.id, Math.max(0, t.duration)]));
-  const preds = new Map(tasks.map((t) => [t.id, t.predecessors]));
-  const memo = new Map<number, number>(); // Use number for ID
-
-  const dfs = (id: number): number => { // Use number for ID
-    if (memo.has(id)) return memo.get(id)!;
-    const bestPred = Math.max(0, ...(preds.get(id) || []).map((p) => dfs(p)));
-    const total = bestPred + (duration.get(id) ?? 0);
-    memo.set(id, total);
-    return total;
-  };
-
-  tasks.forEach((t) => dfs(t.id));
-  const maxLen = Math.max(0, ...Array.from(memo.values()));
-  const critical = new Set<number>(); // Use number for ID
-  memo.forEach((len, id) => {
-    if (len === maxLen) critical.add(id);
-  });
-  return critical;
-};
-
 // Compute timeline bounds
 const getBounds = (tasks: Task[]) => {
   if (!tasks.length) return { min: new Date(), max: new Date(), totalDays: 1 };
@@ -51,9 +28,10 @@ const getBounds = (tasks: Task[]) => {
 
 interface Props {
   tasksOverride?: Task[];
+  criticalPathIds?: number[];
 }
 
-const GanttPanel: React.FC<Props> = ({ tasksOverride }) => {
+const GanttPanel: React.FC<Props> = ({ tasksOverride, criticalPathIds = [] }) => {
   const { tasks: baseTasks, risks } = useAppSelector((state) => state.projects);
   const [zoom, setZoom] = useState<number>(1); // 0.5x, 1x, 2x
   const [showGrid] = useState(true);
@@ -70,7 +48,7 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride }) => {
     return processedTasks;
   }, [baseTasks, risks, tasksOverride]);
 
-  const criticalIds = useMemo(() => computeCriticalPath(tasks), [tasks]);
+  const criticalIds = useMemo(() => new Set(criticalPathIds), [criticalPathIds]);
   const { min, totalDays } = useMemo(() => getBounds(tasks), [tasks]);
 
   const baseDayWidth = 14; // px per day

@@ -32,7 +32,7 @@ const SimulationPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { currentProject, tasks, status: projectStatus } = useAppSelector((state) => state.projects);
+  const { currentProject, tasks, status: projectStatus, simulationResult } = useAppSelector((state) => state.projects);
   const simStatus = useAppSelector(state => state.simulation.status);
   const simTasks = useAppSelector(state => state.simulation.tasks);
   const [tabValue, setTabValue] = useState(0);
@@ -142,7 +142,10 @@ const SimulationPage: React.FC = () => {
       
       <Box sx={{ height: '65%', p: 1, pt: 0 }}>
         <Paper elevation={2} sx={{ height: '100%', width: '100%' }}>
-            <GanttPanel tasksOverride={simTasks.length ? simTasks : tasks} />
+            <GanttPanel 
+              tasksOverride={simTasks.length ? simTasks : tasks} 
+              criticalPathIds={simulationResult?.critical_path}
+            />
         </Paper>
       </Box>
 
