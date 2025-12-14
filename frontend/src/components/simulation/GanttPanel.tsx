@@ -126,7 +126,7 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride, criticalPathIds = [] }) =>
           <Chip size="small" label={`Start: ${task.start_date || 'N/A'}`} />
           <Chip size="small" label={`Dur: ${task.duration}d`} />
           {task.dependencies.length > 0 && (
-            <Chip size="small" label={`Pred: ${task.dependencies.join(', ')}`} sx={{ bgcolor: 'secondary.main' }} />
+            <Chip size="small" label={`Pred: ${task.dependencies.join(', ')}`} sx={{ bgcolor: 'secondary.main', color: 'black' }} />
           )}
         </Stack>
       </Box>
