@@ -44,3 +44,16 @@ next-env.d.ts
 venv/
 __pycache__/
 *.pyc
+
+# Log and temporary files
+*.log
+*.err
+*.txt
+*.db
+*.png
+# Ignore all files in .logging/requests/
+.logging/requests/
+# Ignore planning_tracker_proposal/ directory
+planning_tracker_proposal/
+# Ignore everything in the frontend directory
+frontend/
