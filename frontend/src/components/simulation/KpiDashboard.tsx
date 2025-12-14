@@ -55,8 +55,13 @@ const KpiDashboard: React.FC = () => {
     ? new Date(new Date(currentProject.start_date).getTime() + totalDuration * 86400000).toISOString().split('T')[0]
     : 'N/A';
 
-  const cv = simStatus === 'running' ? kpis.cv : 0; 
-  const sv = simStatus === 'running' ? kpis.sv : 0; 
+  const cv = simStatus === 'running'
+    ? kpis.cv
+    : simulationResult?.total_cost != null && budget != null
+        ? budget - simulationResult.total_cost
+        : 0;
+  
+  const sv = simStatus === 'running' ? kpis.sv : 0; // SV usually converges to 0 at project completion
 
   if (!simulationResult && simEvents.length === 0) {
     return (
