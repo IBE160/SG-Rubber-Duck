@@ -52,9 +52,10 @@ const KpiDashboard: React.FC = () => {
 
   const variance = totalCost - budget;
 
-  // Use live KPIs if simulation is running, otherwise use final result values if available
-  const cv = simStatus === 'running' ? kpis.cv : 0; // Final CV is not typically stored in simple result, but variance represents final CV
-  const sv = simStatus === 'running' ? kpis.sv : 0; 
+  // Use live KPIs from simulation state. 
+  // We remove the check for 'running' so the final values persist after completion.
+  const cv = kpis.cv; 
+  const sv = kpis.sv; 
 
   if (!simulationResult && simEvents.length === 0) {
     return (
