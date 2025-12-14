@@ -1,1 +1,0 @@
-This file contains the historical conversation. Please copy-paste the chat history here.
