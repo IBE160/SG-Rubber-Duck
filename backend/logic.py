@@ -130,9 +130,45 @@ def calculate_cpm(tasks: List[CPMTask]) -> Dict[str, Any]:
         
         ls[task_id] = lf[task_id] - task.duration
 
-    # Calculate Slack and Critical Path
+    # Calculate Slack
     slack = {task_id: ls[task_id] - es[task_id] for task_id in sorted_tasks}
-    critical_path = [task_id for task_id in sorted_tasks if slack[task_id] == 0]
+    
+    # Identify Critical Path using Longest Path (Driving Path) logic
+    # instead of just Zero Slack, to handle constraint gaps logically.
+    critical_path_set = set()
+    
+    # 1. Find tasks that determine the project duration (finish at project_duration)
+    end_tasks = [tid for tid, finish in ef.items() if finish == project_duration]
+    
+    # 2. Trace back from these end tasks
+    # For each task, the driving predecessor is the one with the max EF
+    queue = list(end_tasks)
+    while queue:
+        current_id = queue.pop(0)
+        if current_id in critical_path_set:
+            continue
+        critical_path_set.add(current_id)
+        
+        current_task = task_map[current_id]
+        if current_task.dependencies:
+            # Find the predecessor with the latest EF
+            # If multiple have the same max EF, they are all driving? 
+            # Standard Longest Path usually picks one or all max. Let's pick all max.
+            max_pred_ef = -1
+            driving_preds = []
+            
+            for dep_id in current_task.dependencies:
+                pred_ef = ef.get(dep_id, 0)
+                if pred_ef > max_pred_ef:
+                    max_pred_ef = pred_ef
+                    driving_preds = [dep_id]
+                elif pred_ef == max_pred_ef:
+                    driving_preds.append(dep_id)
+            
+            queue.extend(driving_preds)
+
+    # Sort critical path by ES for display
+    critical_path = sorted(list(critical_path_set), key=lambda x: es[x])
 
     # Format task details for the response
     task_details = []

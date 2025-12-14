@@ -15,7 +15,7 @@ const KpiCard: React.FC<{ title: string; value: string; color?: string, descript
 );
 
 const KpiDashboard: React.FC = () => {
-  const { simulationResult, currentProject } = useAppSelector(state => state.projects);
+  const { simulationResult, currentProject, tasks } = useAppSelector(state => state.projects);
   const { kpis, status: simStatus } = useAppSelector(state => state.simulation);
   const simEvents = useAppSelector(state => state.simulation.events);
 
@@ -40,7 +40,16 @@ const KpiDashboard: React.FC = () => {
   const tasksCompleted = simulationResult?.tasks_completed ?? simEvents.filter(e => e.event_type === 'task_completed').length;
   const riskEvents = simulationResult?.risk_events ?? simEvents.filter(e => e.event_type === 'risk_triggered').length;
   const baseDuration = simulationResult?.base_duration ?? undefined;
-  const criticalPath = simulationResult?.critical_path ?? [];
+  
+  const criticalPathIds = simulationResult?.critical_path ?? [];
+  console.log('KPI: criticalPathIds', criticalPathIds);
+  console.log('KPI: tasks', tasks);
+  const criticalPathNames = criticalPathIds
+    .map(id => tasks.find(t => t.id === id)?.text)
+    .filter(Boolean);
+  console.log('KPI: criticalPathNames', criticalPathNames);
+  const criticalPathString = criticalPathNames.join(' → ') || 'N/A';
+
   const variance = totalCost - budget;
 
   // Use live KPIs if simulation is running, otherwise use final result values if available
@@ -101,7 +110,7 @@ const KpiDashboard: React.FC = () => {
             <KpiCard title="Risk Events" value={riskEvents.toString()} description="Triggered during this run." color={riskEvents > 0 ? 'warning.main' : 'success.main'} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-            <KpiCard title="Critical Path" value={criticalPath.join(' → ') || 'N/A'} description="From CPM baseline." />
+            <KpiCard title="Critical / Driving Path" value={criticalPathString} description="From CPM baseline." />
         </Grid>
       </Grid>
     </Box>
