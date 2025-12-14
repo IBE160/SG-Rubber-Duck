@@ -40,7 +40,7 @@ export class SimulationRunner {
         this.getState = getState;
 
         // Determine project start date
-        this.projectStartDate = new Date(Math.min(...initialTasks.map(t => new Date(t.start_date).getTime())));
+        this.projectStartDate = new Date(Math.min(...initialTasks.map(t => t.start_date ? new Date(t.start_date).getTime() : new Date().getTime())));
     }
 
     start() {
@@ -72,7 +72,7 @@ export class SimulationRunner {
         this.tasks.forEach(simTask => {
             if (simTask.isFinished) return;
 
-            const canStart = simTask.original.predecessors.every(pId => this.tasks.get(pId)?.isFinished);
+            const canStart = (simTask.original.dependencies || []).every(pId => this.tasks.get(pId)?.isFinished);
             if (!canStart) return;
 
             if (!simTask.isActive) {
@@ -122,7 +122,8 @@ export class SimulationRunner {
         this.tasks.forEach(simTask => {
             ev += simTask.original.cost * simTask.progress;
             
-            const taskStartDay = (new Date(simTask.original.start_date).getTime() - projectStartMs) / msPerDay;
+            const taskStartMs = simTask.original.start_date ? new Date(simTask.original.start_date).getTime() : new Date().getTime();
+            const taskStartDay = (taskStartMs - projectStartMs) / msPerDay;
             if (this.day >= taskStartDay) {
                 const plannedProgress = Math.min(1, Math.max(0, (this.day - taskStartDay) / simTask.original.duration));
                 pv += simTask.original.cost * plannedProgress;

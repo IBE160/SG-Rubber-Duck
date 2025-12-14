@@ -11,9 +11,9 @@ const MS_PER_DAY = 86400000;
 const getBounds = (tasks: Task[]) => {
   if (!tasks.length) return { min: new Date(), max: new Date(), totalDays: 1 };
   
-  const starts = tasks.map((t) => new Date(t.start_date).getTime());
+  const starts = tasks.map((t) => t.start_date ? new Date(t.start_date).getTime() : new Date().getTime());
   const endTimes = tasks.map((t) => {
-    const taskStartDate = new Date(t.start_date).getTime();
+    const taskStartDate = t.start_date ? new Date(t.start_date).getTime() : new Date().getTime();
     const taskEndDate = taskStartDate + (t.duration * MS_PER_DAY);
     return taskEndDate;
   });
@@ -40,7 +40,7 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride, criticalPathIds = [] }) =>
     const source = tasksOverride && tasksOverride.length ? tasksOverride : (baseTasks || []);
     const processedTasks = source.map((t) => ({
       ...t,
-      predecessors: t.predecessors || [],
+      dependencies: t.dependencies || [],
       progress: t.progress ?? 0,
       affectedByRisk: risks.filter((r) => r.affected_task_ids?.includes(t.id)),
     }));
@@ -55,9 +55,10 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride, criticalPathIds = [] }) =>
   const dayWidth = Math.max(6, baseDayWidth * zoom);
 
   const renderBar = (task: BarTask) => {
+    const taskStartDate = task.start_date ? new Date(task.start_date) : new Date();
     const startOffset = Math.max(
       0,
-      Math.round((new Date(task.start_date).getTime() - min.getTime()) / MS_PER_DAY),
+      Math.round((taskStartDate.getTime() - min.getTime()) / MS_PER_DAY),
     );
     const width = Math.max(6, task.duration * dayWidth);
     const left = startOffset * dayWidth;
@@ -122,10 +123,10 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride, criticalPathIds = [] }) =>
           )}
         </Box>
         <Stack direction="row" spacing={1} sx={{ mt: 0.25 }}>
-          <Chip size="small" label={`Start: ${task.start_date}`} />
+          <Chip size="small" label={`Start: ${task.start_date || 'N/A'}`} />
           <Chip size="small" label={`Dur: ${task.duration}d`} />
-          {task.predecessors.length > 0 && (
-            <Chip size="small" label={`Pred: ${task.predecessors.join(', ')}`} sx={{ bgcolor: 'secondary.main' }} />
+          {task.dependencies.length > 0 && (
+            <Chip size="small" label={`Pred: ${task.dependencies.join(', ')}`} sx={{ bgcolor: 'secondary.main' }} />
           )}
         </Stack>
       </Box>

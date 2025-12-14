@@ -16,6 +16,7 @@ const KpiCard: React.FC<{ title: string; value: string; color?: string, descript
 
 const KpiDashboard: React.FC = () => {
   const { simulationResult, currentProject } = useAppSelector(state => state.projects);
+  const { kpis, status: simStatus } = useAppSelector(state => state.simulation);
   const simEvents = useAppSelector(state => state.simulation.events);
 
   const formatCurrency = (value: number) => {
@@ -42,6 +43,10 @@ const KpiDashboard: React.FC = () => {
   const criticalPath = simulationResult?.critical_path ?? [];
   const variance = totalCost - budget;
 
+  // Use live KPIs if simulation is running, otherwise use final result values if available
+  const cv = simStatus === 'running' ? kpis.cv : 0; // Final CV is not typically stored in simple result, but variance represents final CV
+  const sv = simStatus === 'running' ? kpis.sv : 0; 
+
   if (!simulationResult && simEvents.length === 0) {
     return (
         <Alert severity="info">Run a simulation to view Key Performance Indicators.</Alert>
@@ -67,10 +72,26 @@ const KpiDashboard: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
             <KpiCard 
-              title="Budget Variance" 
+              title="Budget Variance (VAC)" 
               value={formatCurrency(variance)} 
-              description="Positive = Over Budget, Negative = Under Budget"
+              description="Final Projected Variance"
               color={variance > 0 ? 'error.main' : 'success.main'}
+            />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+             <KpiCard 
+              title="Schedule Variance (SV)" 
+              value={formatCurrency(sv)} 
+              description="EV - PV (Live)"
+              color={sv < 0 ? 'warning.main' : 'success.main'}
+            />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+             <KpiCard 
+              title="Cost Variance (CV)" 
+              value={formatCurrency(cv)} 
+              description="EV - AC (Live)"
+              color={cv < 0 ? 'warning.main' : 'success.main'}
             />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>

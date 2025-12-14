@@ -16,6 +16,7 @@ export interface SimulationState {
   tasks: SimTaskState[]; // Add tasks to simulation state
   error: string | null;
   kpiHistory: { day: number; sv: number; cv: number }[];
+  pvCurve: number[]; // Planned Value curve (daily cumulative cost)
 }
 
 const initialState: SimulationState = {
@@ -28,6 +29,7 @@ const initialState: SimulationState = {
   tasks: [],
   error: null,
   kpiHistory: [],
+  pvCurve: [],
 };
 
 const simulationSlice = createSlice({
@@ -40,6 +42,9 @@ const simulationSlice = createSlice({
       state.tasks = action.payload.initialTasks;
       state.currentDay = 0;
       state.events = [];
+      state.pvCurve = [];
+      state.kpis = { ...initialState.kpis };
+      state.kpiHistory = [];
     },
     resetSimulation() {
       return initialState;
@@ -75,9 +80,16 @@ const simulationSlice = createSlice({
     },
           applyTaskEvent(state, action: PayloadAction<SimulationEvent>) {
             const evt = action.payload;
-            if (!state.tasks.length) return;
-      
+            
             const normalizedType = evt.event_type || evt.type;
+
+            if (normalizedType === 'simulation_started') {
+                if (evt.details?.pv_curve) {
+                    state.pvCurve = evt.details.pv_curve as number[];
+                }
+            }
+
+            if (!state.tasks.length && normalizedType !== 'simulation_started') return;
             
             // Calculate derived dates based on simulation day
             // Assuming the first task's start date is the project start anchor
@@ -129,18 +141,20 @@ const simulationSlice = createSlice({
                 const ev = state.tasks.reduce((sum, t) => sum + (t.cost * (t.progress || 0)), 0);
                 state.kpis.ev = ev;
                 
-                // Calculate PV (Planned Value) - Simplified: Assume linear burn of total budget over project duration
-                // A better approximation would require original baseline schedule
-                // For now, let's use a proxy: PV = EV (Schedule Variance = 0) unless we have baseline
-                // Or we can approximate PV based on day/total_duration * budget
-                // Let's leave PV as is or rough estimate to avoid wild SV
-                // state.kpis.pv = ... 
+                // Calculate PV (Planned Value)
+                // Use the stored pvCurve
+                if (state.pvCurve.length > 0) {
+                    const dayIndex = Math.min(state.currentDay, state.pvCurve.length - 1);
+                    // Ensure dayIndex is non-negative
+                    const safeIndex = Math.max(0, dayIndex);
+                    state.kpis.pv = state.pvCurve[safeIndex];
+                }
       
                 // CV = EV - AC
                 state.kpis.cv = state.kpis.ev - state.kpis.ac;
                 
-                // SV = EV - PV (skipping for now as PV is hard to estimate without baseline obj)
-                // state.kpis.sv = ...
+                // SV = EV - PV
+                state.kpis.sv = state.kpis.ev - state.kpis.pv;
       
                 state.kpiHistory.push({ day: state.currentDay, sv: state.kpis.sv, cv: state.kpis.cv });
             }

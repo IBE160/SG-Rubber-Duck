@@ -61,35 +61,35 @@ export const mockRisks: Risk[] = [
 
 export const mockTasks: Task[] = [
   // Phase 1: Planning & Site Prep
-  { id: 1, text: 'Project Planning & Design', start_date: '2026-01-05', duration: 15, progress: 1, parent: null, predecessors: [], cost: 30000, project_id: 1 },
-  { id: 2, text: 'Site Survey and Clearing', start_date: '2026-01-26', duration: 5, progress: 1, parent: null, predecessors: [1], cost: 12000, resource_id: 2, project_id: 1 },
-  { id: 3, text: 'Foundation Excavation & Pouring', start_date: '2026-02-02', duration: 10, progress: 0, parent: null, predecessors: [2], cost: 50000, resource_id: 1, project_id: 1 },
+  { id: 1, text: 'Project Planning & Design', start_date: '2026-01-05', duration: 15, progress: 1, parent: null, dependencies: [], cost: 30000, project_id: 1 },
+  { id: 2, text: 'Site Survey and Clearing', start_date: '2026-01-26', duration: 5, progress: 1, parent: null, dependencies: [1], cost: 12000, resource_id: 2, project_id: 1 },
+  { id: 3, text: 'Foundation Excavation & Pouring', start_date: '2026-02-02', duration: 10, progress: 0, parent: null, dependencies: [2], cost: 50000, resource_id: 1, project_id: 1 },
 
-  // Phase 2: Superstructure
-  { id: 4, text: 'Superstructure Work', start_date: '2026-02-16', duration: 0, progress: 0, parent: null, predecessors: [3], cost: 0, project_id: 1 },
-  { id: 5, text: 'Erect Structural Steel Frame', start_date: '2026-02-16', duration: 15, progress: 0, parent: 4, predecessors: [3], cost: 120000, resource_id: 1, project_id: 1 },
-  { id: 6, text: 'Install Floor and Roof Structures', start_date: '2026-03-09', duration: 10, progress: 0, parent: 4, predecessors: [5], cost: 75000, resource_id: 1, project_id: 1 },
+  // Phase 2: Structure
+  { id: 4, text: 'Superstructure Work', start_date: '2026-02-16', duration: 0, progress: 0, parent: null, dependencies: [3], cost: 0, project_id: 1 },
+  { id: 5, text: 'Erect Structural Steel Frame', start_date: '2026-02-16', duration: 15, progress: 0, parent: 4, dependencies: [3], cost: 120000, resource_id: 1, project_id: 1 },
+  { id: 6, text: 'Install Floor and Roof Structures', start_date: '2026-03-09', duration: 10, progress: 0, parent: 4, dependencies: [5], cost: 75000, resource_id: 1, project_id: 1 },
 
-  // Phase 3: Building Envelope
-  { id: 7, text: 'Building Envelope', start_date: '2026-03-23', duration: 0, progress: 0, parent: null, predecessors: [6], cost: 0, project_id: 1 },
-  { id: 8, text: 'Exterior Walls and Cladding', start_date: '2026-03-23', duration: 15, progress: 0, parent: 7, predecessors: [6], cost: 90000, resource_id: 1, project_id: 1 },
-  { id: 9, text: 'Windows and Doors Installation', start_date: '2026-04-13', duration: 5, progress: 0, parent: 7, predecessors: [8], cost: 40000, resource_id: 3, project_id: 1 },
+  // Phase 3: Envelope
+  { id: 7, text: 'Building Envelope', start_date: '2026-03-23', duration: 0, progress: 0, parent: null, dependencies: [6], cost: 0, project_id: 1 },
+  { id: 8, text: 'Exterior Walls and Cladding', start_date: '2026-03-23', duration: 15, progress: 0, parent: 7, dependencies: [6], cost: 90000, resource_id: 1, project_id: 1 },
+  { id: 9, text: 'Windows and Doors Installation', start_date: '2026-04-13', duration: 5, progress: 0, parent: 7, dependencies: [8], cost: 40000, resource_id: 3, project_id: 1 },
 
-  // Phase 4: Interior and Systems
-  { id: 10, text: 'MEP Systems', start_date: '2026-04-20', duration: 0, progress: 0, parent: null, predecessors: [9], cost: 0, project_id: 1 },
-  { id: 11, text: 'HVAC Rough-in', start_date: '2026-04-20', duration: 10, progress: 0, parent: 10, predecessors: [9], cost: 60000, resource_id: 3, project_id: 1 },
-  { id: 12, text: 'Electrical and Plumbing Rough-in', start_date: '2026-05-04', duration: 10, progress: 0, parent: 10, predecessors: [11], cost: 65000, resource_id: 3, project_id: 1 },
+  // Phase 4: Systems
+  { id: 10, text: 'MEP Systems', start_date: '2026-04-20', duration: 0, progress: 0, parent: null, dependencies: [9], cost: 0, project_id: 1 },
+  { id: 11, text: 'HVAC Rough-in', start_date: '2026-04-20', duration: 10, progress: 0, parent: 10, dependencies: [9], cost: 60000, resource_id: 3, project_id: 1 },
+  { id: 12, text: 'Electrical and Plumbing Rough-in', start_date: '2026-05-04', duration: 10, progress: 0, parent: 10, dependencies: [11], cost: 65000, resource_id: 3, project_id: 1 },
 
-  // Phase 5: Finishes
-  { id: 13, text: 'Interior Finishes', start_date: '2026-05-18', duration: 0, progress: 0, parent: null, predecessors: [12], cost: 0, project_id: 1 },
-  { id: 14, text: 'Drywall and Painting', start_date: '2026-05-18', duration: 15, progress: 0, parent: 13, predecessors: [12], cost: 55000, resource_id: 1, project_id: 1 },
-  { id: 15, text: 'Flooring Installation', start_date: '2026-06-08', duration: 5, progress: 0, parent: 13, predecessors: [14], cost: 35000, resource_id: 1, project_id: 1 },
-  { id: 16, text: 'Install Fixtures', start_date: '2026-06-15', duration: 5, progress: 0, parent: 13, predecessors: [15], cost: 30000, resource_id: 3, project_id: 1 },
+  // Phase 5: Interiors
+  { id: 13, text: 'Interior Finishes', start_date: '2026-05-18', duration: 0, progress: 0, parent: null, dependencies: [12], cost: 0, project_id: 1 },
+  { id: 14, text: 'Drywall and Painting', start_date: '2026-05-18', duration: 15, progress: 0, parent: 13, dependencies: [12], cost: 55000, resource_id: 1, project_id: 1 },
+  { id: 15, text: 'Flooring Installation', start_date: '2026-06-08', duration: 5, progress: 0, parent: 13, dependencies: [14], cost: 35000, resource_id: 1, project_id: 1 },
+  { id: 16, text: 'Install Fixtures', start_date: '2026-06-15', duration: 5, progress: 0, parent: 13, dependencies: [15], cost: 30000, resource_id: 3, project_id: 1 },
 
-  // Phase 6: Finalization
-  { id: 17, text: 'Landscaping', start_date: '2026-06-22', duration: 10, progress: 0, parent: null, predecessors: [9], cost: 40000, resource_id: 1, project_id: 1 },
-  { id: 18, text: 'Final Inspections', start_date: '2026-07-06', duration: 5, progress: 0, parent: null, predecessors: [16, 17], cost: 5000, project_id: 1 },
-  { id: 19, text: 'Project Handover', start_date: '2026-07-13', duration: 1, progress: 0, parent: null, predecessors: [18], cost: 1000, project_id: 1 },
+  // Phase 6: Landscaping
+  { id: 17, text: 'Landscaping', start_date: '2026-06-22', duration: 10, progress: 0, parent: null, dependencies: [9], cost: 40000, resource_id: 1, project_id: 1 },
+  { id: 18, text: 'Final Inspections', start_date: '2026-07-06', duration: 5, progress: 0, parent: null, dependencies: [16, 17], cost: 5000, project_id: 1 },
+  { id: 19, text: 'Project Handover', start_date: '2026-07-13', duration: 1, progress: 0, parent: null, dependencies: [18], cost: 1000, project_id: 1 },
 ];
 // Calculate total cost (simulated)
 

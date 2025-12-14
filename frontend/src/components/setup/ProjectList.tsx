@@ -83,7 +83,7 @@ const ProjectList: React.FC = () => {
       // Add dependencies (Predecessors)
       const updatePreds = async (tid: number, preds: number[]) => {
          try {
-             await updateTask(tid, { predecessors: preds });
+             await updateTask(tid, { dependencies: preds });
          } catch (e) { console.warn("Failed to link tasks", e); }
       };
 

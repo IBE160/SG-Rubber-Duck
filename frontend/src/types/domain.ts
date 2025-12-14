@@ -11,7 +11,7 @@ export interface Project {
 export interface Task {
   id: number;
   text: string;
-  start_date: string;
+  start_date?: string; // Optional: tasks can float based on dependencies
   duration: number;
   progress: number;
   parent: number | null;
@@ -76,6 +76,7 @@ export interface SimulationResults {
   critical_path?: number[];
   timeline?: { day: number; active: number; completed: number }[];
   base_cpm_task_details?: CPMTaskDetail[];
+  pv_curve?: number[];
   p80_cost?: number; // optional future fields
   p80_duration?: number;
   base_cost?: number;

@@ -12,7 +12,7 @@ export interface ProjectUpdate extends Partial<ProjectCreate> {
 
 export interface TaskCreate {
   text: string;
-  start_date: string;
+  start_date?: string;
   duration: number;
   progress?: number;
   parent?: number | null;

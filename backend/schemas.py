@@ -23,7 +23,7 @@ class Risk(RiskBase):
 # Task Schemas
 class TaskBase(BaseModel):
     text: str
-    start_date: date
+    start_date: Optional[date] = None
     duration: int
     progress: float = 0.0
     parent: Optional[int] = None

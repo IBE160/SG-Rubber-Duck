@@ -152,7 +152,8 @@ const WbsTable: React.FC = () => {
   const handleAddTask = async () => {
     const newTaskData = {
       text: 'New Task',
-      start_date: new Date().toISOString().slice(0, 10),
+      // start_date is now optional. Omit it or set to undefined to let CPM decide.
+      // start_date: new Date().toISOString().slice(0, 10), 
       duration: 1,
       progress: 0,
       parent: null,
@@ -273,6 +274,7 @@ const WbsTable: React.FC = () => {
                   <TableCell sx={{ width: 50 }}>ID</TableCell>
                   <TableCell sx={{ minWidth: 220 }}>Task</TableCell>
                   <TableCell align="center" sx={{ width: 110 }}>Duration (days)</TableCell>
+                  <TableCell align="center" sx={{ minWidth: 180 }}>Fixed Cost ($)</TableCell>
                   <TableCell sx={{ width: 170 }}>Start Date</TableCell>
                   <TableCell sx={{ minWidth: 220 }}>Predecessors</TableCell>
                   <TableCell sx={{ width: 120 }} />
@@ -328,15 +330,29 @@ const WbsTable: React.FC = () => {
                         disabled={isLoading_}
                       />
                     </TableCell>
+                    <TableCell align="center" sx={{ minWidth: 180 }}>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        size="small"
+                        inputProps={{ min: 0 }}
+                        aria-label={`Fixed Cost for ${task.text}`}
+                        value={getDraftValue(task, 'cost')}
+                        InputProps={{ sx: { fontSize: 14, py: 1 } }}
+                        onChange={(e) => setDraftValue(task.id, 'cost', Number(e.target.value))}
+                        onBlur={() => commitDraftValue(task.id, 'cost')}
+                        disabled={isLoading_}
+                      />
+                    </TableCell>
                     <TableCell sx={{ width: 170 }}>
                       <TextField
                         type="date"
                         size="small"
                         aria-label={`Start date for ${task.text}`}
-                        value={getDraftValue(task, 'start_date')}
+                        value={getDraftValue(task, 'start_date') || ''}
                         InputLabelProps={{ shrink: true }}
                         InputProps={{ sx: { fontSize: 14, py: 1 } }}
-                        onChange={(e) => setDraftValue(task.id, 'start_date', e.target.value)}
+                        onChange={(e) => setDraftValue(task.id, 'start_date', e.target.value || null)} // Set to null if empty
                         onBlur={() => commitDraftValue(task.id, 'start_date')}
                         disabled={isLoading_}
                       />

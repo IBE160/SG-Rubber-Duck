@@ -132,7 +132,7 @@ const projectSlice = createSlice({
           duration: action.payload.duration ?? 1,
           progress: action.payload.progress ?? 0,
           parent: action.payload.parent ?? null,
-          predecessors: [], // Predecessors not yet handled in backend Task model
+          dependencies: [], // Use dependencies
           cost: action.payload.cost ?? 0,
           resource_id: action.payload.resource_id,
           project_id: state.currentProject?.id ?? -1, // Temporary project_id
@@ -161,7 +161,7 @@ const projectSlice = createSlice({
             case 'cost':
               task[field] = Number(value);
               break;
-            case 'predecessors':
+            case 'dependencies':
               task[field] = value as number[];
               break;
             case 'resource_id':

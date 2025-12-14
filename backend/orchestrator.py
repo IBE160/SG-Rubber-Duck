@@ -72,18 +72,30 @@ class SimulationEngine:
 
     def _prepare_state(self, sim) -> Dict[int, TaskState]:
         tasks = crud.get_tasks(self.db, project_id=sim.project_id, skip=0, limit=1000)
+        resources = crud.get_resources(self.db, project_id=sim.project_id, skip=0, limit=1000)
+        resource_map = {r.id: r for r in resources}
+
         if not tasks:
             raise ValueError("Project has no tasks to simulate.")
 
         state: Dict[int, TaskState] = {}
         for t in tasks:
             duration = max(1, t.duration or 0)  # avoid zero-duration stalls
+            
+            # Calculate total base cost: Fixed Cost + (Duration * Resource Daily Rate)
+            fixed_cost = t.cost or 0.0
+            variable_cost = 0.0
+            if t.resource_id and t.resource_id in resource_map:
+                variable_cost = duration * (resource_map[t.resource_id].cost_per_day or 0.0)
+            
+            total_base_cost = fixed_cost + variable_cost
+
             state[t.id] = TaskState(
                 id=t.id,
                 name=t.text,
                 base_duration=duration,
                 remaining=duration,
-                base_cost=t.cost or 0.0,
+                base_cost=total_base_cost,
                 dependencies=t.dependencies or [],
             )
         return state
@@ -177,9 +189,11 @@ class SimulationEngine:
             cpm_result = calculate_cpm(cpm_input)
             base_duration = cpm_result["project_duration"]
             critical_path = cpm_result["critical_path"]
+            pv_curve = cpm_result.get("pv_curve", [])
         except Exception:
             base_duration = sum(t.base_duration for t in state.values())
             critical_path = []
+            pv_curve = []
 
         risks = crud.get_risks(self.db, project_id=sim.project_id, skip=0, limit=1000)
 
@@ -197,6 +211,7 @@ class SimulationEngine:
                 "risks": len(risks),
                 "base_duration": base_duration,
                 "critical_path": critical_path,
+                "pv_curve": pv_curve,
             },
         )
 
@@ -294,6 +309,7 @@ class SimulationEngine:
             "base_duration": base_duration,
             "critical_path": critical_path,
             "base_cpm_task_details": cpm_result["tasks"],
+            "pv_curve": pv_curve,
             "timeline": self.timeline,
         }
         self.db.commit()

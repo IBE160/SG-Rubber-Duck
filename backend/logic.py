@@ -146,10 +146,30 @@ def calculate_cpm(tasks: List[CPMTask]) -> Dict[str, Any]:
             'slack': slack[task_id]
         })
 
+    # Calculate Planned Value (PV) Curve
+    daily_costs = [0.0] * (project_duration + 1)
+    for task_id in sorted_tasks:
+        task = task_map[task_id]
+        if task.duration > 0:
+            daily_cost = task.cost / task.duration
+            start_day = int(es[task_id])
+            end_day = int(ef[task_id])
+            for d in range(start_day, end_day):
+                if d < len(daily_costs):
+                    daily_costs[d] += daily_cost
+    
+    # Cumulative sum
+    pv_curve = []
+    cumulative = 0.0
+    for cost in daily_costs:
+        cumulative += cost
+        pv_curve.append(cumulative)
+
     return {
         'project_duration': project_duration,
         'critical_path': critical_path,
-        'tasks': task_details
+        'tasks': task_details,
+        'pv_curve': pv_curve
     }
 
 def _topological_sort(tasks: List[CPMTask]) -> List[int]:
