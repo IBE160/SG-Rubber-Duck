@@ -27,6 +27,7 @@ class TaskState:
     start_day: Optional[int] = None
     risk_cost: float = 0.0
     completed: bool = False
+    triggered_risks: Set[int] = field(default_factory=set)
 
     @property
     def total_cost(self) -> float:
@@ -99,11 +100,14 @@ class SimulationEngine:
 
     def _trigger_risks(self, risks: List[models.Risk], task: TaskState):
         for risk in risks:
+            if risk.id in task.triggered_risks:
+                continue
             if risk.affected_task_ids and task.id not in risk.affected_task_ids:
                 continue
             if self.random.random() < (risk.probability or 0):
                 task.remaining += max(0, risk.duration_impact or 0)
                 task.risk_cost += max(0.0, risk.cost_impact or 0.0)
+                task.triggered_risks.add(risk.id)
                 self.risk_events += 1
                 asyncio.create_task(self._log_and_broadcast(
                     "risk_triggered",
@@ -256,6 +260,7 @@ class SimulationEngine:
             "event_count": self.event_count,
             "base_duration": base_duration,
             "critical_path": critical_path,
+            "base_cpm_task_details": cpm_result["tasks"],
             "timeline": self.timeline,
         }
         self.db.commit()

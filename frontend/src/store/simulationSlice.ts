@@ -70,6 +70,7 @@ const simulationSlice = createSlice({
       state.events = [...state.events.slice(-199), { ...action.payload, type: normalizedType }];
       if (normalizedType === 'SIM_END' || normalizedType === 'simulation_completed') {
         state.status = 'finished';
+        state.tasks = []; // Clear simTasks so GanttPanel falls back to project tasks
       }
     },
           applyTaskEvent(state, action: PayloadAction<SimulationEvent>) {

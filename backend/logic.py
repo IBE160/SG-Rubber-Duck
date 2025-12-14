@@ -60,6 +60,7 @@ def run_monte_carlo_simulation(tasks: List[CPMTask], risks: List[MonteCarloRisk]
     return {
         "base_duration": base_cpm_result['project_duration'],
         "base_critical_path": base_cpm_result['critical_path'],
+        "base_cpm_task_details": base_cpm_result['tasks'],
         "base_cost": base_total_cost,
         "iterations": len(simulation_durations),
         "mean_duration": np.mean(simulation_durations),
@@ -108,7 +109,8 @@ def calculate_cpm(tasks: List[CPMTask]) -> Dict[str, Any]:
         if not task.dependencies:
             es[task_id] = 0
         else:
-            es[task_id] = max(ef.get(dep_id, 0) for dep_id in task.dependencies)
+            predecessor_efs = [ef.get(dep_id, 0) for dep_id in task.dependencies]
+            es[task_id] = max(predecessor_efs)
         
         # Assuming duration is in days. Day 1 is the start. 
         ef[task_id] = es[task_id] + task.duration

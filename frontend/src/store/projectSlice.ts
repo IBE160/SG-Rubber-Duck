@@ -188,19 +188,12 @@ const projectSlice = createSlice({
         state.error = action.error.message || 'Failed to fetch projects';
       })
       // fetchProjectDetails
-      .addCase(fetchProjectDetails.pending, (state) => {
-        state.status = 'loading';
-      })
       .addCase(fetchProjectDetails.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.currentProject = action.payload.project;
         state.tasks = action.payload.tasks;
         state.resources = action.payload.resources;
         state.risks = action.payload.risks;
-      })
-      .addCase(fetchProjectDetails.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch project details';
       })
       // createProject
       .addCase(createProject.fulfilled, (state, action) => {
@@ -245,6 +238,36 @@ const projectSlice = createSlice({
       .addCase(fetchSimulationResult.fulfilled, (state, action) => {
         state.simulationResult = action.payload;
         state.status = 'succeeded';
+
+        // Extract base_cpm_task_details
+        const baseCpmTaskDetails = action.payload.base_cpm_task_details;
+
+        if (baseCpmTaskDetails && baseCpmTaskDetails.length > 0 && state.currentProject) {
+          // Create a map for quick lookup
+          const cpmDetailsMap = new Map(baseCpmTaskDetails.map(detail => [detail.id, detail]));
+
+          // Get the project's start date
+          const projectStartDate = new Date(state.currentProject.start_date);
+
+          // Update tasks with calculated ES/EF
+          state.tasks = state.tasks.map(task => {
+            const cpmDetail = cpmDetailsMap.get(task.id);
+            if (cpmDetail) {
+              const newStartDate = new Date(projectStartDate);
+              newStartDate.setDate(projectStartDate.getDate() + cpmDetail.es); // Add 'es' days
+
+              // Duration is ef - es, ensuring minimum 1 day if calculated as 0
+              const newDuration = cpmDetail.ef - cpmDetail.es;
+
+              return {
+                ...task,
+                start_date: newStartDate.toISOString().split('T')[0], // Format to YYYY-MM-DD
+                duration: newDuration > 0 ? newDuration : 1, // Ensure duration is at least 1 for display
+              };
+            }
+            return task;
+          });
+        }
       })
       .addCase(fetchSimulationResult.rejected, (state, action) => {
         state.status = 'failed';

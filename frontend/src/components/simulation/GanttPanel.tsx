@@ -33,10 +33,19 @@ const computeCriticalPath = (tasks: Task[]): Set<number> => { // Return Set<numb
 // Compute timeline bounds
 const getBounds = (tasks: Task[]) => {
   if (!tasks.length) return { min: new Date(), max: new Date(), totalDays: 1 };
+  
   const starts = tasks.map((t) => new Date(t.start_date).getTime());
+  const endTimes = tasks.map((t) => {
+    const taskStartDate = new Date(t.start_date).getTime();
+    const taskEndDate = taskStartDate + (t.duration * MS_PER_DAY);
+    return taskEndDate;
+  });
+
   const min = Math.min(...starts);
-  const max = Math.max(...tasks.map((t) => new Date(t.start_date).getTime() + t.duration * 86400000));
+  const max = Math.max(...endTimes);
+
   const totalDays = Math.max(1, Math.ceil((max - min) / MS_PER_DAY));
+
   return { min: new Date(min), max: new Date(max), totalDays };
 };
 
@@ -51,12 +60,14 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride }) => {
 
   const tasks: BarTask[] = useMemo(() => {
     const source = tasksOverride && tasksOverride.length ? tasksOverride : (baseTasks || []);
-    return source.map((t) => ({
+    const processedTasks = source.map((t) => ({
       ...t,
       predecessors: t.predecessors || [],
       progress: t.progress ?? 0,
       affectedByRisk: risks.filter((r) => r.affected_task_ids?.includes(t.id)),
     }));
+    console.log({ processedTasks }); // Log the tasks array
+    return processedTasks;
   }, [baseTasks, risks, tasksOverride]);
 
   const criticalIds = useMemo(() => computeCriticalPath(tasks), [tasks]);
@@ -136,7 +147,7 @@ const GanttPanel: React.FC<Props> = ({ tasksOverride }) => {
           <Chip size="small" label={`Start: ${task.start_date}`} />
           <Chip size="small" label={`Dur: ${task.duration}d`} />
           {task.predecessors.length > 0 && (
-            <Chip size="small" label={`Pred: ${task.predecessors.join(', ')}`} />
+            <Chip size="small" label={`Pred: ${task.predecessors.join(', ')}`} sx={{ bgcolor: 'secondary.main' }} />
           )}
         </Stack>
       </Box>

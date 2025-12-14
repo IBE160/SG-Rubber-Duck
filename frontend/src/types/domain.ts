@@ -44,6 +44,15 @@ export interface Risk {
   affected_task_ids: number[]; // Now numbers
 }
 
+export interface CPMTaskDetail {
+  id: number;
+  es: number; // Earliest Start (in days from project start)
+  ef: number; // Earliest Finish (in days from project start)
+  ls: number; // Latest Start (in days from project start)
+  lf: number; // Latest Finish (in days from project start)
+  slack: number;
+}
+
 export interface SimulationRun {
   id: number;
   project_id: number;
@@ -66,6 +75,7 @@ export interface SimulationResults {
   base_duration?: number;
   critical_path?: number[];
   timeline?: { day: number; active: number; completed: number }[];
+  base_cpm_task_details?: CPMTaskDetail[];
   p80_cost?: number; // optional future fields
   p80_duration?: number;
   base_cost?: number;

@@ -154,6 +154,14 @@ def read_task(task_id: int, db: Session = Depends(get_db)):
     return db_task
 
 
+@app.get("/debug-task/{task_id}", response_model=schemas.Task, tags=["Debug"], summary="Debug endpoint to get raw Task JSON")
+def debug_task(task_id: int, db: Session = Depends(get_db)):
+    db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if db_task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return db_task
+
+
 @app.patch("/tasks/{task_id}", response_model=schemas.Task, tags=["Tasks"])
 def update_task(task_id: int, task: schemas.TaskUpdate, db: Session = Depends(get_db)):
     db_task = db.query(models.Task).filter(models.Task.id == task_id).first()

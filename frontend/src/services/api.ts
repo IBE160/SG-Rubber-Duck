@@ -293,7 +293,9 @@ export const getSimulationRun = async (simulationRunId: number): Promise<Simulat
   if (!response.ok) {
     throw new Error('Failed to fetch simulation run');
   }
-  return response.json();
+  const simulationRun = await response.json();
+  console.log('API: Raw SimulationRun response:', simulationRun);
+  return simulationRun;
 };
 
 export const getSimulationResults = async (simulationRunId: number): Promise<SimulationResults> => {
