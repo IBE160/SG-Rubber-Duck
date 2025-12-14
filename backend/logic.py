@@ -11,6 +11,7 @@ class CPMTask(BaseModel):
     duration: int
     cost: float
     dependencies: List[int] = []
+    min_start_day: int = 0
 
 class MonteCarloRisk(BaseModel):
     id: int
@@ -107,10 +108,11 @@ def calculate_cpm(tasks: List[CPMTask]) -> Dict[str, Any]:
     for task_id in sorted_tasks:
         task = task_map[task_id]
         if not task.dependencies:
-            es[task_id] = 0
+            es[task_id] = task.min_start_day
         else:
             predecessor_efs = [ef.get(dep_id, 0) for dep_id in task.dependencies]
-            es[task_id] = max(predecessor_efs)
+            # ES is primarily driven by dependencies, but cannot be earlier than min_start_day
+            es[task_id] = max(max(predecessor_efs), task.min_start_day)
         
         # Assuming duration is in days. Day 1 is the start. 
         ef[task_id] = es[task_id] + task.duration

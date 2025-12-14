@@ -136,10 +136,43 @@ class SimulationEngine:
             self.db.commit()
             return
 
+        project = crud.get_project(self.db, sim.project_id)
+        project_start_date = project.start_date if project else datetime.now(timezone.utc).date()
+
         graph = self._build_graph(state)
         indeg, dependents = graph["indeg"], graph["dependents"]
 
-        cpm_input = [CPMTask(id=t.id, duration=t.base_duration, cost=t.base_cost, dependencies=t.dependencies) for t in state.values()]
+        cpm_input = []
+        for t_state in state.values():
+            # Retrieve the original task to get its start_date
+            # Optimization: We could have stored start_date in TaskState, but for now we'll fetch or look it up?
+            # Actually, `state` only has TaskState which doesn't have start_date.
+            # We need to access the original task object.
+            # Let's modify `_prepare_state` to include start_date in TaskState or re-fetch here?
+            # Re-fetching is inefficient. Let's update TaskState definition first? 
+            # No, TaskState is defined in this file. I can add it.
+            pass
+        
+        # Re-fetching tasks to get start_dates efficiently
+        db_tasks = crud.get_tasks(self.db, project_id=sim.project_id, skip=0, limit=1000)
+        task_map = {t.id: t for t in db_tasks}
+
+        for t_state in state.values():
+            original_task = task_map.get(t_state.id)
+            min_start_day = 0
+            if original_task and original_task.start_date:
+                # Calculate days difference
+                delta = original_task.start_date - project_start_date
+                min_start_day = delta.days
+            
+            cpm_input.append(CPMTask(
+                id=t_state.id, 
+                duration=t_state.base_duration, 
+                cost=t_state.base_cost, 
+                dependencies=t_state.dependencies,
+                min_start_day=min_start_day
+            ))
+
         try:
             cpm_result = calculate_cpm(cpm_input)
             base_duration = cpm_result["project_duration"]

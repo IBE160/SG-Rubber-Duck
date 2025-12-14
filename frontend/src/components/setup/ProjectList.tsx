@@ -17,17 +17,20 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import EditIcon from '@mui/icons-material/Edit';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { fetchProjectDetails, setCurrentProject } from '../../store/projectSlice';
 import { useProjects, useDeleteProject } from '../../services/queries';
 import { createProject, createTask, createRisk, createResource, updateTask } from '../../services/api';
 import { useQueryClient } from '@tanstack/react-query';
 import ProjectForm from './ProjectForm';
+import { Project } from '../../types/domain';
 
 const ProjectList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { currentProject } = useAppSelector((state) => state.projects);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isCreatingDemo, setIsCreatingDemo] = useState(false);
 
   // Use TanStack Query to fetch projects
@@ -47,6 +50,11 @@ const ProjectList: React.FC = () => {
     if (currentProject?.id === projectId) {
       dispatch(setCurrentProject(null));
     }
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setIsFormOpen(true);
   };
 
   const handleLoadDemo = async () => {
@@ -106,11 +114,13 @@ const ProjectList: React.FC = () => {
   };
 
   const handleOpenForm = () => {
+    setEditingProject(null);
     setIsFormOpen(true);
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
+    setEditingProject(null);
   };
 
   let content;
@@ -141,11 +151,18 @@ const ProjectList: React.FC = () => {
             key={project.id} 
             disablePadding
             secondaryAction={
-              <Tooltip title="Delete project">
-                <IconButton edge="end" onClick={() => handleDeleteProject(project.id)} size="small">
-                  <DeleteOutlineIcon fontSize="small" color="error" />
-                </IconButton>
-              </Tooltip>
+              <Stack direction="row" spacing={1}>
+                <Tooltip title="Edit project">
+                  <IconButton edge="end" onClick={() => handleEditProject(project)} size="small">
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete project">
+                  <IconButton edge="end" onClick={() => handleDeleteProject(project.id)} size="small">
+                    <DeleteOutlineIcon fontSize="small" color="error" />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
             }
             sx={{ mb: 1 }}
           >
@@ -216,6 +233,7 @@ const ProjectList: React.FC = () => {
       <ProjectForm
         open={isFormOpen}
         onClose={handleCloseForm}
+        initialData={editingProject}
       />
     </Paper>
   );
