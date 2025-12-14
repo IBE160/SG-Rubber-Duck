@@ -13,6 +13,7 @@ from . import models, schemas, crud
 from .logic import calculate_cpm, CPMTask
 from .connection_manager import manager
 from .orchestrator import run_simulation
+from .ai_insights import get_insights_from_simulation
 
 # Create tables if they don't exist
 models.Base.metadata.create_all(bind=engine)
@@ -482,3 +483,19 @@ def get_simulation_status(simulation_run_id: int, db: Session = Depends(get_db))
     if sim is None:
         raise HTTPException(status_code=404, detail="Simulation run not found")
     return sim
+
+@app.get("/simulations/{simulation_run_id}/insights", response_model=schemas.AiInsights, tags=["AI"])
+def get_simulation_insights(simulation_run_id: int, db: Session = Depends(get_db)):
+    """
+    Get AI-powered insights for a simulation run.
+    """
+    sim = crud.get_simulation_run(db, simulation_run_id=simulation_run_id)
+    if not sim:
+        raise HTTPException(status_code=404, detail="Simulation run not found")
+    
+    project = crud.get_project(db, sim.project_id)
+    budget = project.budget if project else 0.0
+    start_date = project.start_date
+    end_date = project.end_date
+    
+    return get_insights_from_simulation(sim.results, budget, start_date, end_date)

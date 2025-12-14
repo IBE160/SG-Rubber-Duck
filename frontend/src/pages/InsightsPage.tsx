@@ -1,34 +1,42 @@
-import React, { useMemo } from 'react';
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import React, { useMemo, useEffect, useState } from 'react';
+import { Box, Grid, Paper, Typography, CircularProgress, Alert } from '@mui/material';
 import AnalysisSummary from '../components/analysis/AnalysisSummary';
 import AiPanel from '../components/analysis/AiPanel';
 import { useAppSelector } from '../store/hooks';
+import { getAiInsights, AiInsights } from '../services/api';
 
 const InsightsPage: React.FC = () => {
-  const simKpis = useAppSelector(state => state.simulation.kpis);
+  const { simulationResult } = useAppSelector(state => state.projects);
   const simId = useAppSelector(state => state.simulation.simulationId);
-  const risks = useAppSelector(state => state.projects.risks);
+  
+  const [aiData, setAiData] = useState<AiInsights | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const results = useMemo(() => ({
-    finalCost: simKpis.ac || 950000,
-    finalDuration: Math.max(1, Math.round(simKpis.ev || 190)),
-    risksOccurred: risks.length || 0,
-  }), [simKpis, risks]);
+    finalCost: simulationResult?.total_cost ?? 0,
+    finalDuration: simulationResult?.total_duration ?? 0,
+    risksOccurred: simulationResult?.risk_events ?? 0,
+  }), [simulationResult]);
 
-  const insights = useMemo(() => ({
-    overallAssessment: simKpis.sv < 0 || simKpis.cv < 0
-      ? 'Project trending behind schedule/cost; address critical tasks and overruns.'
-      : 'Project is on track with current plan.',
-    keyIssues: [
-      { id: 'ki-1', text: `Schedule variance: ${simKpis.sv.toFixed(2)} (negative is behind).` },
-      { id: 'ki-2', text: `Cost variance: ${simKpis.cv.toFixed(2)} (negative is over budget).` },
-    ],
-    actionableRecommendations: [
-      { id: 'ar-1', text: 'Shift resources to critical tasks with highest delay impact.' },
-      { id: 'ar-2', text: 'Add contingency buffer to MEP and critical path tasks if SV < 0.' },
-    ],
-    provenance: simId ? `Derived from simulation ${simId} (live KPIs)` : 'Derived from live KPIs',
-  }), [simKpis, simId]);
+  useEffect(() => {
+    const fetchInsights = async () => {
+      if (!simId) return;
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getAiInsights(simId);
+        setAiData(data);
+      } catch (err) {
+        console.error("Failed to fetch insights", err);
+        setError("Could not load AI analysis. Please run a simulation first.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInsights();
+  }, [simId]);
 
   return (
     <Box sx={{ p: 2 }}>
@@ -40,7 +48,15 @@ const InsightsPage: React.FC = () => {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <AiPanel insights={insights} />
+          {loading ? (
+             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>
+          ) : error ? (
+             <Alert severity="warning">{error}</Alert>
+          ) : aiData ? (
+             <AiPanel insights={{ ...aiData, provenance: `Simulation Run #${simId}` }} />
+          ) : (
+             <Alert severity="info">Run a simulation to generate AI insights.</Alert>
+          )}
         </Grid>
       </Grid>
     </Box>

@@ -48,14 +48,15 @@ const KpiDashboard: React.FC = () => {
     .map(id => tasks.find(t => t.id === id)?.text)
     .filter(Boolean);
   console.log('KPI: criticalPathNames', criticalPathNames);
-  const criticalPathString = criticalPathNames.join(' → ') || 'N/A';
 
   const variance = totalCost - budget;
 
-  // Use live KPIs from simulation state. 
-  // We remove the check for 'running' so the final values persist after completion.
-  const cv = kpis.cv; 
-  const sv = kpis.sv; 
+  const projectedFinishDate = currentProject?.start_date && totalDuration
+    ? new Date(new Date(currentProject.start_date).getTime() + totalDuration * 86400000).toISOString().split('T')[0]
+    : 'N/A';
+
+  const cv = simStatus === 'running' ? kpis.cv : 0; 
+  const sv = simStatus === 'running' ? kpis.sv : 0; 
 
   if (!simulationResult && simEvents.length === 0) {
     return (
@@ -78,6 +79,14 @@ const KpiDashboard: React.FC = () => {
               title="Duration (days)" 
               value={totalDuration?.toString() || '0'} 
               description={baseDuration ? `Base CPM: ${baseDuration} days` : 'Live estimate'}
+            />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+            <KpiCard 
+              title="Projected Finish" 
+              value={projectedFinishDate} 
+              description={currentProject?.end_date ? `Deadline: ${currentProject.end_date}` : 'Based on simulation'}
+              color={currentProject?.end_date && projectedFinishDate > currentProject.end_date ? 'error.main' : 'success.main'}
             />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>

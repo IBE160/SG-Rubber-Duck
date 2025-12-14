@@ -2,44 +2,70 @@ from typing import Dict, Any
 import os
 import random
 
-def get_insights_from_simulation(simulation_results: Dict[str, Any]) -> Dict[str, Any]:
+from typing import Dict, Any
+import os
+import random
+from datetime import date, timedelta
+
+def get_insights_from_simulation(simulation_results: Dict[str, Any], budget: float = 0.0, start_date: date = None, end_date: date = None) -> Dict[str, Any]:
     """
-    Generates AI-powered insights from simulation results.
-
-    In a real implementation, this would make a call to a generative AI API (e.g., Gemini).
-    For now, it returns a mock response based on the simulation data.
+    Generates AI-powered insights from simulation results using a rule-based expert system.
     """
-    api_key = os.getenv("GEMINI_API_KEY")
-
-    if not api_key or api_key == "YOUR_API_KEY_HERE":
-        # Return a mock response if no API key is provided
-        return {
-            "ai_assessment": "Mock Assessment: The simulation results indicate a high probability of schedule overrun. The base duration is optimistic, while the P80 duration suggests a significant buffer is needed.",
-            "ai_recommendations": [
-                "Mock Recommendation 1: Review the tasks on the critical path, as they are the primary drivers of the project's duration.",
-                "Mock Recommendation 2: Allocate additional resources to critical path tasks to reduce their duration.",
-                "Mock Recommendation 3: Develop mitigation plans for the risks that have the highest probability and impact."
-            ]
-        }
-
-    # The following is a placeholder for a real API call.
-    # 1. Format the `simulation_results` into a detailed prompt.
-    # 2. Make an HTTP request to the Gemini API.
-    # 3. Parse the response and return it in a structured format.
-    
-    # Mocking a real call for demonstration purposes
     base_duration = simulation_results.get('base_duration', 0)
-    p80_duration = simulation_results.get('p80_duration', 0)
+    total_duration = simulation_results.get('total_duration', 0)
+    total_cost = simulation_results.get('total_cost', 0)
+    risk_events = simulation_results.get('risk_events', 0)
     
-    assessment = f"The deterministic project duration is {base_duration:.0f} days. However, the Monte Carlo simulation shows an 80% probability of finishing in {p80_duration:.0f} days or less, indicating a potential schedule slippage of {(p80_duration - base_duration):.0f} days."
+    issues = []
+    recommendations = []
     
-    recommendations = [
-        "Focus on mitigating risks associated with the tasks on the critical path.",
-        "Consider adding a buffer to the schedule based on the P80 duration.",
-        "Investigate tasks with the highest slack, as they may have opportunities for resource reallocation."
-    ]
+    # Schedule Analysis
+    schedule_status = "Unknown"
+    if start_date and end_date:
+        projected_finish = start_date + timedelta(days=total_duration)
+        if projected_finish > end_date:
+            delay_days = (projected_finish - end_date).days
+            issues.append(f"Deadline Missed: Project is projected to finish on {projected_finish}, which is {delay_days} days after the deadline ({end_date}).")
+            schedule_status = "Behind"
+            recommendations.append("Review critical path tasks for crashing or fast-tracking.")
+        else:
+            buffer_days = (end_date - projected_finish).days
+            issues.append(f"On Schedule: Project is projected to finish on {projected_finish}, {buffer_days} days before the deadline.")
+            schedule_status = "Ahead"
+    else:
+        # Fallback to comparing against baseline if no deadline dates provided
+        if total_duration > base_duration:
+            delay = total_duration - base_duration
+            issues.append(f"Schedule Slippage: The project is projected to take {total_duration} days, which is {delay} days longer than the baseline.")
+            recommendations.append("Review the Critical Path tasks for optimization opportunities.")
+            recommendations.append("Analyze the 'Triggered Risks' to understand what caused the delay.")
+        else:
+            issues.append("Schedule: The project is projected to finish on or ahead of the baseline schedule.")
+
+    # Cost Analysis
+    if budget > 0:
+        if total_cost > budget:
+            overrun = total_cost - budget
+            pct = (overrun / budget) * 100
+            issues.append(f"Budget Overrun: Projected cost is ${total_cost:,.2f}, exceeding budget by ${overrun:,.2f} ({pct:.1f}%).")
+            recommendations.append("Investigate resource utilization and fixed costs.")
+        else:
+            issues.append(f"Budget: Projected cost (${total_cost:,.2f}) is within the budget of ${budget:,.2f}.")
+    else:
+        # If budget isn't passed or is 0, we can't do variance analysis
+        issues.append(f"Projected Total Cost: ${total_cost:,.2f}.")
+
+    # Risk Analysis
+    if risk_events > 0:
+        issues.append(f"Risk Impact: {risk_events} risk events occurred during the simulation.")
+        recommendations.append("Ensure contingency plans are in place for high-probability risks.")
+    else:
+        issues.append("Risk Impact: No risk events occurred in this run.")
+
+    assessment = " ".join(issues)
     
     return {
-        "ai_assessment": assessment,
-        "ai_recommendations": recommendations
+        "overallAssessment": assessment,
+        "keyIssues": [{"id": f"ki-{i}", "text": issue} for i, issue in enumerate(issues)],
+        "actionableRecommendations": [{"id": f"ar-{i}", "text": rec} for i, rec in enumerate(recommendations)]
     }

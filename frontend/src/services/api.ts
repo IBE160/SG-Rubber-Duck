@@ -19,11 +19,6 @@ export interface AiInsights {
   actionableRecommendations: { id: string; text: string }[];
 }
 
-const API_LATENCY = 500; // ms
-
-// --- Helper to simulate network delay ---
-const withDelay = <T>(data: T): Promise<T> => new Promise(resolve => setTimeout(() => resolve(data), API_LATENCY));
-
 // --- API Functions ---
 
 /**
@@ -301,11 +296,10 @@ export const getSimulationResults = async (simulationRunId: number): Promise<Sim
   return (run.results as SimulationResults) || {};
 };
 
-export const getAiInsights = (_simulationRunId: number): Promise<AiInsights> => {
-  // TODO: Replace with real backend endpoint when available
-  return withDelay({
-    overallAssessment: "Insights not available (stub).",
-    keyIssues: [],
-    actionableRecommendations: [],
-  });
+export const getAiInsights = async (simulationRunId: number): Promise<AiInsights> => {
+  const response = await fetch(`${API_BASE_URL}/simulations/${simulationRunId}/insights`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch AI insights');
+  }
+  return response.json();
 };

@@ -150,3 +150,13 @@ class Resource(ResourceBase):
     project_id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+# AI Insights Schema
+class InsightItem(BaseModel):
+    id: str
+    text: str
+
+class AiInsights(BaseModel):
+    overallAssessment: str
+    keyIssues: List[InsightItem]
+    actionableRecommendations: List[InsightItem]
